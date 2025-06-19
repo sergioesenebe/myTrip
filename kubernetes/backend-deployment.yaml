@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: mytrip-backend }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: mytrip-backend } }
+  template:
+    metadata: { labels: { app: mytrip-backend } }
+    spec:
+      containers:
+        - name: backend
+          image: mytrip-backend:latest
+          imagePullPolicy: Never
+          ports: [{ containerPort: 3000 }]
+          env:
+            - name: MONGO_URI
+              value: "mongodb://sergio:sergio@mongo:27017/mytrip?authSource=admin"
+---
+apiVersion: v1
+kind: Service
+metadata: { name: mytrip-backend }
+spec:
+  selector: { app: mytrip-backend }
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: NodePort
