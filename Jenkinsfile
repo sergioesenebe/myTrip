@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "tusuario/tu-app"
-        DOCKER_CREDENTIALS_ID = "dockerhub-creds"
         GIT_CREDENTIALS_ID = "github-creds"
         KUBECONFIG_CREDENTIALS_ID = "kubeconfig-minikube"
     }
@@ -11,7 +9,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git credentialsId: "${GIT_CREDENTIALS_ID}", url: 'https://github.com/tuusuario/tu-repo.git', branch: 'main'
+                git credentialsId: "${GIT_CREDENTIALS_ID}", url: 'https://github.com/sergioesenebe/myTrip.git', branch: 'test'
             }
         }
 
@@ -29,13 +27,7 @@ pipeline {
 
         stage('Build Docker image') {
             steps {
-                script {
-                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        def image = docker.build("${DOCKER_IMAGE}:${env.BUILD_NUMBER}")
-                        image.push()
-                        image.push('latest')
-                    }
-                }
+                sh "docker build -t mytrip-app:latest ."
             }
         }
 
