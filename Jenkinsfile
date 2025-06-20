@@ -44,7 +44,9 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
-                    sh 'kubectl apply -f k8s/deployment.yaml'
+                            sh 'kubectl apply -f kubernetes/mongo-deployment.yaml'
+                            sh 'kubectl apply -f kubernetes/frontend-deployment.yaml'
+                            sh 'kubectl apply -f kubernetes/backend-deployment.yaml'
                 }
             }
         }
