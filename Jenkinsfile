@@ -9,34 +9,47 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git credentialsId: "${GIT_CREDENTIALS_ID}", url: 'https://github.com/sergioesenebe/myTrip.git', branch: 'test'
+                git credentialsId: "${GIT_CREDENTIALS_ID}", 
+                    url: 'https://github.com/sergioesenebe/myTrip.git', 
+                    branch: 'test'
             }
         }
 
-        stage('Install deps Backend') {
+        stage('Install Backend Deps') {
             steps {
                 dir('backend') {
-                    sh 'npm install'
+                    sh 'npm ci'
                 }
             }
         }
 
-        stage('Run tests Backend') {
+        stage('Run Backend Tests') {
             steps {
                 dir('backend') {
-                    sh 'npm test || echo "No tests defined or test failed"'
+                    sh 'npm test || echo "No backend tests or test failed"'
                 }
             }
         }
 
-        stage('Build Docker image Backend') {
+        stage('Install Frontend Deps') {
+            steps {
+                dir('frontend') {
+                    sh 'npm ci'
+                }
+            }
+        }
+
+        stage('Run Frontend Tests') {
+            steps {
+                dir('frontend') {
+                    sh 'npm run test || echo "No frontend tests or test failed"'
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
             steps {
                 sh 'docker build -t mytrip-backend:latest -f backend/Dockerfile backend/'
-            }
-        }
-
-        stage('Build Docker image Frontend') {
-            steps {
                 sh 'docker build -t mytrip-frontend:latest -f frontend/Dockerfile frontend/'
             }
         }
@@ -44,9 +57,9 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
-                            sh 'kubectl apply -f kubernetes/mongo-deployment.yaml'
-                            sh 'kubectl apply -f kubernetes/frontend-deployment.yaml'
-                            sh 'kubectl apply -f kubernetes/backend-deployment.yaml'
+                    sh 'kubectl apply -f kubernetes/mongo-deployment.yaml'
+                    sh 'kubectl apply -f kubernetes/backend-deployment.yaml'
+                    sh 'kubectl apply -f kubernetes/frontend-deployment.yaml'
                 }
             }
         }
@@ -54,10 +67,10 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment success'
+            echo 'Deployment successful!'
         }
         failure {
-            echo 'Pipeline failed'
+            echo 'Pipeline failed. Check logs.'
         }
     }
 }
