@@ -1,27 +1,30 @@
+#Deployment configuration for backend
 apiVersion: apps/v1
 kind: Deployment
-metadata: { name: mytrip-backend }
+metadata: { name: mytrip-backend } #Name of the deployment
 spec:
-  replicas: 1
-  selector: { matchLabels: { app: mytrip-backend } }
+  replicas: 1 #Pod replicas to run
+  selector: { matchLabels: { app: mytrip-backend } } #Selector to match pod label
+
   template:
-    metadata: { labels: { app: mytrip-backend } }
+    metadata: { labels: { app: mytrip-backend } } #Service label to select pods
     spec:
       containers:
-        - name: backend
-          image: mytrip-backend:latest
-          imagePullPolicy: Never
-          ports: [{ containerPort: 3000 }]
+        - name: backend #Container name
+          image: mytrip-backend:latest #Use local image (latest)
+          imagePullPolicy: Never #Not try to build from registry (Used for local builds)
+          ports: [{ containerPort: 3000 }] #Port app listeners inside the container
           env:
-            - name: MONGO_URI
+            - name: MONGO_URI #Environment variable for mongodb
               value: "mongodb://sergio:sergio@mongo:27017/mytrip?authSource=admin"
 ---
+#Service to expose backend
 apiVersion: v1
 kind: Service
-metadata: { name: mytrip-backend }
+metadata: { name: mytrip-backend } #Name of the service
 spec:
-  selector: { app: mytrip-backend }
+  selector: { app: mytrip-backend } #Selector to match pod label
   ports:
-    - port: 3000
-      targetPort: 3000
-  type: NodePort
+    - port: 3000 #Port exposed
+      targetPort: 3000 #Port container
+  type: NodePort #Expose service on a random port between 30000–32767

@@ -1,24 +1,26 @@
+#Deployment configuration for frontend
 apiVersion: apps/v1
 kind: Deployment
-metadata: { name: mytrip-frontend }
+metadata: { name: mytrip-frontend } #Deployment name
 spec:
-  replicas: 1
-  selector: { matchLabels: { app: mytrip-frontend } }
+  replicas: 1 #Pod replicas to run
+  selector: { matchLabels: { app: mytrip-frontend } } #Selector to match pod label
   template:
-    metadata: { labels: { app: mytrip-frontend } }
+    metadata: { labels: { app: mytrip-frontend } } #Service label to select pods
     spec:
       containers:
-        - name: frontend
-          image: mytrip-frontend:latest
-          imagePullPolicy: Never
-          ports: [{ containerPort: 80 }]
+        - name: frontend #Container name
+          image: mytrip-frontend:latest #Use local image (latest)
+          imagePullPolicy: Never #Not try to build from registry (Used for local builds)
+          ports: [{ containerPort: 80 }] #Port app listeners inside the container
 ---
+#Service to expose frontend
 apiVersion: v1
 kind: Service
-metadata: { name: mytrip-frontend }
+metadata: { name: mytrip-frontend } #Name of the service
 spec:
-  selector: { app: mytrip-frontend }
+  selector: { app: mytrip-frontend } #Selector to match pod label
   ports:
-    - port: 80
-      targetPort: 80
-  type: NodePort
+    - port: 80 #Port exposed
+      targetPort: 80 #Port container
+  type: NodePort #Expose service on a random port between 30000–32767

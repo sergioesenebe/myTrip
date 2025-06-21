@@ -1,14 +1,15 @@
 pipeline {
+    //Use any available agent to run the pipeline
     agent any
-
+    //Credentials for kubernetes and github
     environment {
         GIT_CREDENTIALS_ID = "github-creds"
         KUBECONFIG_CREDENTIALS_ID = "kubeconfig-minikube"
     }
-
     stages {
         stage('Clone') {
             steps {
+                //Clone git repository from branch test with the credentials
                 git credentialsId: "${GIT_CREDENTIALS_ID}", 
                     url: 'https://github.com/sergioesenebe/myTrip.git', 
                     branch: 'test'
@@ -17,6 +18,7 @@ pipeline {
 
         stage('Install Backend Deps') {
             steps {
+                //Change directory to backend and install dependencies
                 dir('backend') {
                     sh 'npm ci'
                 }
@@ -26,12 +28,14 @@ pipeline {
         stage('Run Backend Tests') {
             steps {
                 dir('backend') {
+                    //Run backend test with npm test
                     sh 'npm test || echo "No backend tests or test failed"'
                 }
             }
         }
 
         stage('Install Frontend Deps') {
+            //Change directory to frontend and install dependencies
             steps {
                 dir('frontend') {
                     sh 'npm ci'
@@ -40,6 +44,7 @@ pipeline {
         }
 
         stage('Run Frontend Tests') {
+            //Run frontend test with npm test
             steps {
                 dir('frontend') {
                     sh 'npm run test || echo "No frontend tests or test failed"'
@@ -48,6 +53,7 @@ pipeline {
         }
 
         stage('Build Docker Images') {
+            //Build frontend and backend images from DOckerfile
             steps {
                 sh 'docker build -t mytrip-backend:latest -f backend/Dockerfile backend/'
                 sh 'docker build -t mytrip-frontend:latest -f frontend/Dockerfile frontend/'
@@ -56,7 +62,9 @@ pipeline {
 
         stage('Deploy to Minikube') {
             steps {
+                //Use credentials to configure kubernetes
                 withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
+                    //Kubernetes manifest to deploy mongodb, backend and frontend
                     sh 'kubectl apply -f kubernetes/mongo-deployment.yaml'
                     sh 'kubectl apply -f kubernetes/backend-deployment.yaml'
                     sh 'kubectl apply -f kubernetes/frontend-deployment.yaml'
@@ -64,7 +72,7 @@ pipeline {
             }
         }
     }
-
+    //Do an echo in case of success or failure
     post {
         success {
             echo 'Deployment successful!'

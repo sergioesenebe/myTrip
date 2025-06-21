@@ -1,36 +1,36 @@
+#Deployment configuration for mongodb
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: mongo #Deployment name
 spec:
-  replicas: 1
-  selector: { matchLabels: { app: mongo } }
+  replicas: 1 #Pod replicas to run
+  selector: { matchLabels: { app: mongo } } #Selector to match pod label
   template:
-    metadata: { labels: { app: mongo } }
+    metadata: { labels: { app: mongo } } #Service label to select pods
     spec:
       containers:
-        - name: mongo
-          image: mongo:6.0
-          ports: [{ containerPort: 27017 }]
+        - name: mongo # Container name
+          image: mongo:6.0 #Oficial mongo image 6.0
+          ports: [{ containerPort: 27017 }] #Default port
           volumeMounts:
-            - name: mongo-data
-              mountPath: /data/db
-          env:
+            - name: mongo-data #Mount a volume to store data
+              mountPath: /data/db #Mongo data directory
+          env: #Environment variables
           - name: MONGO_INITDB_ROOT_USERNAME
             value: sergio
           - name: MONGO_INITDB_ROOT_PASSWORD
             value: sergio
       volumes:
         - name: mongo-data
-          emptyDir: {}
-      
-
+          emptyDir: {} #Temporary volume
 ---
+#Service to expose mongodb
 apiVersion: v1
 kind: Service
-metadata: { name: mongo }
+metadata: { name: mongo } #Service name
 spec:
-  selector: { app: mongo }
+  selector: { app: mongo } #Match pod with this label
   ports:
-    - port: 27017
-      targetPort: 27017
+    - port: 27017 #Service port
+      targetPort: 27017 #mongodb container
