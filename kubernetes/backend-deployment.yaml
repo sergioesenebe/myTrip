@@ -17,6 +17,12 @@ spec:
           env:
             - name: MONGO_URI #Environment variable for mongodb
               value: "mongodb://sergio:sergio@mongo:27017/mytrip?authSource=admin"
+          #Min and max CPU usage
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 250m
 ---
 #Service to expose backend
 apiVersion: v1

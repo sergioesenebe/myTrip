@@ -13,6 +13,12 @@ spec:
           image: mytrip-frontend:latest #Use local image (latest)
           imagePullPolicy: Never #Not try to build from registry (Used for local builds)
           ports: [{ containerPort: 80 }] #Port app listeners inside the container
+          #Min and max CPU usage
+          resources:
+            requests:
+              cpu: 100m
+            limits:
+              cpu: 250m
 ---
 #Service to expose frontend
 apiVersion: v1
