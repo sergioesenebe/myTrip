@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 //Import internal libraries, css and images
-import { uploadImage, validImage } from '../services/uploadService';
+import { deleteImage, uploadImage, validImage } from '../services/uploadService';
 import '../styles/common.css';
 import '../styles/auth.css';
 import logo from '../../public/images/mytrip-logo-text.png';
@@ -106,7 +106,6 @@ function SignUp() {
             setAvatarUrl(url);
             //Show delete button
             setDisplayDeleteButton(true);
-            console.log(displayDeleteButton);
         }
         //Catch and show the error
         catch (err) {
@@ -116,6 +115,27 @@ function SignUp() {
             if (timeOutId.current) clearTimeout(timeOutId.current);
             timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
         }
+    }
+    //FUnction to delete the image when button clicked
+    async function handleDeleteImage() {
+        try {
+            //Remove the image from the ref
+            await deleteImage(avatarRef);
+            //Return to default user avatar
+            setAvatarUrl(defaultUser);
+            setAvatar('');
+            //Remove the button to delete
+            setDisplayDeleteButton(false);
+        }
+        catch (err) {
+            console.error('No Valid Type: ', err);
+            setErrorMessage(err.message);
+            //If there is a time out clear it and show a message for 10 seconds
+            if (timeOutId.current) clearTimeout(timeOutId.current);
+            timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+
+        }
+
     }
     return (
         <>
@@ -150,10 +170,14 @@ function SignUp() {
                     <img className='avatar clickable' src={avatarUrl} alt="Avatar" onClick={() => avatarRef.current && avatarRef.current.click()} />
                     <input ref={avatarRef} id='avatar' type='file' accept='image/png, image/jpg, image/jpeg'
                         style={{ display: 'none' }} onChange={handleImage}></input>
-                    {displayDeleteButton && (<button className='red-border-button' type='button'>Delete</button>)}
-                    {errorMessage && (<p className="error-message">{errorMessage}</p>)};
+                    {displayDeleteButton && (
+                        <button className='red-border-button' type='button' onClick={handleDeleteImage}>Delete</button>
+                    )}
+                    {errorMessage && (
+                        <p className="error-message">{errorMessage}</p>
+                    )}
                     <div className="buttons">
-                        <button className="green-border-button">Log in</button>
+                        <button className="green-border-button" type='button'>Log in</button>
                         <button className='green-button' type='submit'>Sign Up</button>
                     </div>
                     <p>Continue without log in? <Link className='link' to="home.html">Home</Link></p>
