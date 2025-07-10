@@ -59,7 +59,7 @@ body {
 }
 
 /*Button border green when hover (darker and cursor)*/
-.green-border-button:hover {
+.red-border-button:hover {
     cursor: pointer;
     background-color: #8B0000;
     color: #ECE7E2;

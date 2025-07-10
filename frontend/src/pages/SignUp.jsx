@@ -145,21 +145,21 @@ function SignUp() {
                     <div className="inputs">
                         <div className="field">
                             <label htmlFor='username'>Username</label>
-                            <input id='username' type='text' placeholder='Ex. johndoe02' value={username} maxLength={30} required onChange={(e) => { setUsername(e.target.value) }} />
+                            <input id='username' type='text' placeholder='e.g., johndoe02' value={username} maxLength={30} required onChange={(e) => { setUsername(e.target.value) }} />
                         </div>
                         <div className="field">
                             <label htmlFor='email'>Email</label>
-                            <input id='email' type='email' placeholder='johndoe@example.com' value={email} required maxLength={254} onChange={(e) => { setEmail(e.target.value) }} />
+                            <input id='email' type='email' placeholder='e.g., johndoe@example.com' value={email} required maxLength={254} onChange={(e) => { setEmail(e.target.value) }} />
                         </div>
                     </div>
                     <div className="inputs">
                         <div className="field">
                             <label htmlFor='firstName'>First Name</label>
-                            <input id='firstName' type='text' placeholder='John' value={firstName} required maxLength={50} onChange={(e) => { setFirstName(e.target.value) }} />
+                            <input id='firstName' type='text' placeholder='e.g., John' value={firstName} required maxLength={50} onChange={(e) => { setFirstName(e.target.value) }} />
                         </div>
                         <div className="field">
                             <label htmlFor='secondName'>Second Name</label>
-                            <input id='secondName' type='text' placeholder='Doe' value={secondName} required maxLength={50} onChange={(e) => { setSecondName(e.target.value) }} />
+                            <input id='secondName' type='text' placeholder='e.g., Doe' value={secondName} required maxLength={50} onChange={(e) => { setSecondName(e.target.value) }} />
                         </div>
                     </div>
                     <div className="field">

@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: mongo # Container name
-          image: mongo:6.0 #Oficial mongo image 6.0
+          image: mongo:4.4 #Oficial mongo image 4.4
           ports: [{ containerPort: 27017 }] #Default port
           volumeMounts:
             - name: mongo-data #Mount a volume to store data

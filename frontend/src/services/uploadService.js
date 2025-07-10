@@ -3,7 +3,6 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 //Function to Upload a image
 export async function uploadImage(imageFile, folder) {
-    console.log('uploadImage')
     //Take the data
     const formData = new FormData();
     formData.append('image', imageFile);

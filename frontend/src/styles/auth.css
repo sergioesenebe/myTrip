@@ -92,6 +92,14 @@ form {
     gap: 10px;
 }
 
+/*Make login and sign-up buttons field all the row*/
+.green-button {
+    width: 100%;
+}
+.green-border-button {
+    width: 100%;
+}
+
 /*Group some buttons that are in a div in a row, and leave a space between them*/
 .buttons {
     display: flex;
@@ -106,6 +114,7 @@ form {
     height: 100px;
     border: 1px solid white;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 /*img with for logo with text*/
