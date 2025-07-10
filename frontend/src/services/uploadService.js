@@ -33,4 +33,15 @@ export function validImage(file, ref) {
         //Throw an error
         throw new Error('Only PNG, JPG or JPEG images are allowed');
     }
-} 
+}
+//Delete image from the page
+export function deleteImage(ref) {
+    try {
+        if (ref.current) {
+            ref.current.value = '';
+        }
+    }
+    catch(err) {
+        throw new Error('Error deleting the image')
+    }
+}
