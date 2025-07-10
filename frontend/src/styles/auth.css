@@ -1,0 +1,158 @@
+/*Align components to show auth left and right*/
+#root {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+/*Box to add the form*/
+.auth-left {
+    background-color: #ECE7E2;
+    width: 50%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: black;
+}
+
+/*Right div to display an image and center content*/
+.auth-right {
+    position: relative;
+    background-image: url('../../public/images/budapest-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 50%;
+    height: 100vh;
+    z-index: -2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/*Add a green transparent (80%) color after the image*/
+.auth-right::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #004643CC;
+    z-index: -1;
+}
+
+/*Title color*/
+.auth-title {
+    color: #004643;
+    font-size: 50px;
+}
+/*inputs with border bottom and transparent*/
+input {
+    background-color: transparent;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 2px solid #00464366;
+    width: 100%;
+}
+
+/*Input when focus*/
+input:focus {
+    outline: none;
+    border-bottom: 2px solid #004643;
+}
+
+/*Form display*/
+form {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    gap: 10px;
+    align-items: center;
+}
+
+/*Group some inputs that are in a div in a row, and leave a space between them*/
+.inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+}
+
+/*Make width for each field */
+.field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+/*Group some buttons that are in a div in a row, and leave a space between them*/
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+}
+
+/*img width and border for the avatar*/
+.avatar {
+    width: 100px;
+    height: 100px;
+    border: 1px solid white;
+    border-radius: 50%;
+}
+
+/*img with for logo with text*/
+.logo-text {
+    width: 150px;
+}
+
+
+/*Right message, beige and at the top*/
+.auth-message {
+    color: #ECE7E2;
+}
+
+
+/*Remove margins and set the size for title in the right*/
+.auth-message h1 {
+    font-size: 50px;
+    margin: 0px;
+}
+
+/*The layout of the elements will be changed when the width is less than 1325px. So that each container occupies one row*/
+@media (max-width: 1024px) {
+
+    /*Align the box center nad change background color*/
+    #root {
+        justify-content: center;
+        align-items: center;
+        background-color: #004643CC;
+    }
+
+    /*Make the box at the center*/
+    .auth-left {
+        height: min-content;
+        min-height: 80%;
+        width: 80%;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    /*Width form will be 95%*/
+    form {
+        width: 100%;
+    }
+
+    /*Remove right div*/
+    .auth-right {
+        display: none;
+    }
+
+}

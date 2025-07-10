@@ -1,13 +1,20 @@
 //Import React Library
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+
+//Import internal libraries
+import SignUp from './pages/SignUp';
+
 //App function
 function App() {
-  //Return html
+  //Return Routes
   return (
-    <div>
-      <h1>MyTrip Frontend</h1>
-    </div>
-  );
+    <>
+      <Routes>
+        <Route path='/signUp' element={<SignUp />} />
+      </Routes>
+    </>
+  )
 }
 //Export App
 export default App;

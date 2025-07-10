@@ -14,6 +14,8 @@ RUN npm run build
 FROM nginx:alpine
 #Copy build output from the builder to nginx folder
 COPY --from=builder /app/dist /usr/share/nginx/html
+#Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 #Expose port 80
 EXPOSE 80
 #Start Nginx in the foreground

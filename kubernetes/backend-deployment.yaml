@@ -17,6 +17,14 @@ spec:
           env:
             - name: MONGO_URI #Environment variable for mongodb
               value: "mongodb://sergio:sergio@mongo:27017/mytrip?authSource=admin"
+            - name: JWT_SECRET #Secret JWT to hash the passwords
+              value: "8mJ#vCkYxE@fZt^sN!w9GpLdQ3uRbHv0"
+            - name: CLOUDINARY_CLOUD #Name of the cloud for Cloudinary
+              value: "drmjf3gno"
+            - name: CLOUDINARY_API_KEY #API Key for Cloudinary
+              value: "626266482323754"
+            - name: CLOUDINARY_API_SECRET #Password of the API for Cloudinary
+              value: "Qa9G07iCnWwJYXRXNiZ68vPuLF8"
           #Min and max CPU usage
           resources:
             requests:
@@ -31,6 +39,6 @@ metadata: { name: mytrip-backend } #Name of the service
 spec:
   selector: { app: mytrip-backend } #Selector to match pod label
   ports:
-    - port: 3000 #Port exposed
-      targetPort: 3000 #Port container
+    - port: 3060 #Port exposed
+      targetPort: 3060 #Port container
   type: NodePort #Expose service on a random port between 30000–32767

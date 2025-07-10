@@ -1,0 +1,87 @@
+/*Define font, also delete the margin, border and padding*/
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 0px;
+    border: 0px;
+    margin: 0px;
+    font-size: 12px;
+    width: 100%;
+    height: 100vh;
+}
+
+/*Root will have no padding or border and will be as big as body*/
+#root {
+    padding: 0px;
+    border: 0px;
+    margin: 0px;
+    width: 100%;
+    height: 100vh;
+}
+
+/*Button green size and color*/
+.green-button {
+    background-color: #004643B3;
+    border: none;
+    border-radius: 5px;
+    height: 25px;
+    color: #ECE7E2;
+}
+
+/*Button green when hover (darker and cursor)*/
+.green-button:hover {
+    cursor: pointer;
+    background-color: #004643;
+}
+
+/*Button border green color*/
+.green-border-button {
+    background-color: transparent;
+    border: 1px solid #004643B3;
+    border-radius: 5px;
+    height: 25px;
+    color: #004643;
+}
+
+/*Button border green when hover (darker and cursor)*/
+.green-border-button:hover {
+    cursor: pointer;
+    background-color: #004643;
+    color: #ECE7E2;
+}
+
+/*Button border red and color*/
+.red-border-button {
+    background-color: transparent;
+    border: 1px solid #8B000099;
+    border-radius: 5px;
+    height: 25px;
+    color: #8B000099;
+}
+
+/*Button border green when hover (darker and cursor)*/
+.green-border-button:hover {
+    cursor: pointer;
+    background-color: #8B0000;
+    color: #ECE7E2;
+}
+
+/*Links color*/
+.link {
+    color: #004643B3;
+}
+
+.link:hover {
+    cursor: pointer;
+    color: #004643;
+}
+
+/*When hover make it darker and change cursor*/
+.clickable:hover {
+    cursor: pointer;
+    filter: brightness(80%);
+}
+
+/*Error message color*/
+.error-message {
+    color: #8B000099;
+}

@@ -1,0 +1,36 @@
+//Get the backend url
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+//Function to Upload a image
+export async function uploadImage(imageFile, folder) {
+    console.log('uploadImage')
+    //Take the data
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    //POST the image in the API
+    const response = await fetch(`${backendUrl}/api/image/upload?folder=${folder}`, {
+        method: 'POST',
+        body: formData
+    });
+    //Take the errors
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+    }
+    //Take and return the data
+    const data = await response.json();
+    return data;
+}
+//Check if image is valid
+export function validImage(file, ref) {
+    //Save valid formats
+    const valideTypes = ['image/png', 'image/jpeg'];
+    if (!valideTypes.includes(file.type)) {
+        //Delete the uploaded image
+        if (ref.current) {
+            ref.current.value = '';
+        }
+        //Throw an error
+        throw new Error('Only PNG, JPG or JPEG images are allowed');
+    }
+} 

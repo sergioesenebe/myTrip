@@ -1,0 +1,52 @@
+//Import external libraries
+const mongoose = require('mongoose');
+
+//Schema for Users
+const userSchema = new mongoose.Schema({
+    "username": {
+        "type": String,
+        "required": true,
+        "maxlength": 30,
+        "description": "Username to identify the user",
+        "unique": true
+    },
+    "password": {
+        "type": String,
+        "minlength": 8,
+        "maxlength": 72,
+        "required": true,
+        "description": "User's encrypted password"
+    },
+    "email": {
+        "type": String,
+        "required": true,
+        "maxlength": 100,
+        "description": "User's email",
+        "unique": true
+    },
+    "first_name": {
+        "type": String,
+        "required": true,
+        "maxlength": 50,
+        "description": "User's first name"
+    },
+    "second_name": {
+        "type": String,
+        "required": true,
+        "maxlength": 50,
+        "description": "User's second name"
+    },
+    "avatar": {
+        "type": String,
+        "required": false,
+        "description": "User's avatar (URL)",
+        "default": 'https://default-avatar-url.com/avatar.png'
+    },
+    "following": {
+        "type": [String],
+        "description": "Arrays of usernames followed by the user"
+    }
+});
+
+//Export the module
+module.exports = mongoose.model('User', userSchema);
