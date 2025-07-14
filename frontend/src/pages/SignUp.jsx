@@ -1,7 +1,7 @@
 //Import external Library
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-//Import internal libraries, css and images
+//Import internal libraries, pages, css and images
 import { deleteImage, uploadImage, validImage } from '../services/uploadService';
 import '../styles/common.css';
 import '../styles/auth.css';
@@ -11,6 +11,7 @@ import defaultUser from '../../public/images/default-user.png'
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+//Function to sign up
 function SignUp() {
     //Define states
     const [username, setUsername] = useState("");
@@ -28,23 +29,30 @@ function SignUp() {
     const timeOutId = useRef(null);
     //Function to fetch the sign in
     const handleSignUp = async (e) => {
+        //Prevent Default
         e.preventDefault();
         try {
+            //Get the avatar
             const avatarUrl = await handleUploadAvatar();
+            //Define the payload 
+            const userPayload = {
+                username: username,
+                password: password,
+                email: email,
+                first_name: firstName,
+                second_name: secondName,
+            };
+            //If there is an avatar add it in the payload
+            if (avatarUrl)
+                userPayload.avatar = avatarUrl;
+            //Fetch the register
             const response = await fetch(`${backendUrl}/api/auth/register`, {
                 //Select the method, header and body with user data
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    username: username,
-                    password: password,
-                    email: email,
-                    first_name: firstName,
-                    second_name: secondName,
-                    avatar: avatarUrl
-                })
+                body: JSON.stringify(userPayload)
             })
             //If there is an error show it
             if (!response.ok) {
@@ -177,7 +185,7 @@ function SignUp() {
                         <p className="error-message">{errorMessage}</p>
                     )}
                     <div className="buttons">
-                        <button className="green-border-button" type='button'>Log in</button>
+                        <Link to={'/login'} className='link-button'><button className="green-border-button" type='button'>Log in</button></Link>
                         <button className='green-button' type='submit'>Sign Up</button>
                     </div>
                     <p>Continue without log in? <Link className='link' to="home.html">Home</Link></p>

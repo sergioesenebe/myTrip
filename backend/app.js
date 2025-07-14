@@ -2,14 +2,18 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 //Import internal libraries
 const authRoutes = require('./routes/authRoutes');
 const uploadRoute = require('./routes/uploadRoute')
+const tripRoute = require('./routes/tripRoutes');
 
 //Define variables
 const port = 3060;
 //Middleware to parse JSON bodies
 app.use(express.json());
+//To work with cookies
+app.use(cookieParser());
 
 // Allow CORS for all the origins
 app.use(cors());
@@ -17,6 +21,7 @@ app.use(cors());
 //Use Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/image", uploadRoute);
+app.use("/api/trip", tripRoute);
 
 //Global error handler
 app.use((err, req, res, next) => {

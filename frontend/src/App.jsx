@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 
 //Import internal libraries
 import SignUp from './pages/SignUp';
+import LogIn from './pages/LogIn';
 
 //App function
 function App() {
@@ -11,7 +12,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='/signUp' element={<SignUp />} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/login' element={<LogIn />} />
       </Routes>
     </>
   )

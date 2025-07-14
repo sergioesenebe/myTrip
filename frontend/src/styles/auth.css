@@ -51,6 +51,7 @@
     color: #004643;
     font-size: 50px;
 }
+
 /*inputs with border bottom and transparent*/
 input {
     background-color: transparent;
@@ -96,7 +97,13 @@ form {
 .green-button {
     width: 100%;
 }
+
 .green-border-button {
+    width: 100%;
+}
+
+/*Button with a link (ex. Log In when in sign up)*/
+.link-button {
     width: 100%;
 }
 
