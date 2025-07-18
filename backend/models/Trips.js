@@ -26,6 +26,11 @@ const tripSchema = new mongoose.Schema({
         required: true,
         description: "Name of the trip"
     },
+    country: {
+        type: String,
+        required: true,
+        description: "Country where trip is done"
+    },
     city: {
         type: String,
         required: true,

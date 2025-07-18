@@ -16,7 +16,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Allow CORS for all the origins
-app.use(cors());
+app.use(cors({
+    origin: 'http://192.168.49.2:31384',
+    credentials: true
+}));
 
 //Use Routes
 app.use("/api/auth", authRoutes);

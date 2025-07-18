@@ -40,7 +40,24 @@ export function deleteImage(ref) {
             ref.current.value = '';
         }
     }
-    catch(err) {
+    catch (err) {
         throw new Error('Error deleting the image')
+    }
+}
+//Function to upload image
+export async function handleUploadImage(image, imageUrl, folder) {
+    //If there is no image uploaded return null
+    if (!image || image == '') return imageUrl;
+    //Try to Upload the image
+    try {
+        //Call the function to POST the image and upload it to Cloudinary
+        const response = await uploadImage(image, folder);
+        //Return the url
+        return response.url;
+    }
+    //Catch posible errors
+    catch (err) {
+        console.error('Error Uploading the image: ', err);
+        throw new Error('Error updating the image');
     }
 }

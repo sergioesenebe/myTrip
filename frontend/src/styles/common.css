@@ -7,15 +7,19 @@ body {
     font-size: 12px;
     width: 100%;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/*Root will have no padding or border and will be as big as body*/
+/*Root will have no padding or border and will be as big as body, flex to allow main to fill all the page*/
 #root {
     padding: 0px;
     border: 0px;
     margin: 0px;
     width: 100%;
-    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 /*Button green size and color*/
@@ -23,10 +27,13 @@ body {
     background-color: #004643B3;
     border: none;
     border-radius: 5px;
-    height: 25px;
     color: #ECE7E2;
+    padding: 5px;
 }
-
+/*Main to fill all the page*/
+main {
+    flex: 1;
+}
 /*Button green when hover (darker and cursor)*/
 .green-button:hover {
     cursor: pointer;
@@ -38,8 +45,8 @@ body {
     background-color: transparent;
     border: 1px solid #004643B3;
     border-radius: 5px;
-    height: 25px;
     color: #004643;
+    padding: 5px;
 }
 
 /*Button border green when hover (darker and cursor)*/
@@ -49,16 +56,47 @@ body {
     color: #ECE7E2;
 }
 
+/*Button border white color*/
+.white-border-button {
+    background-color: transparent;
+    border: 1px solid #ECE7E299;
+    border-radius: 5px;
+    color: #ECE7E2;
+    padding: 5px;
+}
+
+/*Button border white when hover (darker and cursor)*/
+.white-border-button:hover {
+    cursor: pointer;
+    background-color: #ECE7E2;
+    color: #004643;
+}
+
+/*Button red and color*/
+.red-button {
+    background-color: #8B0000B3;
+    border: none;
+    border-radius: 5px;
+    color: #ECE7E2;
+    padding: 5px;
+}
+
+/*Button red when hover (darker and cursor)*/
+.red-button:hover {
+    cursor: pointer;
+    background-color: #8B0000;
+}
+
 /*Button border red and color*/
 .red-border-button {
     background-color: transparent;
     border: 1px solid #8B000099;
     border-radius: 5px;
-    height: 25px;
     color: #8B000099;
+    padding: 5px;
 }
 
-/*Button border green when hover (darker and cursor)*/
+/*Button border red when hover (darker and cursor)*/
 .red-border-button:hover {
     cursor: pointer;
     background-color: #8B0000;
@@ -75,6 +113,16 @@ body {
     color: #004643;
 }
 
+/*Links white color*/
+.white-link {
+    color: #ECE7E299;
+}
+
+.white-link:hover {
+    cursor: pointer;
+    color: #ECE7E2;
+}
+
 /*When hover make it darker and change cursor*/
 .clickable:hover {
     cursor: pointer;
@@ -84,4 +132,193 @@ body {
 /*Error message color*/
 .error-message {
     color: #8B000099;
+    text-align: center;
+}
+
+/*Top page with nav bar and info*/
+.top-green-img-section {
+    position: relative;
+    background-image: url('../../public/images/budapest-background.jpg');
+    min-height: 300px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+}
+
+
+
+/*Add a green transparent (80%) color after the image*/
+.top-green-img-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #004643CC;
+    z-index: 1;
+}
+
+/*Nav bar with logo and link, add a biggest index than the green img*/
+.top-nav-bar {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    z-index: 2;
+    font-size: 16px;
+}
+
+/*Links in the bar*/
+.nav-bar-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/*Beige links and with hover*/
+.nav-bar-link {
+    width: 90px;
+    text-align: center;
+    color: #ECE7E2;
+    font-size: 16px;
+    font-synthesis: none;
+}
+
+.nav-bar-link:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/*Logo in the bar*/
+.logo-top-left {
+    height: 30px;
+}
+
+/*Trip name size*/
+.trip-name {
+    font-size: 50px;
+}
+
+/*Info of the trip, add a greater z-index to be shown*/
+.trip-info {
+    position: relative;
+    color: #ECE7E2;
+    z-index: 2;
+    padding: 20px;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/*Trip places padding*/
+.trip-places {
+    padding: 20px;
+}
+
+/*Display all the trips*/
+.place {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    ;
+}
+
+/*Display all the trips with display flex*/
+.places {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+/*Right and left will have a widht of the 50%*/
+.right-place {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.left-place {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/*Place image*/
+.place-image {
+    max-width: 75%;
+    max-height: 500px;
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: #D9E1E4;
+}
+
+/*Place name size*/
+.place-name {
+    font-size: 50px;
+}
+
+/*Place Description size*/
+.place-description {
+    font-size: 16px;
+}
+
+/*Trip Description size*/
+.trip-description {
+    font-size: 16px;
+}
+
+/*Footer with space between, green color, and padding*/
+footer {
+    padding: 50px;
+    background-color: #004643;
+    color: #ECE7E2;
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    align-items: center;
+}
+
+/*Logo in footer width*/
+.esenebe-footer-log {
+    width: 200px;
+}
+
+/*Footer content with space between*/
+.footer-contact {
+    display: flex;
+    gap: 50px;
+}
+
+.footer-contact a {
+    color: #ECE7E2;
+}
+
+/*A div when loading in a page*/
+.loading {
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 999;
+    font-size: 25px;
+}
+
+/*Image when loading width*/
+.loading img {
+    width: 500px;
+    height: auto;
 }

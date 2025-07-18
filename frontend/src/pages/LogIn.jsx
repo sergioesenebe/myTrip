@@ -28,6 +28,7 @@ function logIn() {
                 //Select method, header and body
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                     username: username,
                     password: password
@@ -35,7 +36,8 @@ function logIn() {
             })
             //Get the error
             if (!response.ok) {
-                const message = await response.text();
+                const data = await response.json();
+                const message = data.message;
                 setErrorMessage(message);
                 //If there is a time out clear it and show a message for 10 seconds
                 if (timeOutId.current) clearTimeout(timeOutId.current);
@@ -58,16 +60,29 @@ function logIn() {
     //Return the DOM
     return (
         <>
+            <style>{`
+                #root {
+                    display: flex;
+                    flex-direction: row;
+                    }
+                @media (max-width: 1024px) {
+                    #root {
+                        justify-content: center;
+                        align-items: center;
+                        background-color: #004643CC;
+                    }
+                }`
+            }</style>
             <div className="auth-left" >
                 <h1 className="auth-title">Log In</h1>
-                <form onSubmit={handleLogIn} style={{ gap: '30px' }}>
+                <form className="form-auth" onSubmit={handleLogIn} style={{ gap: '30px' }}>
                     <div className="field">
                         <label htmlFor='username'>Username</label>
-                        <input id='username' type='text' placeholder='Your username' value={username} maxLength={30} required onChange={(e) => { setUsername(e.target.value) }} />
+                        <input className="input-auth" id='username' type='text' placeholder='Your username' value={username} maxLength={30} required onChange={(e) => { setUsername(e.target.value) }} />
                     </div>
                     <div className="field">
                         <label htmlFor='password'>Password</label>
-                        <input id='password' type='password' placeholder='Your passsword' value={password} required onChange={(e) => { setPassword(e.target.value) }} />
+                        <input className="input-auth" id='password' type='password' placeholder='Your passsword' value={password} required onChange={(e) => { setPassword(e.target.value) }} />
                     </div>
                     {errorMessage && (
                         <p className="error-message">{errorMessage}</p>

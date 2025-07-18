@@ -20,16 +20,16 @@ router.post('/register', async (req, res) => {
         connectToDB();
         //Check if all data have been added
         if (!req.body.username || !req.body.password || !req.body.email || !req.body.first_name || !req.body.second_name) {
-            return res.status(400).send('Please make sure to fill in all fields');
+            return res.status(400).json({ message: 'Please make sure to fill in all fields' });
         }
         //Check if username or email exists
         const usernameExists = await User.findOne({ username: req.body.username });
         const emailExists = await User.findOne({ email: req.body.email });
         if (usernameExists) {
-            return res.status(400).send('Username already in use');
+            return res.status(400).json({ message: 'Username already in use' });
         }
         if (emailExists) {
-            return res.status(400).send('Email already in use');
+            return res.status(400).json({ message: 'Email already in use' });
         }
         //Check if the password has the restrictions
         const password = req.body.password;
@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
         const hasLowerCase = /[a-z]/.test(password)
         //If not compliant return
         if (password.length < 8 || !hasNumber || !hasUpperCase || !hasLowerCase) {
-            return res.status(400).send('Password must have at least 8 characters, less than 72, one number, one uppercase and one lower case letter');
+            return res.status(400).json({ message: 'Password must have at least 8 characters, less than 72, one number, one uppercase and one lower case letter' });
         }
         //Generate a hash password using bcrypt with a salt (10 rounds)
         const salt = await bcryptjs.genSalt(10);
@@ -67,12 +67,12 @@ router.post('/register', async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
             //sameSite: 'strict' //Prevent CSRF
         });
-        res.status(201).send('User created');
+        res.status(201).json({ message: 'User created' });
     }
     //Catch the errors and send it
     catch (err) {
         console.error('Error in the register: ', err);
-        return res.status(500).send('Internal server error')
+        return res.status(500).json({ message: 'Internal server error' });
     }
 })
 
@@ -83,15 +83,15 @@ router.post('/login', async (req, res) => {
         connectToDB();
         //Check if username and password have been add it
         if (!req.body.username || !req.body.password)
-            return res.status(400).send('Please make sure to fill in all fields');
+            return res.status(400).json({ message: 'Please make sure to fill in all fields' });
         //Check if the user already exists
         const user = await User.findOne({ username: req.body.username })
         if (!user)
-            return res.status(404).send("Username does not exist");
+            return res.status(404).json({ message: "Username or Password is not correct" });
         //Check if the password is correct
         const passwordMatch = await bcryptjs.compare(req.body.password, user.password);
         if (!passwordMatch)
-            return res.status(404).send('Password is not correct')
+            return res.status(404).json({ message: 'Username or Password is not correct' });
         //If everything is okay, generate a token and return a 200 status
         //Create a payload
         const payload = {
@@ -100,20 +100,21 @@ router.post('/login', async (req, res) => {
         };
         //Generate a token
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+        const cors = require('cors');
         //Save it as cookie
         res.cookie('token', token, {
             httpOnly: true,
             //secure: true, //Work with https
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-            //sameSite: 'strict', //Prevent CSRF
+            //sameSite: 'lax', //Prevent CSRF
         })
         //Return a success status
-        return res.status(200).send('Login succesful')
+        return res.status(200).json({ message: 'Login succesful' });
     }
     //Catch the errors and send it
     catch (err) {
         console.error('Error in the Log in: ', err);
-        return res.status(500).send('Internal server error');
+        return res.status(500).json({ message: 'Internal server error' });
     }
 })
 

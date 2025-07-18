@@ -25,10 +25,10 @@ const upload = multer({ storage: storage });
 router.post('/upload', upload.single('image'), (req, res) => {
     //If there is no file send an error
     if (!req.file) {
-        return res.status(400).send('There is no image');
+        return res.status(400).json({ message:'There is no image'});
     }
     //Take the folder (if is one allowed)
-    const allowedFolders = ['avatars', 'places', 'cities'];
+    const allowedFolders = ['avatars', 'places', 'trips'];
     const requestedFoler = req.query.folder || ''; //If undefined will take an empty string
     const folder = allowedFolders.includes(requestedFoler) 
         ? `myTrip/${requestedFoler}` 
@@ -42,7 +42,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
             //If there is an error send a 500 message
             if (error) {
                 console.error('Error Uploading the photo: ', error);
-                return res.status(500).send('Error uploading the photo');
+                return res.status(500).json({ message:'Error uploading the photo'});
             }
             //If there is an OK message, send a message, the url and public_id
             res.status(200).json({

@@ -2,14 +2,15 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 //Import internal libraries, pages, css and images
-import { deleteImage, uploadImage, validImage } from '../services/uploadService';
+import { deleteImage, uploadImage, validImage, handleUploadImage } from '../services/uploadService';
 import '../styles/common.css';
 import '../styles/auth.css';
 import logo from '../../public/images/mytrip-logo-text.png';
-import defaultUser from '../../public/images/default-user.png'
 
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+//Get the default user avatar url
+const defaultUser = "https://res.cloudinary.com/drmjf3gno/image/upload/v1752485544/default-user_qq6fjc.png";
 
 //Function to sign up
 function SignUp() {
@@ -33,7 +34,8 @@ function SignUp() {
         e.preventDefault();
         try {
             //Get the avatar
-            const avatarUrl = await handleUploadAvatar();
+            const newAvatarUrl = await handleUploadImage(avatar, avatarUrl, 'avatars');
+            setAvatarUrl(newAvatarUrl);
             //Define the payload 
             const userPayload = {
                 username: username,
@@ -41,10 +43,8 @@ function SignUp() {
                 email: email,
                 first_name: firstName,
                 second_name: secondName,
+                avatar: newAvatarUrl,
             };
-            //If there is an avatar add it in the payload
-            if (avatarUrl)
-                userPayload.avatar = avatarUrl;
             //Fetch the register
             const response = await fetch(`${backendUrl}/api/auth/register`, {
                 //Select the method, header and body with user data
@@ -56,7 +56,8 @@ function SignUp() {
             })
             //If there is an error show it
             if (!response.ok) {
-                const message = await response.text();
+                const data = await response.json();
+                const message = data.message;
                 setErrorMessage(message);
                 //If there is a time out clear it and show a message for 10 seconds
                 if (timeOutId.current) clearTimeout(timeOutId.current);
@@ -78,23 +79,6 @@ function SignUp() {
             //If there is a time out clear it and show a message for 10 seconds
             if (timeOutId.current) clearTimeout(timeOutId.current);
             timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-        }
-    }
-    //Function to upload avatar image
-    async function handleUploadAvatar() {
-        //If there is no image uploaded return null
-        if (!avatar || avatar == '') return null;
-        //Try to Upload the avatar image
-        try {
-            //Call the function to POST the image and upload it to Cloudinary
-            const response = await uploadImage(avatar, 'avatars');
-            //Return the url
-            return response.url;
-        }
-        //Catch posible errors
-        catch (err) {
-            console.error('Error Uploading the avatar image: ', err);
-            throw new Error('Error updating the avatar image');
         }
     }
     //Function to check if the format is valid and update the image
@@ -124,7 +108,7 @@ function SignUp() {
             timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
         }
     }
-    //FUnction to delete the image when button clicked
+    //Function to delete the image when button clicked
     async function handleDeleteImage() {
         try {
             //Remove the image from the ref
@@ -136,47 +120,59 @@ function SignUp() {
             setDisplayDeleteButton(false);
         }
         catch (err) {
-            console.error('No Valid Type: ', err);
+            console.error('Error deleting the image: ', err);
             setErrorMessage(err.message);
             //If there is a time out clear it and show a message for 10 seconds
             if (timeOutId.current) clearTimeout(timeOutId.current);
             timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
 
         }
-
     }
     return (
         <>
+            <style>{`
+                #root {
+                    display: flex;
+                    flex-direction: row;
+                    }
+                @media (max-width: 1024px) {
+                    #root {
+                        justify-content: center;
+                        align-items: center;
+                        background-color: #004643CC;
+                    }
+                }`
+            }</style>
             <div className="auth-left">
                 <h1 className="auth-title">Sign Up</h1>
-                <form onSubmit={handleSignUp}>
+                <form className="form-auth" onSubmit={handleSignUp}>
                     <div className="inputs">
                         <div className="field">
                             <label htmlFor='username'>Username</label>
-                            <input id='username' type='text' placeholder='e.g., johndoe02' value={username} maxLength={30} required onChange={(e) => { setUsername(e.target.value) }} />
+                            <input className="input-auth" id='username' type='text' placeholder='e.g., johndoe02' value={username} maxLength={30} required onChange={(e) => { setUsername(e.target.value) }} />
                         </div>
                         <div className="field">
                             <label htmlFor='email'>Email</label>
-                            <input id='email' type='email' placeholder='e.g., johndoe@example.com' value={email} required maxLength={254} onChange={(e) => { setEmail(e.target.value) }} />
+                            <input className="input-auth" id='email' type='email' placeholder='e.g., johndoe@example.com' value={email} required maxLength={254} onChange={(e) => { setEmail(e.target.value) }} />
                         </div>
                     </div>
                     <div className="inputs">
                         <div className="field">
                             <label htmlFor='firstName'>First Name</label>
-                            <input id='firstName' type='text' placeholder='e.g., John' value={firstName} required maxLength={50} onChange={(e) => { setFirstName(e.target.value) }} />
+                            <input className="input-auth" id='firstName' type='text' placeholder='e.g., John' value={firstName} required maxLength={50} onChange={(e) => { setFirstName(e.target.value) }} />
                         </div>
                         <div className="field">
                             <label htmlFor='secondName'>Second Name</label>
-                            <input id='secondName' type='text' placeholder='e.g., Doe' value={secondName} required maxLength={50} onChange={(e) => { setSecondName(e.target.value) }} />
+                            <input className="input-auth" id='secondName' type='text' placeholder='e.g., Doe' value={secondName} required maxLength={50} onChange={(e) => { setSecondName(e.target.value) }} />
                         </div>
                     </div>
                     <div className="field">
                         <label htmlFor='password'>Password</label>
-                        <input id='password' type='password' placeholder='Min. 8 characters, 1 lowercase and 1 uppercase' value={password} required onChange={(e) => { setPassword(e.target.value) }} />
+                        <input className="input-auth" id='password' type='password' placeholder='Min. 8 characters, 1 lowercase and 1 uppercase' value={password} required onChange={(e) => { setPassword(e.target.value) }} />
                     </div>
                     <label htmlFor='avatar'>Avatar</label>
                     <img className='avatar clickable' src={avatarUrl} alt="Avatar" onClick={() => avatarRef.current && avatarRef.current.click()} />
-                    <input ref={avatarRef} id='avatar' type='file' accept='image/png, image/jpg, image/jpeg'
+                    <input className="input-auth" ref={avatarRef} id='avatar' type='file' accept='image/png, image/jpg, image/jpeg'
                         style={{ display: 'none' }} onChange={handleImage}></input>
                     {displayDeleteButton && (
                         <button className='red-border-button' type='button' onClick={handleDeleteImage}>Delete</button>
