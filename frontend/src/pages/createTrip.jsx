@@ -1,6 +1,6 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 //Import internal libraries, css and images
 import { validImage, deleteImage, handleUploadImage } from '../services/uploadService';
 import "../styles/index.css";
@@ -35,6 +35,7 @@ function uploadTrip() {
     const [tripImageUrl, setTripImageUrl] = useState('');
     const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
@@ -42,6 +43,26 @@ function uploadTrip() {
     const tripImageRef = useRef();
     //Define place image reference
     const placeImageRefs = useRef([]);
+    //Define navigate
+    const navigate = useNavigate();
+
+    //Check if is logged in
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const res = await fetch(`${backendUrl}/api/auth/check-auth`, { credentials: 'include' })
+                //If it's logged in save the state
+                if (!res.ok) {
+                    setIsLoggedIn(false);
+                }
+            }
+            //If there is 
+            catch (err) {
+                console.error('Error verifying the session: ', err);
+            }
+        }
+        checkAuth();
+    }, [])
 
     //Create a Trip
     const handleCreateTrip = async (e) => {
@@ -76,7 +97,7 @@ function uploadTrip() {
                 tripPayload.places.push(newPlace);
             }
             //Fetch the create trip
-            const response = await fetch(`${backendUrl}/api/trip/`, {
+            const response = await fetch(`${backendUrl}/api/trips/`, {
                 //Select the method, header and body with the trip data
                 method: 'POST',
                 headers: {
@@ -95,8 +116,8 @@ function uploadTrip() {
                 timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
             }
             else {
-                //Show that the trip was created
-                setErrorMessage('Trip Created');
+                //Navigate to home 
+                navigate('/');
                 //If there is a time out clear it and show a message for 10 seconds
                 if (timeOutId.current) clearTimeout(timeOutId.current);
                 timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
@@ -294,7 +315,8 @@ function uploadTrip() {
     return (
         <>
             {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
-            {!isLoading && (
+            {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
+            {!isLoading && isLoggedIn && (
                 <>
                     <main>
                         <form onSubmit={handleCreateTrip}>
@@ -306,8 +328,8 @@ function uploadTrip() {
                                         <img src={menuIcon} />
                                     </button>
                                     {/*Links visibles in desktop*/}
-                                    <div className="nav-bar-links hidden md:flex gap-4">
-                                        <a className="nav-bar-link">Home</a>
+                                    <div className="nav-bar-links hidden md:flex gap-12">
+                                        <Link to={'/'} className="nav-bar-link">Home</Link>
                                         <a className="nav-bar-link">Trips</a>
                                         <a className="nav-bar-link">Travelers</a>
                                         <a className="nav-bar-link"><u>My Trips</u></a>
@@ -323,21 +345,25 @@ function uploadTrip() {
                                             <img src={closeIcon} alt="Close Menu"
                                                 className="w-6 h-6 sm:w-8 sm:h-8 hover:opacity-80 transition-opacity cursor-pointer" onClick={() => { setMenuOpen(false) }} />
                                         </button>
-                                        <a href="#"
-                                            className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Home</a>
+                                        <Link to={'/'}
+                                            className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Home</Link>
                                         <a href="#"
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Trips</a>
                                         <a href="#"
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Travelers</a>
-                                        <a href="#"
+                                        {isLoggedIn && (<Link to={'/createTrip'}
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
-                                            Trips</a>
-                                        <a href="#"
+                                            Trips</Link>)}
+                                        {isLoggedIn && (<a href="#"
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Saved
-                                            Trips</a>
-                                        <a href="#"
+                                            Trips</a>)}
+                                        {isLoggedIn && (<a href="#"
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
-                                            Profile</a>
+                                            Profile</a>)}
+                                        {!isLoggedIn && (<Link to={'/login'}
+                                            className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Log In</Link>)}
+                                        {!isLoggedIn && (<Link to={'/signup'}
+                                            className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Sign Up</Link>)}
                                     </div>)}
                                     <div className="editable">
                                         <input required className="editable-input trip-name white-input" value={tripName} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />

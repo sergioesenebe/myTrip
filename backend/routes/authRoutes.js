@@ -2,13 +2,13 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
 require('dotenv').config();
 
 //Import internal libraries
 const connectToDB = require('../config/db');
 const User = require('../models/Users');
+const authenticateJWT = require('../middlewares/auth');
 
 //Get the JWT secret
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -56,18 +56,20 @@ router.post('/register', async (req, res) => {
         await newUser.save();
         //Create the payload
         const payload = {
-            id: newUser._id
+            id: newUser._id,
+            username: req.body.username
         };
-        //Generate the token
+        //Generate a token
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
-        //Save it as a cookie
+        //Save it as cookie
         res.cookie('token', token, {
             httpOnly: true,
             //secure: true, //Work with https
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-            //sameSite: 'strict' //Prevent CSRF
-        });
-        res.status(201).json({ message: 'User created' });
+            //sameSite: 'lax', //Prevent CSRF
+        })
+        //Return a success status
+        return res.status(201).json({ message: 'User created' });
     }
     //Catch the errors and send it
     catch (err) {
@@ -100,7 +102,6 @@ router.post('/login', async (req, res) => {
         };
         //Generate a token
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
-        const cors = require('cors');
         //Save it as cookie
         res.cookie('token', token, {
             httpOnly: true,
@@ -114,6 +115,16 @@ router.post('/login', async (req, res) => {
     //Catch the errors and send it
     catch (err) {
         console.error('Error in the Log in: ', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+//Get to check if user is logged in
+router.get('/check-auth', authenticateJWT, async (req, res) => {
+    try {
+        res.json({ user_id: req.user.id, username: req.user.username })
+    }
+    catch (err) {
+        console.error('Error in the check auth: ', err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 })

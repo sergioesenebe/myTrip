@@ -55,5 +55,64 @@ router.post('/', authenticateJWT, async (req, res) => {
     }
 })
 
+//Router to get the three most interesting trips
+router.get('/interesting-trips', async (req,res) => {
+    try {
+        //Connect to the database
+        await connectToDB();
+        //Get the three trips with more likes
+        const interestingTrips = await Trip.aggregate([
+            {$addFields: {likesCount: {$size: '$likes'}}},
+            {$sort:{likesCount: -1}},
+            {$limit: 3}
+        ])
+        //If there is no interesting trips return a message
+        if (interestingTrips.length === 0)
+            return res.status(200).json({message: 'There is not interesting trips', data:[]})
+        //Return the trips
+        return res.status(200).json({data: interestingTrips})
+    }
+    //Handle the error and return a message
+    catch (err) {
+        console.error('Error getting interesting trips: ', err);
+        return res.status(500).json({message: 'Unexpected error'})
+    }
+})
+
+//Router to get the three most interesting users
+router.get('/interesting-users', async (req,res) => {
+    try {
+        //Connect to the database
+        await connectToDB();
+        //Get the three trips with more likes
+        const interestingUsers = await Trip.aggregate([
+            {$addFields: {likesCount: {$size: "$likes"}}},
+            {$group: {_id:"$writer", totalLikes: {$sum: "$likesCount"}}},
+            {$lookup: {from: "users", localField: "_id", foreignField: '_id', as: "user"}},
+            {$unwind: "$user"},
+            {$project: {
+                _id: 0, user_id:"user._id",
+                username: "$user.username",
+                first_name: "$user.first_name",
+                second_name: "$user.second_name",
+                avatar: "$user.avatar",
+                totalLikes: 1
+            }},
+            {$sort: {totalLikes: -1}},
+            {$limit: 3}
+        ])
+        //If there is no interesting trips return a message
+        if (interestingUsers.length === 0)
+            return res.status(200).json({message: 'There is not interesting users', data:[]})
+        //Return the trips
+        return res.status(200).json({data: interestingUsers})
+    }
+    //Handle the error and return a message
+    catch (err) {
+        console.error('Error getting interesting trips: ', err);
+        return res.status(500).json({message: 'Unexpected error'})
+    }
+})
+
 //Exports the module
 module.exports = router;

@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 //Import internal libraries
 const authRoutes = require('./routes/authRoutes');
 const uploadRoute = require('./routes/uploadRoute')
-const tripRoute = require('./routes/tripRoutes');
+const tripRoutes = require('./routes/tripRoutes');
 
 //Define variables
 const port = 3060;
@@ -15,7 +15,7 @@ app.use(express.json());
 //To work with cookies
 app.use(cookieParser());
 
-// Allow CORS for all the origins
+// Allow CORS for frontend the origins
 app.use(cors({
     origin: 'http://192.168.49.2:31384',
     credentials: true
@@ -24,7 +24,7 @@ app.use(cors({
 //Use Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/image", uploadRoute);
-app.use("/api/trip", tripRoute);
+app.use("/api/trips", tripRoutes);
 
 //Global error handler
 app.use((err, req, res, next) => {
@@ -36,6 +36,11 @@ app.use((err, req, res, next) => {
 app.get('/', (req, res) => {
     res.send('Inside the server');
 });
+
+//In case of not found send a message
+app.use((req,res) => {
+    res.status(404).json({message: 'Endpoint not found'})
+})
 
 //Listening port
 app.listen(port, '0.0.0.0', () => {

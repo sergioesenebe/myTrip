@@ -106,6 +106,7 @@ main {
 /*Links color*/
 .link {
     color: #004643B3;
+    text-decoration: underline;
 }
 
 .link:hover {
@@ -173,13 +174,11 @@ main {
 /*Links in the bar*/
 .nav-bar-links {
     display: flex;
-    gap: 20px;
     align-items: center;
 }
 
 /*Beige links and with hover*/
 .nav-bar-link {
-    width: 90px;
     text-align: center;
     color: #ECE7E2;
     font-size: 16px;
@@ -211,6 +210,29 @@ main {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+/*Content in the top centered*/
+.top-content-centered {
+    position: relative;
+    color: #ECE7E2;
+    z-index: 2;
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+/*Size for header and p in top-content*/
+.top-content-centered h1 {
+    font-size: 50px;
+}
+.top-content-centered p {
+    font-size: 16px;
+    text-align: center;
 }
 
 /*Trip places padding*/
@@ -261,21 +283,12 @@ main {
     border: 2px solid white;
     border-radius: 10px;
     background-color: #D9E1E4;
+    object-fit: cover;
 }
 
 /*Place name size*/
 .place-name {
     font-size: 50px;
-}
-
-/*Place Description size*/
-.place-description {
-    font-size: 16px;
-}
-
-/*Trip Description size*/
-.trip-description {
-    font-size: 16px;
 }
 
 /*Footer with space between, green color, and padding*/
@@ -304,6 +317,10 @@ footer {
     color: #ECE7E2;
 }
 
+.footer-contact a:hover {
+    text-decoration: underline;
+}
+
 /*A div when loading in a page*/
 .loading {
     width: 100vw;
@@ -321,4 +338,25 @@ footer {
 .loading img {
     width: 500px;
     height: auto;
+}
+
+/*A div when loading in a page*/
+.notLoggedIn {
+    width: 100vw;
+    height: 100vh;
+    background-color: #ECE7E2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 999;
+    font-size: 25px;
+    gap: 30px;
+}
+/*H1 and p size for not logged in*/
+.notLoggedIn h1 {
+    font-size: 24px;
+}
+.notLoggedIn p {
+    font-size: 16px;
 }

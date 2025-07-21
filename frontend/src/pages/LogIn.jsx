@@ -1,6 +1,6 @@
 //Import external libraries
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 //Import internal libraries, css and images
 import "../styles/common.css";
 import "../styles/auth.css";
@@ -17,6 +17,8 @@ function logIn() {
     const [errorMessage, setErrorMessage] = useState("");
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
+    //Define navigate
+    const navigate = useNavigate();
 
     //Handle the login with the backend
     const handleLogIn = async (e) => {
@@ -43,18 +45,14 @@ function logIn() {
                 if (timeOutId.current) clearTimeout(timeOutId.current);
                 timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
             }
-            //If everything was ok, say it
+            //If everything was ok, navigate to home
             else {
-                setErrorMessage('User Logged In');
-                //If there is a time out clear it and show a message for 10 seconds
-                if (timeOutId.current) clearTimeout(timeOutId.current);
-                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+                navigate('/');
             }
         }
         //Catch the error and show it
         catch (err) {
             setErrorMessage('Unexpected error');
-
         }
     }
     //Return the DOM
@@ -91,7 +89,7 @@ function logIn() {
                         <Link to={'/signup'} className='link-button'><button className="green-border-button" type='button'>Sign Up</button></Link>
                         <button className='green-button' type='submit'>Log In</button>
                     </div>
-                    <p>Continue without log in? <Link className='link' to="home.html">Home</Link></p>
+                    <p>Continue without log in? <Link className='link' to={'/'}>Home</Link></p>
                 </form >
             </div >
             <div className="auth-right">

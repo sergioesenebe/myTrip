@@ -6,6 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import SignUp from './pages/SignUp';
 import LogIn from './pages/LogIn';
 import CreateTrip from './pages/createTrip';
+import Home from './pages/home'
 //Import Tailwind library
 import './styles/index.css'
 
@@ -15,6 +16,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path='/' element={<Home />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<LogIn />} />
         <Route path='/createtrip' element={<CreateTrip />} />
