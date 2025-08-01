@@ -185,9 +185,9 @@ function SignUp() {
                                 <input className="input-auth" id='password' type='password' placeholder='Min. 8 characters, 1 lowercase and 1 uppercase' value={password} required onChange={(e) => { setPassword(e.target.value) }} />
                             </div>
                             <label htmlFor='avatar'>Avatar</label>
-                            <img className='avatar clickable' src={avatarUrl} alt="Avatar" onClick={() => avatarRef.current && avatarRef.current.click()} />
+                            <img className='avatar clickable' src={avatarUrl} onClick={() => avatarRef.current && avatarRef.current.click()} />
                             <input className="input-auth" ref={avatarRef} id='avatar' type='file' accept='image/png, image/jpg, image/jpeg'
-                                style={{ display: 'none' }} onChange={handleImage}></input>
+                                style={{ display: 'none' }} onChange={handleImage}/>
                             {displayDeleteButton && (
                                 <button className='red-border-button' type='button' onClick={handleDeleteImage}>Delete</button>
                             )}

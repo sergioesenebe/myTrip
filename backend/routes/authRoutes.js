@@ -120,9 +120,23 @@ router.post('/login', async (req, res) => {
 })
 //Get to check if user is logged in
 router.get('/check-auth', authenticateJWT, async (req, res) => {
+    //Return the id
     try {
-        res.json({ user_id: req.user.id, username: req.user.username })
+        res.json({ user_id: req.user.id })
     }
+    //Catch error
+    catch (err) {
+        console.error('Error in the check auth: ', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+//Delete cookie
+router.get('/logout', authenticateJWT, async (req, res) => {
+    try {
+        res.clearCookie('token');
+        return res.status(200).json({ message: 'User logged out'})
+    }
+    //Catch error
     catch (err) {
         console.error('Error in the check auth: ', err);
         return res.status(500).json({ message: 'Internal server error' });

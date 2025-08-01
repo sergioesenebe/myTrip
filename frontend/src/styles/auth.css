@@ -114,15 +114,6 @@
     width: 100%;
 }
 
-/*img width and border for the avatar*/
-.avatar {
-    width: 100px;
-    height: 100px;
-    border: 1px solid white;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
 /*img with for logo with text*/
 .logo-text {
     width: 150px;

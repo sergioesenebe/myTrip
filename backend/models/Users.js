@@ -36,6 +36,12 @@ const userSchema = new mongoose.Schema({
         maxlength: 50,
         description: "User's second name"
     },
+    description: {
+        type: String,
+        required: true,
+        maxlength: 160,
+        description: "User's description"
+    },
     avatar: {
         type: String,
         required: false,

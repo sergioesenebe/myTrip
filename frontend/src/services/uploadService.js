@@ -61,3 +61,42 @@ export async function handleUploadImage(image, imageUrl, folder) {
         throw new Error('Error updating the image');
     }
 }
+
+//Function to delete an image
+export async function handleDeleteImage(imageUrl) {
+    //If there is no image uploaded return null
+    if (!imageUrl || imageUrl == '') {
+        throw new Error('Please add an image url');
+    }
+    try {
+        //Try to get the path split to get just path not url
+        const split = imageUrl.split('/myTrip/');
+        const path = split[1];
+        //Remove the extension
+        const withoutExtArray = path.split('.');
+        let image = withoutExtArray[0];
+        //Add myTrip to start
+        image = 'myTrip/' + image;
+        if (!image) {
+            console.error('Error deleting the image');
+            throw new Error('Error deleting the image');
+        }
+        //Call the function to delete the in Cloudinary
+        await fetch(`${backendUrl}/api/image/delete`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                image: image,
+            })
+        });
+
+    }
+    //Catch posible errors
+    catch (err) {
+        console.error('Error deleting the image: ', err);
+        throw new Error('Error deleting the image');
+    }
+
+}

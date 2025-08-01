@@ -1,0 +1,109 @@
+/*Width for white botton*/
+.update-image-button {
+    width: 100px;
+}
+
+/*Selections will have a gap*/
+.selections {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/*Change the width of the delete button*/
+.delete-place-button {
+    width: 100px;
+}
+
+/*Change the width of the delete button*/
+.add-place-button {
+    width: 100px;
+}
+
+/*Div for cancel and save buttons with space between*/
+.cancel-save-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.cancel-save-buttons button {
+    width: 160px;
+}
+
+/*Content editable, add it together and when hover underline*/
+.editable {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.editable:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+/*Editable text area with no borders and transparent, when focus border bottom. Underline when hover but not when focus and hover*/
+.editable-textarea {
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    line-height: 1em;
+    font-size: 16px;
+    resize: none;
+    font-family: Arial, Helvetica, sans-serif;
+    border-bottom: 2px solid transparent;
+}
+
+.editable-textarea:focus {
+    outline: none;
+}
+
+@media (max-width: 1350px) {
+
+    /*Place will have the 80% instead of the 60%*/
+    .place {
+        width: 90%;
+    }
+
+    /*Change sizes*/
+    .place-name {
+        font-size: 32px;
+    }
+
+    .place-description {
+        font-size: 12px;
+    }
+
+    .trip-name {
+        font-size: 40px;
+    }
+
+    .trip-description {
+        font-size: 12px;
+    }
+
+    /*fotter sizes*/
+    footer {
+        padding: 20px;
+        font-size: 12px;
+    }
+
+    .esenebe-footer-log {
+        width: 100px;
+    }
+
+    .footer-contact {
+        display: flex;
+        gap: 20px;
+    }
+
+    .white-select {
+        width: 200px;
+    }
+
+    .trip-info {
+        width: 100%;
+    }
+}

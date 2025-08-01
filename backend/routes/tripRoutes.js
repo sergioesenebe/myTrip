@@ -1,11 +1,12 @@
 //Import external libraries
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose')
 
 //Import internal libraries
 const connectToDB = require('../config/db');
 const authenticateJWT = require('../middlewares/auth');
-const Trip = require('../models/Trips')
+const Trip = require('../models/Trips');
 
 //Route for upload a trip
 router.post('/', authenticateJWT, async (req, res) => {
@@ -56,63 +57,227 @@ router.post('/', authenticateJWT, async (req, res) => {
 })
 
 //Router to get the three most interesting trips
-router.get('/interesting-trips', async (req,res) => {
+router.get('/interesting', async (req, res) => {
     try {
         //Connect to the database
         await connectToDB();
         //Get the three trips with more likes
         const interestingTrips = await Trip.aggregate([
-            {$addFields: {likesCount: {$size: '$likes'}}},
-            {$sort:{likesCount: -1}},
-            {$limit: 3}
+            { $addFields: { likesCount: { $size: '$likes' } } },
+            { $sort: { likesCount: -1 } },
+            { $limit: 3 }
         ])
         //If there is no interesting trips return a message
         if (interestingTrips.length === 0)
-            return res.status(200).json({message: 'There is not interesting trips', data:[]})
+            return res.status(200).json({ message: 'There is not interesting trips', data: [] })
         //Return the trips
-        return res.status(200).json({data: interestingTrips})
+        return res.status(200).json({ data: interestingTrips })
     }
     //Handle the error and return a message
     catch (err) {
         console.error('Error getting interesting trips: ', err);
-        return res.status(500).json({message: 'Unexpected error'})
+        return res.status(500).json({ message: 'Unexpected error' })
     }
 })
 
 //Router to get the three most interesting users
-router.get('/interesting-users', async (req,res) => {
+router.get('/interesting-users', async (req, res) => {
     try {
         //Connect to the database
         await connectToDB();
         //Get the three trips with more likes
         const interestingUsers = await Trip.aggregate([
-            {$addFields: {likesCount: {$size: "$likes"}}},
-            {$group: {_id:"$writer", totalLikes: {$sum: "$likesCount"}}},
-            {$lookup: {from: "users", localField: "_id", foreignField: '_id', as: "user"}},
-            {$unwind: "$user"},
-            {$project: {
-                _id: 0, user_id:"user._id",
-                username: "$user.username",
-                first_name: "$user.first_name",
-                second_name: "$user.second_name",
-                avatar: "$user.avatar",
-                totalLikes: 1
-            }},
-            {$sort: {totalLikes: -1}},
-            {$limit: 3}
+            { $addFields: { likesCount: { $size: "$likes" } } },
+            { $group: { _id: "$writer", totalLikes: { $sum: "$likesCount" } } },
+            { $lookup: { from: "users", localField: "_id", foreignField: '_id', as: "user" } },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    _id: 0, user_id: "user._id",
+                    username: "$user.username",
+                    first_name: "$user.first_name",
+                    second_name: "$user.second_name",
+                    avatar: "$user.avatar",
+                    totalLikes: 1
+                }
+            },
+            { $sort: { totalLikes: -1 } },
+            { $limit: 3 }
         ])
         //If there is no interesting trips return a message
         if (interestingUsers.length === 0)
-            return res.status(200).json({message: 'There is not interesting users', data:[]})
+            return res.status(200).json({ message: 'There is not interesting users', data: [] })
         //Return the trips
-        return res.status(200).json({data: interestingUsers})
+        return res.status(200).json({ data: interestingUsers })
     }
     //Handle the error and return a message
     catch (err) {
         console.error('Error getting interesting trips: ', err);
-        return res.status(500).json({message: 'Unexpected error'})
+        return res.status(500).json({ message: 'Unexpected error' })
     }
 })
 
+//Get all trips
+router.get('/', async (req, res) => {
+    try {
+        //Connect to database
+        await connectToDB();
+        //Get all trips with user info
+        const trendingTrips = await Trip.aggregate([
+            {
+                $addFields: {
+                    likesCount: { $size: '$likes' }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "writer",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: "$user"
+            },
+            {
+                $project: {
+                    name: 1,
+                    country: 1,
+                    city: 1,
+                    image: 1,
+                    description: 1,
+                    likesCount: 1,
+                    created_date: 1,
+                    places: 1,
+                    username: "$user.username",
+                    avatar: "$user.avatar"
+                }
+            },
+            {
+                $sort: { created_date: -1 }
+            }
+        ])
+        //If there is no liked trips return a message
+        if (trendingTrips.length === 0)
+            return res.status(200).json({ message: 'There are not hot trips', data: [] })
+        return res.status(201).json({ data: trendingTrips })
+    }
+    catch (err) {
+        console.error('Error getting the hot trips: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Get a specific trip
+router.get('/:id', async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add an id' })
+        //Get the id
+        const id = new mongoose.Types.ObjectId(req.params.id);
+        //Connect to the database
+        await connectToDB();
+        //Find a trip with this id
+        const trip = await Trip.aggregate([
+            {
+                $match: {
+                    _id: id
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "writer",
+                    foreignField: "_id",
+                    as: "user",
+                }
+            },
+            {
+                $unwind: "$user",
+            },
+            {
+                $project: {
+                    name: 1,
+                    country: 1,
+                    city: 1,
+                    image: 1,
+                    description: 1,
+                    likesCount: 1,
+                    places: 1,
+                    created_date: 1,
+                    username: "$user.username",
+                    avatar: "$user.avatar"
+                }
+            }
+        ]);
+        //If there is not a trip with this id return a message
+        if (!trip)
+            return res.status(404).json({ message: 'Trip not founded', data: [] })
+        //Return the data
+        return res.status(200).json({ data: trip });
+    }
+    catch (err) {
+        console.error('Error getting a specific trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Get a trip that match criteria
+router.post('/search', async (req, res) => {
+    try {
+        //Connect to the database
+        await connectToDB();
+        //If there is not a name, a city or a country, return a 400
+        if (!req.body.name && !req.body.city && !req.body.country && !req.body.writer)
+            return res.status(400).send({ message: 'Please add at list one filter' })
+        //Save the query
+        const query = {};
+        if (req.body.name)
+            query.name = { $regex: req.body.name, $options: 'i' };
+        if (req.body.city)
+            query.city = req.body.city;
+        if (req.body.country)
+            query.country = req.body.country;
+        if (req.body.writer)
+            query.writer = new mongoose.Types.ObjectId(req.body.writer);
+        //Do the query with the options
+        const trips = await Trip.aggregate([
+            { $match: query },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "writer",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: "$user"
+            },
+            {
+                $project: {
+                    name: 1,
+                    country: 1,
+                    city: 1,
+                    image: 1,
+                    description: 1,
+                    likesCount: 1,
+                    created_date: 1,
+                    places: 1,
+                    username: "$user.username",
+                    avatar: "$user.avatar"
+                }
+            },
+        ]);
+        if (trips.length > 0)
+            return res.status(200).json({ data: trips });
+        else
+            return res.status(200).json({ message: 'There are not trips', data: [] })
+    }
+    //Catch the error
+    catch (err) {
+        console.error('Error getting a specific trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' })
+    }
+})
 //Exports the module
 module.exports = router;

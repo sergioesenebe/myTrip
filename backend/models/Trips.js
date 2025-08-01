@@ -10,7 +10,8 @@ const placeSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        description: "Photo of the trip (URL)"
+        description: "Photo of the trip (URL)",
+        default: "https://res.cloudinary.com/drmjf3gno/image/upload/v1752859323/default-place_c1ehq5.jpg"
     },
     description: {
         type: String,
@@ -38,7 +39,8 @@ const tripSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        description: "Photo of the trip (URL)"
+        description: "Photo of the trip (URL)",
+        default: "https://res.cloudinary.com/drmjf3gno/image/upload/v1753346706/default-country_hxzjcd.jpg"
     },
     description: {
         type: String,

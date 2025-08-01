@@ -30,10 +30,23 @@ body {
     color: #ECE7E2;
     padding: 5px;
 }
+
 /*Main to fill all the page*/
 main {
     flex: 1;
 }
+
+/*img width and border for the avatar*/
+.avatar {
+    width: 100px;
+    height: 100px;
+    border: 1px solid white;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #D9E1E4;
+}
+
+
 /*Button green when hover (darker and cursor)*/
 .green-button:hover {
     cursor: pointer;
@@ -230,23 +243,35 @@ main {
 .top-content-centered h1 {
     font-size: 50px;
 }
+
 .top-content-centered p {
     font-size: 16px;
     text-align: center;
 }
 
 /*Trip places padding*/
-.trip-places {
+#trip-places {
     padding: 20px;
 }
 
-/*Display all the trips*/
+/*Display all the trips with beige background*/
 .place {
     width: 80%;
     display: flex;
     flex-direction: row;
     padding: 0;
-    ;
+    border-radius: 10px;
+    background-color: #F3F1EF;
+    border: none;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+
+/*Display flex with the content (image and text)*/
+.place-content {
+    display: flex;
 }
 
 /*Display all the trips with display flex*/
@@ -353,10 +378,104 @@ footer {
     font-size: 25px;
     gap: 30px;
 }
+
 /*H1 and p size for not logged in*/
 .notLoggedIn h1 {
     font-size: 24px;
 }
+
 .notLoggedIn p {
     font-size: 16px;
+}
+
+/*Input transparent background (default)*/
+.transparent-input {
+    background-color: transparent;
+    border: none;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+}
+
+/*Hide the outline when focus*/
+.transparent-input:focus {
+    outline: none;
+}
+
+/*Editable input with no borders and transparent, when focus border bottom. Underline when hover but not when focus and hover*/
+.editable-input {
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    border-bottom: 2px solid transparent;
+}
+
+.editable-input:focus {
+    outline: none;
+}
+
+/*Change colors for inputs*/
+.green-input {
+    color: #004643;
+}
+
+.green-input:focus {
+    border-bottom: 2px solid #004643;
+}
+
+.green-input:hover {
+    border-bottom: 2px solid #004643;
+}
+
+.white-input {
+    color: #ECE7E2;
+}
+
+.white-input:focus {
+    border-bottom: 2px solid #ECE7E2;
+}
+
+.white-input:hover {
+    border-bottom: 2px solid #ECE7E2;
+}
+
+.black-input {
+    color: black;
+}
+
+.black-input:focus {
+    border-bottom: 2px solid #004643;
+}
+
+.black-input:hover {
+    border-bottom: 2px solid #004643;
+}
+
+/*Select an option without background*/
+.white-select {
+    background: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #ECE7E2;
+    color: #ECE7E2;
+    width: 270px;
+}
+
+/*When hover or focus change cursor*/
+.white-select:hover {
+    cursor: pointer;
+}
+
+/*Select an option without background*/
+.green-select {
+    background: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #004643;
+    color: #004643;
+}
+
+/*When hover or focus change cursor*/
+.green-select:hover {
+    cursor: pointer;
 }

@@ -25,13 +25,13 @@ const upload = multer({ storage: storage });
 router.post('/upload', upload.single('image'), (req, res) => {
     //If there is no file send an error
     if (!req.file) {
-        return res.status(400).json({ message:'There is no image'});
+        return res.status(400).json({ message: 'There is no image' });
     }
     //Take the folder (if is one allowed)
     const allowedFolders = ['avatars', 'places', 'trips'];
     const requestedFoler = req.query.folder || ''; //If undefined will take an empty string
-    const folder = allowedFolders.includes(requestedFoler) 
-        ? `myTrip/${requestedFoler}` 
+    const folder = allowedFolders.includes(requestedFoler)
+        ? `myTrip/${requestedFoler}`
         : 'myTrip/others';
     //Upload image to Cloudinary using stream, take the folder and select the allowed formats
     const stream = cloudinary.v2.uploader.upload_stream({
@@ -42,7 +42,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
             //If there is an error send a 500 message
             if (error) {
                 console.error('Error Uploading the photo: ', error);
-                return res.status(500).json({ message:'Error uploading the photo'});
+                return res.status(500).json({ message: 'Error uploading the photo' });
             }
             //If there is an OK message, send a message, the url and public_id
             res.status(200).json({
@@ -55,6 +55,23 @@ router.post('/upload', upload.single('image'), (req, res) => {
     //Convert the image into a readable steam and pipes to Cloudinary
     streamifier.createReadStream(req.file.buffer).pipe(stream);
 });
+
+//Delete an image
+router.post('/delete', async (req, res) => {
+    try {
+        //Delete the image (path without url)
+        const response = await cloudinary.uploader.destroy(req.body.image);
+        if (response.result !== 'ok') {
+            return res.status(500).json({ message: 'Error deleting the photo'});
+        }
+        res.status(200).json({ message: 'Deleted successful' });
+    }
+    //catch the error
+    catch (err) {
+        console.error('Error deleting the photo: ', err);
+        return res.status(500).json({ message: 'Error deleting the photo' });
+    }
+})
 
 //Export the route
 module.exports = router;

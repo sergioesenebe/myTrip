@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const uploadRoute = require('./routes/uploadRoute')
 const tripRoutes = require('./routes/tripRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 //Define variables
 const port = 3060;
@@ -25,6 +26,7 @@ app.use(cors({
 app.use("/api/auth", authRoutes);
 app.use("/api/image", uploadRoute);
 app.use("/api/trips", tripRoutes);
+app.use("/api/users", userRoutes);
 
 //Global error handler
 app.use((err, req, res, next) => {
