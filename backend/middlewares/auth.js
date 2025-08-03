@@ -23,7 +23,7 @@ function authenticateJWT(req, res, next) {
     //Catch the error and return a message
     catch (err) {
         console.error('Error getting the code: ', err);
-        return res.status(500).json({message: 'Invalid token'})
+        return res.status(401).json({message: 'Invalid token'})
     }
 }
 

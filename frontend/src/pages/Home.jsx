@@ -166,7 +166,7 @@ function home() {
                                 <div className='flex flex-row items-center justify-center'>
                                     {interestingTrips.map(trip => (
                                         <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                            <img className="w-[400px] h-[300px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trip/${trip._id}`) }} />
+                                            <img className="w-[400px] h-[300px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
                                             <p className='text-[16px]'>{trip.name}</p>
                                         </div>
                                     ))}

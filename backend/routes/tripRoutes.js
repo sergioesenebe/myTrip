@@ -160,64 +160,11 @@ router.get('/', async (req, res) => {
         ])
         //If there is no liked trips return a message
         if (trendingTrips.length === 0)
-            return res.status(200).json({ message: 'There are not hot trips', data: [] })
+            return res.status(200).json({ message: 'There are not trips', data: [] })
         return res.status(201).json({ data: trendingTrips })
     }
     catch (err) {
         console.error('Error getting the hot trips: ', err);
-        return res.status(500).json({ message: 'Unexpected error' });
-    }
-})
-//Get a specific trip
-router.get('/:id', async (req, res) => {
-    try {
-        if (!req.params.id)
-            return res.status(400).send({ message: 'Please add an id' })
-        //Get the id
-        const id = new mongoose.Types.ObjectId(req.params.id);
-        //Connect to the database
-        await connectToDB();
-        //Find a trip with this id
-        const trip = await Trip.aggregate([
-            {
-                $match: {
-                    _id: id
-                }
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "writer",
-                    foreignField: "_id",
-                    as: "user",
-                }
-            },
-            {
-                $unwind: "$user",
-            },
-            {
-                $project: {
-                    name: 1,
-                    country: 1,
-                    city: 1,
-                    image: 1,
-                    description: 1,
-                    likesCount: 1,
-                    places: 1,
-                    created_date: 1,
-                    username: "$user.username",
-                    avatar: "$user.avatar"
-                }
-            }
-        ]);
-        //If there is not a trip with this id return a message
-        if (!trip)
-            return res.status(404).json({ message: 'Trip not founded', data: [] })
-        //Return the data
-        return res.status(200).json({ data: trip });
-    }
-    catch (err) {
-        console.error('Error getting a specific trip: ', err);
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
@@ -279,5 +226,116 @@ router.post('/search', async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' })
     }
 })
+//Get all user trips
+router.get('/my-trips', authenticateJWT, async (req, res) => {
+    try {
+        //Get the id
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to database
+        await connectToDB();
+        //Get all trips with user info
+        const myTrips = await Trip.aggregate([
+            {
+                $match: { writer: id }
+            },
+            {
+                $addFields: {
+                    likesCount: { $size: '$likes' }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "writer",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: "$user"
+            },
+            {
+                $project: {
+                    name: 1,
+                    country: 1,
+                    city: 1,
+                    image: 1,
+                    description: 1,
+                    likesCount: 1,
+                    created_date: 1,
+                    places: 1,
+                    username: "$user.username",
+                    avatar: "$user.avatar"
+                }
+            },
+            {
+                $sort: { created_date: -1 }
+            }
+        ])
+        //If there is no liked trips return a message
+        if (myTrips.length === 0)
+            return res.status(200).json({ message: 'There are not trips', data: [] })
+        return res.status(200).json({ data: myTrips })
+    }
+    catch (err) {
+        console.error('Error getting the trips: ', err);
+        return res.status(500).json({ message: `Unexpected error` });
+    }
+})
+//Get a specific trip
+router.get('/:id', async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add an id' })
+        //Get the id
+        const id = new mongoose.Types.ObjectId(req.params.id);
+        //Connect to the database
+        await connectToDB();
+        //Find a trip with this id
+        const trip = await Trip.aggregate([
+            {
+                $match: {
+                    _id: id
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "writer",
+                    foreignField: "_id",
+                    as: "user",
+                }
+            },
+            {
+                $unwind: "$user",
+            },
+            {
+                $project: {
+                    name: 1,
+                    country: 1,
+                    city: 1,
+                    image: 1,
+                    description: 1,
+                    likesCount: 1,
+                    places: 1,
+                    created_date: 1,
+                    username: "$user.username",
+                    avatar: "$user.avatar"
+                }
+            }
+        ]);
+        //If there is not a trip with this id return a message
+        if (!trip)
+            return res.status(404).json({ message: 'Trip not founded', data: [] })
+        //Return the data
+        return res.status(200).json({ data: trip });
+    }
+    catch (err) {
+        console.error('Error getting a specific trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+
+
 //Exports the module
 module.exports = router;

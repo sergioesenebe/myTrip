@@ -4,7 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
-import { sortByMostDetailed, sortByLikes, sortByNewest, showTrips } from '../services/showTrips'
+import { sortByMostDetailed, sortByLikes, sortByNewest, showTrips, nextPage, previousPage, searchTrip, getCountries, getCities } from '../services/showTrips'
 //Import images
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
@@ -98,60 +98,11 @@ function trips() {
         }
         checkAuth();
     }, [])
-    //Order by most detailed
-    async function handleSortByMostDetailed() {
-        try {
-            const sorted = await sortByMostDetailed(trips)
-            //Save the state
-            setTripsSorted(sorted);
-            //Show trips
-            showTrips(sorted, 'most-detailed', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, sort, navPage, url, window);
-        }
-        //Catch the error
-        catch (err) {
-            console.error('Error sorting most detailed trips: ', err);
-            setErrorMessage('Error sorting the trips');
-        }
-
-    }
-    //Order By Likes
-    async function handleSortByMostLikes() {
-        try {
-            const sorted = await sortByLikes(trips);
-            //Save the state
-            setTripsSorted(sorted);
-            //Show trips
-            showTrips(sorted, 'most-liked', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, sort, navPage, url, window);
-
-        }
-        //Catch the error
-        catch (err) {
-            console.error('Error sorting most liked trips: ', err);
-            setErrorMessage('Error sorting the trips');
-        }
-
-    }
-    //Order By Created Dates
-    async function handleSortByNewest() {
-        try {
-            const sorted = await sortByNewest(trips)
-            //Save the state
-            setTripsSorted(sorted);
-            //Show trips
-            showTrips(sorted, 'newest', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, sort, navPage, url, window);
-        }
-        //Catch the error
-        catch (err) {
-            console.error('Error sorting newest trips: ', err);
-            setErrorMessage('Error sorting the trips');
-        }
-
-    }
     //When create the DOM get the data
     useEffect(() => {
         const manageTripsToShow = async () => {
             if (searchName)
-                handleSearchByTrip();
+                handleSearchByName();
             else if (searchCity && searchCountry)
                 handleSearchByCountryCity();
             else
@@ -168,26 +119,93 @@ function trips() {
         else
             handleSortByMostLikes();
     }, [trips])
-    //Go to next page
-    function nextPage() {
-        if (navPage <= maxPages) {
-            //Save the start of the pages
-            const start = navPage * 6;
-            //Save the trips sliced (Will be shown)
-            const sliced = tripsSorted.slice(start, start + 6);
-            setTripsSliced(sliced);
-            //If next page is greater or equal than maxPages next will be false
-            if (navPage + 1 >= maxPages)
-                setNext(false);
-            //If actual page is 1 previous will be true
-            if (navPage === 1)
-                setPrevious(true);
-            //Go to the top of the trips
-            document.getElementById('trip-places').scrollIntoView({ behavior: 'smooth' });
-            //Update page in the url
-            url.searchParams.set('page', navPage + 1);
-            window.history.pushState(null, '', url.toString());
+    //When somebody click somewhere and the order by menu is open, close it
+    useEffect(() => {
+        //When a click anywhere check if it's open
+        document.addEventListener('click', handleCloseOrderBy);
+        return () => {
+            document.removeEventListener('click', handleCloseOrderBy);
+        };
+    }, [orderByOpen]);
+    //Get all countries with an API
+    useEffect(() => {
+        async function handleGetCountries() {
+            try {
+                await getCountries(setCountries);
+                //If country already selected call handle country change
+                if (country) {
+                    handleCountryChange(country);
+                    setSearchByLocation(true);
+                }
+            }
+            catch (err) {
+                //Log the error and set the message in state
+                console.error("Error getting the countries: ", err);
+                setErrorMessage("Could not load countries");
+                //If there is a time out clear it and show a message for 10 seconds
+                if (timeOutId.current) clearTimeout(timeOutId.current);
+                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+            }
         }
+        //Call async function
+        handleGetCountries();
+    }, [])
+    //Order by most detailed
+    async function handleSortByMostDetailed() {
+        try {
+            const sorted = await sortByMostDetailed(trips)
+            //Save the state
+            setTripsSorted(sorted);
+            //Show trips
+            showTrips(sorted, 'most-detailed', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url);
+        }
+        //Catch the error
+        catch (err) {
+            console.error('Error sorting most detailed trips: ', err);
+            setErrorMessage('Error sorting the trips');
+        }
+
+    }
+    //Order By Likes
+    async function handleSortByMostLikes() {
+        try {
+            const sorted = await sortByLikes(trips);
+            //Save the state
+            setTripsSorted(sorted);
+            //Show trips
+            showTrips(sorted, 'most-liked', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url);
+
+        }
+        //Catch the error
+        catch (err) {
+            console.error('Error sorting most liked trips: ', err);
+            setErrorMessage('Error sorting the trips');
+        }
+
+    }
+    //Order By Created Dates
+    async function handleSortByNewest() {
+        try {
+            const sorted = await sortByNewest(trips)
+            //Save the state
+            setTripsSorted(sorted);
+            //Show trips
+            showTrips(sorted, 'newest', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url);
+        }
+        //Catch the error
+        catch (err) {
+            console.error('Error sorting newest trips: ', err);
+            setErrorMessage('Error sorting the trips');
+        }
+
+    }
+    //Go to next page
+    async function handleNextPage() {
+        await nextPage(navPage, maxPages, setNext, setPrevious, tripsSorted, setTripsSliced, url);
+    }
+    //Go to previous page
+    async function handlePreviousPage() {
+        await previousPage(navPage, maxPages, tripsSorted, setTripsSliced, setPrevious, setNext, url);
     }
     //Get trips
     const getTrips = async () => {
@@ -210,27 +228,6 @@ function trips() {
             setErrorMessage('Error getting the trips');
         }
     };
-    //Go to previous page
-    function previousPage() {
-        if (navPage >= 1) {
-            //Save the start of the pages
-            const end = (navPage - 1) * 6;
-            //Save the trips sliced (Will be shown)
-            const sliced = tripsSorted.slice(end - 6, end);
-            setTripsSliced(sliced);
-            //If previous page is smaller or equal than 1 previous will be false
-            if (navPage - 1 <= 1)
-                setPrevious(false);
-            //If next page is maxPages next will be true
-            if (navPage === maxPages)
-                setNext(true);
-            //Go to the top of the trips
-            document.getElementById('trip-places').scrollIntoView({ behavior: 'smooth' });
-            //Update page in the url
-            url.searchParams.set('page', navPage - 1);
-            window.history.pushState(null, '', url.toString());
-        }
-    }
     //Function to close order by
     function handleCloseOrderBy() {
         //If open close it
@@ -238,14 +235,6 @@ function trips() {
             setOrderByOpen(false);
         }
     }
-    //When somebody click somewhere and the order by menu is open, close it
-    useEffect(() => {
-        //When a click anywhere check if it's open
-        document.addEventListener('click', handleCloseOrderBy);
-        return () => {
-            document.removeEventListener('click', handleCloseOrderBy);
-        };
-    }, [orderByOpen]);
     //Change the order
     function changeOrder(order) {
         if (order === 'most-detailed' && sort !== 'most-detailed')
@@ -255,82 +244,30 @@ function trips() {
         else if (order === 'newest' && sort !== 'newest')
             handleSortByNewest();
     }
-    //Get all countries with an API
-    useEffect(() => {
-        //Use GET request to fetch country data
-        fetch("https://countriesnow.space/api/v0.1/countries")
-            .then((response) => {
-                //Throw an error if response is not ok
-                if (!response.ok) {
-                    throw new Error("Error getting the countries");
-                }
-                //Parse the json body
-                return response.json();
-            })
-            .then((data) => {
-                //Set countries with fetched data
-                setCountries(data.data);
-                if (country) {
-                    //If is selected any country return
-                    if (country === 'Any Country') {
-                        return;
-                    }
-                    //Else show the cities
-                    setSearchByLocation(true);
-                    handleCountryChange(country);
-                }
-            })
-            .catch((err) => {
-                //Log the error and set the message in state
-                console.error("Error getting the countries: ", err);
-                setErrorMessage("Could not load countries");
-                //If there is a time out clear it and show a message for 10 seconds
-                if (timeOutId.current) clearTimeout(timeOutId.current);
-                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-            })
-    }, [])
     //Get all cities by a country
-    const handleCountryChange = (selectedCountry) => {
+    async function handleCountryChange(selectedCountry) {
         setSearchCountry(selectedCountry);
         //If is selected any country return
         if (selectedCountry === 'Any Country') {
             setCities([]);
             return;
         }
-        //Use GET request to fetch country data
-        fetch("https://countriesnow.space/api/v0.1/countries/cities", {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            //Specify a json body with the country
-            body: JSON.stringify({
-                country: selectedCountry
-            })
-        })
-            .then((response) => {
-                //Throw an error if response is not ok
-                if (!response.ok) {
-                    throw new Error("Error getting the cities");
-                }
-                //Parse the json body
-                return response.json();
-            })
-            .then((data) => {
-                //Set countries with fetched data
-                setCities(data.data);
-            })
-            .catch((err) => {
-                //Log the error and set the message in state
-                console.error("Error getting the citties: ", err);
-                setErrorMessage("Could not load cities");
-                //If there is a time out clear it and show a message for 10 seconds
-                if (timeOutId.current) clearTimeout(timeOutId.current);
-                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-            })
+        try {
+            await getCities(selectedCountry, setCities)
+            if (city)
+                handleSearchByCountryCity();
+        }
+        catch (err) {
+            //Log the error and set the message in state
+            console.error("Error getting the citties: ", err);
+            setErrorMessage("Could not load cities");
+            //If there is a time out clear it and show a message for 10 seconds
+            if (timeOutId.current) clearTimeout(timeOutId.current);
+            timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+        }
     }
     //Search a trip that contains this name
-    async function handleSearchByTrip(e) {
+    async function handleSearchByName(e) {
         //Don't reload the page and change to state change filter (do it by hand)
         if (e) {
             e.preventDefault();
@@ -340,37 +277,16 @@ function trips() {
         url.searchParams.delete('search-country');
         url.searchParams.delete('search-city');
         window.history.pushState(null, '', url.toString());
-        try {
-            //If is empty show all trips
-            if (!searchName) {
-                getTrips();
-                url.searchParams.delete('search-trip');
-                window.history.pushState(null, '', url.toString());
-                return;
-            }
-            const res = await fetch(`${backendUrl}/api/trips/search`, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: searchName
-                })
-            })
-            //If the result is not ok, send a message
-            if (!res.ok) {
-                setErrorMessage('Unexpected Error')
-                //If there is a time out clear it and show a message for 10 seconds
-                if (timeOutId.current) clearTimeout(timeOutId.current);
-                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-                return;
-            }
-            //Get the json and save the state
-            const json = await res.json();
-            setTrips(json.data);
-            //Save in the url
-            url.searchParams.set('search-trip', searchName);
+        //If is empty show all trips
+        if (!searchName) {
+            getTrips();
+            url.searchParams.delete('search-trip');
             window.history.pushState(null, '', url.toString());
+            return;
+        }
+        try {
+            const body = { name: searchName }
+            searchTrip(url, body, setTrips)
         }
         catch (err) {
             console.error('Error searching a trip: ', err);
@@ -382,57 +298,47 @@ function trips() {
     }
     //Search a trip by the country or city
     async function handleSearchByCountryCity(e) {
-        //If is selected any country get all the trips
-        if (searchCountry === 'Any Country') {
-            if (e)
-                e.preventDefault();
-            url.searchParams.delete('search-country');
-            url.searchParams.delete('search-city');
-            url.searchParams.delete('search-trip');
-            window.history.pushState(null, '', url.toString());
-            getTrips();
-            return;
-        }
         //Don't reload the page and change to state change filter (do it by hand)
         if (e) {
             e.preventDefault();
             setChangeFilter(true);
+            setChangeFilter(true);
         }
-        //Remove the search city just in case
+        //Remove search city and country just in case
+        url.searchParams.delete('search-country');
+        url.searchParams.delete('search-city');
         url.searchParams.delete('search-trip');
         window.history.pushState(null, '', url.toString());
-        try {
-            if (!searchCountry) {
-                alert('Please add a country');
-                return;
-            }
-            const body = { country: searchCountry }
-            //Define the body (country and city or just city)
-            if (searchCity && searchCity !== 'Any City') {
-                body.city = searchCity;
-            }
-            const res = await fetch(`${backendUrl}/api/trips/search`, {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            })
-            //If the result is not ok, send a message
-            if (!res.ok) {
-                setErrorMessage('Unexpected Error')
-                //If there is a time out clear it and show a message for 10 seconds
-                if (timeOutId.current) clearTimeout(timeOutId.current);
-                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-                return;
-            }
-            //Get the json and save the state
-            const json = await res.json();
-            setTrips(json.data);
-            //Save in the url
-            url.searchParams.set('search-country', searchCountry);
-            url.searchParams.set('search-city', searchCity);
+        //If is selected any country get all the trips
+        if (searchCountry === 'Any Country') {
+            url.searchParams.delete('search-country');
+            url.searchParams.delete('search-city');
+            url.searchParams.delete('search-trip');
             window.history.pushState(null, '', url.toString());
+            setSearchCity('');
+            setSearchCountry('');
+            getTrips();
+            return;
+        }
+        //Remove the search trip just in case
+        url.searchParams.delete('search-trip');
+        window.history.pushState(null, '', url.toString());
+        //If there is no country show an alert
+        if (!searchCountry) {
+            alert('Please add a country');
+            return;
+        }
+        const body = { country: searchCountry }
+        //Define the body (country and city or just city)
+        if (searchCity && searchCity !== 'Any City') {
+            body.city = searchCity;
+        }
+        if (searchCity === 'Any City') {
+            url.searchParams.set('search-city', 'Any City');
+            window.history.pushState(null, '', url.toString());
+        }
+        try {
+            searchTrip(url, body, setTrips)
         }
         catch (err) {
             console.error('Error searching a trip: ', err);
@@ -475,7 +381,7 @@ function trips() {
                                 </div>
                             </nav>
                             <div className="top-content-centered">
-                                {!searchByLocation && <form className="top-content-centered" onSubmit={(e) => handleSearchByTrip(e)}>
+                                {!searchByLocation && <form className="top-content-centered" onSubmit={(e) => handleSearchByName(e)}>
                                     <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between gap-[5px] items-center'>
                                         <input className='transparent-input w-[430px]' placeholder={`Look for a Trip`}
                                             value={searchName} onChange={(e) => setSearchName(e.target.value)} />
@@ -628,13 +534,13 @@ function trips() {
                             {errorMessage && (
                                 <p className="error-message">{errorMessage}</p>
                             )}
-                            {infoMessage && (
+                            {infoMessage && !errorMessage &&(
                                 <p className='text-center'>{infoMessage}</p>
                             )}
                             <div className='flex flex-row gap-[10px] items-center justify-center'>
-                                <img src={previous ? previousIcon : previousNonClickableIcon} className={`w-[20px] h-[20px] ${previous ? 'hover:cursor-pointer' : 'pointer-events-none'}`} onClick={previousPage} />
+                                <img src={previous ? previousIcon : previousNonClickableIcon} className={`w-[20px] h-[20px] ${previous ? 'hover:cursor-pointer' : 'pointer-events-none'}`} onClick={handlePreviousPage} />
                                 <span>{navPage}</span>
-                                <img src={next ? nextIcon : nextNonClickableIcon} className={`w-[20px] h-[20px] ${next ? 'hover:cursor-pointer' : 'pointer-events-none'}`} onClick={nextPage} />
+                                <img src={next ? nextIcon : nextNonClickableIcon} className={`w-[20px] h-[20px] ${next ? 'hover:cursor-pointer' : 'pointer-events-none'}`} onClick={handleNextPage} />
                             </div>
                         </div>
                     </main>

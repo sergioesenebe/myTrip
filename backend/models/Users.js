@@ -38,7 +38,6 @@ const userSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
         maxlength: 160,
         description: "User's description"
     },

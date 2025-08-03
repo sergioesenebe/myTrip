@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 // Allow CORS for frontend the origins
 app.use(cors({
-    origin: 'http://192.168.49.2:31384',
+    origin: 'http://192.168.49.2:30928',
     credentials: true
 }));
 

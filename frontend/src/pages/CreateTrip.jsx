@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 //Import internal libraries, css and images
 import { validImage, deleteImage, handleUploadImage } from '../services/uploadService';
+import { getCountries, getCities } from '../services/showTrips'
 import "../styles/index.css";
 import "../styles/common.css";
 import "../styles/trips.css";
@@ -65,7 +66,7 @@ function uploadTrip() {
     }, [])
 
     //Create a Trip
-    const handleCreateTrip = async (e) => {
+    async function handleCreateTrip (e) {
         //Remove old messages
         setErrorMessage('');;
         //Prevent default
@@ -136,65 +137,38 @@ function uploadTrip() {
 
     //Get all countries with an API
     useEffect(() => {
-        //Use GET request to fetch country data
-        fetch("https://countriesnow.space/api/v0.1/countries")
-            .then((response) => {
-                //Throw an error if response is not ok
-                if (!response.ok) {
-                    throw new Error("Error getting the countries");
-                }
-                //Parse the json body
-                return response.json();
-            })
-            .then((data) => {
-                //Set countries with fetched data
-                setCountries(data.data);
-            })
-            .catch((err) => {
+        async function handleGetCountries() {
+            try {
+                await getCountries(setCountries);
+            }
+            catch (err) {
                 //Log the error and set the message in state
                 console.error("Error getting the countries: ", err);
                 setErrorMessage("Could not load countries");
                 //If there is a time out clear it and show a message for 10 seconds
                 if (timeOutId.current) clearTimeout(timeOutId.current);
                 timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-            })
+            }
+        }
+        //Call async function
+        handleGetCountries();
     }, [])
     //Get all cities by a country
-    const handleCountryChange = (e) => {
+    function handleCountryChange (selectedCountry) {
         //Save the state for the trip
-        const selectedCountry = e.target.value;
         setTripCountry(selectedCountry);
-        //Use GET request to fetch country data
-        fetch("https://countriesnow.space/api/v0.1/countries/cities", {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            //Specify a json body with the country
-            body: JSON.stringify({
-                country: selectedCountry
-            })
-        })
-            .then((response) => {
-                //Throw an error if response is not ok
-                if (!response.ok) {
-                    throw new Error("Error getting the cities");
-                }
-                //Parse the json body
-                return response.json();
-            })
-            .then((data) => {
-                //Set countries with fetched data
-                setCities(data.data);
-            })
-            .catch((err) => {
-                //Log the error and set the message in state
-                console.error("Error getting the citties: ", err);
-                setErrorMessage("Could not load cities");
-                //If there is a time out clear it and show a message for 10 seconds
-                if (timeOutId.current) clearTimeout(timeOutId.current);
-                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-            })
+        try {
+            //Get the sities for this country
+            getCities(selectedCountry, setCities)
+        }
+        catch (err) {
+            //Log the error and set the message in state
+            console.error("Error getting the citties: ", err);
+            setErrorMessage("Could not load cities");
+            //If there is a time out clear it and show a message for 10 seconds
+            if (timeOutId.current) clearTimeout(timeOutId.current);
+            timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+        }
     }
     //Function to check if the format is valid and update the trip image
     async function handleTripImage(e) {
@@ -374,7 +348,7 @@ function uploadTrip() {
                                     </div>
                                     <div className="selections">
                                         <label htmlFor="country">Country</label>
-                                        <select required className="white-select" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e)}>
+                                        <select required className="white-select" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e.target.value)}>
                                             <option value='' disabled >Select a Country</option>
                                             {countries.map(c => (
                                                 <option key={c.iso2} value={c.country}>{c.country}</option>
