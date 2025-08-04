@@ -69,7 +69,7 @@ function myTrips() {
     useEffect(() => {
         //Get the params
         const page = parseInt(url.searchParams.get('page')) || 1;
-        const sortParam = url.searchParams.get('sort') || 'most-liked';
+        const sortParam = url.searchParams.get('sort') || 'newest';
         const country = url.searchParams.get('search-country') || '';
         const city = url.searchParams.get('search-city') || '';
         const trip = url.searchParams.get('search-trip') || '';
@@ -113,10 +113,10 @@ function myTrips() {
     useEffect(() => {
         if (sort === 'most-detailed')
             handleSortByMostDetailed()
-        else if (sort === 'newest')
-            handleSortByNewest()
-        else
+        else if (sort === 'most-liked')
             handleSortByMostLikes();
+        else
+            handleSortByNewest()
     }, [trips])
     //When somebody click somewhere and the order by menu is open, close it
     useEffect(() => {
@@ -469,18 +469,7 @@ function myTrips() {
                                         }}></img></div>}
                                         {orderByOpen && (
                                             <div className='shadow-md text-[16px] bg-[#f3f1ef] rounded-[10px] absolute right-0 mt-2 w-[150px] z-[999]'>
-                                                <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
-                                                    /*Prevent default and allow click it instead of the document page*/
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    /*Close the oreder menu*/
-                                                    handleCloseOrderBy();
-                                                    /*Change order*/
-                                                    changeOrder('most-liked');
-                                                }}>
-                                                    <p>Most Liked</p>
-                                                </div>
-                                                <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -491,6 +480,19 @@ function myTrips() {
                                                 }}>
                                                     <p>Newest</p>
                                                 </div>
+
+                                                <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                    /*Prevent default and allow click it instead of the document page*/
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    /*Close the oreder menu*/
+                                                    handleCloseOrderBy();
+                                                    /*Change order*/
+                                                    changeOrder('most-liked');
+                                                }}>
+                                                    <p>Most Liked</p>
+                                                </div>
+
                                                 <div className={`${sort === 'most-detailed' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-bl-[10px] rounded-br-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();

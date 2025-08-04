@@ -150,6 +150,7 @@ router.get('/', async (req, res) => {
                     likesCount: 1,
                     created_date: 1,
                     places: 1,
+                    writer: 1,
                     username: "$user.username",
                     avatar: "$user.avatar"
                 }
@@ -210,6 +211,7 @@ router.post('/search', async (req, res) => {
                     likesCount: 1,
                     created_date: 1,
                     places: 1,
+                    writer: 1,
                     username: "$user.username",
                     avatar: "$user.avatar"
                 }
@@ -256,6 +258,7 @@ router.get('/my-trips', authenticateJWT, async (req, res) => {
             },
             {
                 $project: {
+                    _id: 1,
                     name: 1,
                     country: 1,
                     city: 1,
@@ -264,6 +267,7 @@ router.get('/my-trips', authenticateJWT, async (req, res) => {
                     likesCount: 1,
                     created_date: 1,
                     places: 1,
+                    writer: 1,
                     username: "$user.username",
                     avatar: "$user.avatar"
                 }
@@ -282,6 +286,152 @@ router.get('/my-trips', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: `Unexpected error` });
     }
 })
+//Get a specific trip
+router.get('/my-trips/:id', authenticateJWT, async (req, res) => {
+    try {
+        //If there is no id of the trip return a message
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add an id' })
+        //Get the id of the trip
+        const id = new mongoose.Types.ObjectId(req.params.id);
+        //Get the userid
+        const writerId = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to the database
+        await connectToDB();
+        //Find a trip with this id
+        const trip = await Trip.aggregate([
+            {
+                $match: {
+                    _id: id,
+                    writer: writerId,
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "writer",
+                    foreignField: "_id",
+                    as: "user",
+                }
+            },
+            {
+                $unwind: "$user",
+            },
+            {
+                $project: {
+                    name: 1,
+                    country: 1,
+                    city: 1,
+                    image: 1,
+                    description: 1,
+                    likesCount: 1,
+                    places: 1,
+                    created_date: 1,
+                    writer: 1,
+                    username: "$user.username",
+                    avatar: "$user.avatar"
+                }
+            }
+        ]);
+        //If there is not a trip with this id return a message
+        if (!trip)
+            return res.status(404).json({ message: 'Trip not founded', data: [] })
+        //Return the data
+        return res.status(200).json({ data: trip });
+    }
+    catch (err) {
+        console.error('Error getting a specific trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Route for update a trip
+router.put('/my-trips/:id', authenticateJWT, async (req, res) => {
+    //Try catch, to take the errors
+    try {
+        //Connect to the database
+        await connectToDB();
+        //Add all the data to a body
+        const body = {};
+        //Check if name of the trip, country and the city, have been added
+        if (req.body.name)
+            body.name = req.body.name;
+        if (req.body.country)
+            body.country = req.body.country;
+        if (req.body.city)
+            body.city = req.body.city;
+        if (req.body.image)
+            body.image = req.body.image;
+        if (req.body.description)
+            body.description = req.body.description;
+        if (req.body.places) {
+            //Check if it's a valid Array, if not return a message
+            if (!Array.isArray(req.body.places)) {
+                return res.status(400).json({ message: 'Places must be an array' });
+            }
+            //By default there is an empty array of places
+            const places = [];
+            //Check if there aren't an empty name and save the data
+            for (const place of req.body.places) {
+                if (!place.name || place.name.trim() === '')
+                    return res.status(400).json({ message: 'Please make sure to fill in all place fields' });
+                places.push({
+                    name: place.name || '',
+                    image: place.image || '',
+                    description: place.description || ''
+                })
+            }
+            body.places = places;
+        }
+        //Get the id of the trip
+        const id = new mongoose.Types.ObjectId(req.params.id);
+        //Get the userid
+        const writerId = new mongoose.Types.ObjectId(req.user.id);
+        //Update the trip
+        await Trip.updateOne(
+            {
+                _id: id,
+                writer: writerId
+            },
+            {
+                $set: body
+            }
+        )
+        //Show a message
+        return res.status(201).json({ message: 'Trip updated' });
+    }
+    //Catch the error and send a message
+    catch (err) {
+        console.error('Error uploading a trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Route for delete a trip
+router.delete('/my-trips/:id', authenticateJWT, async (req, res) => {
+    //Try catch, to take the errors
+    try {
+        //Connect to the database
+        await connectToDB();
+        //Get the id of the trip
+        const id = new mongoose.Types.ObjectId(req.params.id);
+        //Get the userid
+        const writerId = new mongoose.Types.ObjectId(req.user.id);
+        //Update the trip
+        await Trip.deleteOne(
+            {
+                _id: id,
+                writer: writerId
+            }
+        )
+        //Show a message
+        return res.status(201).json({ message: 'Trip deleted' });
+    }
+    //Catch the error and send a message
+    catch (err) {
+        console.error('Error deleting a trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+
 //Get a specific trip
 router.get('/:id', async (req, res) => {
     try {
@@ -319,6 +469,7 @@ router.get('/:id', async (req, res) => {
                     likesCount: 1,
                     places: 1,
                     created_date: 1,
+                    writer: 1,
                     username: "$user.username",
                     avatar: "$user.avatar"
                 }
@@ -335,6 +486,7 @@ router.get('/:id', async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
+
 
 
 //Exports the module

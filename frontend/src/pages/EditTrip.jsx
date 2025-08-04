@@ -1,8 +1,8 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 //Import internal libraries, css and images
-import { handleUploadImage } from '../services/uploadService';
+import { handleUploadImage, handleDeleteImage } from '../services/uploadService';
 import { addTripImage, addPlaceImage, handlePlaceChange, deleteTripImage, addEmptyPlace, deletePlace, deletePlaceImage } from '../services/editTripService';
 import { getCountries, getCities } from '../services/showTrips'
 import "../styles/index.css";
@@ -21,9 +21,10 @@ import loadingGif from "../../public/images/loading.gif";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 //Get the default place image url
 const defaultPlace = "https://res.cloudinary.com/drmjf3gno/image/upload/v1752859323/default-place_c1ehq5.jpg";
+const defaultTripImage = 'https://res.cloudinary.com/drmjf3gno/image/upload/v1753346706/default-country_hxzjcd.jpg';
 
 //Function to upload a trip
-function uploadTrip() {
+function editTrip() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
     const [tripName, setTripName] = useState('');
@@ -35,10 +36,12 @@ function uploadTrip() {
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
-    const [tripImage, setTripImage] = useState('https://res.cloudinary.com/drmjf3gno/image/upload/v1753346706/default-country_hxzjcd.jpg');
+    const [tripImage, setTripImage] = useState(defaultTripImage);
     const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isTheirTrip, setIsTheirTrip] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [imagesToDelete, setImagesToDelete] = useState([]);
 
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
@@ -48,6 +51,9 @@ function uploadTrip() {
     const placeImageRefs = useRef([]);
     //Define navigate
     const navigate = useNavigate();
+    //Get the trip id
+    const { tripId } = useParams();
+
 
     //Check if is logged in
     useEffect(() => {
@@ -65,6 +71,48 @@ function uploadTrip() {
             }
         }
         checkAuth();
+    }, [])
+    //Get trip info
+    useEffect(() => {
+        const getTrip = async () => {
+            try {
+                //Get the specific trip
+                const res = await fetch(`${backendUrl}/api/trips/my-trips/${tripId}`, { credentials: 'include' })
+                if (!res.ok) {
+                    setErrorMessage('Error getting the trip');
+                    return;
+                }
+                //Save info
+                const json = await res.json();
+                const data = json.data[0];
+                //If there is no trip, it's because it's not their trip, so don't show the page
+                if (!data) {
+                    setIsTheirTrip(false);
+                    return;
+                }
+                setTripName(data.name);
+                setTripDescription(data.description);
+                setTripImage(data.image);
+                if (data.image !== defaultTripImage)
+                    setDisplayDeleteButton(true);
+                setTripCountry(data.country);
+                setTripCity(data.city);
+                setPlaces(data.places);
+                if (data.places) {
+                    data.places.map((place) => {
+                        if (place.image !== defaultPlace)
+                            place.placeImageDeleteButton = true;
+                        placeImageRefs.current.push(React.createRef());
+                    })
+                }
+            }
+            //Catch any error
+            catch (err) {
+                console.error('Error getting a specific trip: ', err);
+                setErrorMessage('Error Getting the trip');
+            }
+        }
+        getTrip();
     }, [])
     //Get all countries with an API
     useEffect(() => {
@@ -84,17 +132,20 @@ function uploadTrip() {
         //Call async function
         handleGetCountries();
     }, [])
-    //Create a Trip
-    async function handleCreateTrip(e) {
+    //Edit a Trip
+    async function handleEditTrip(e) {
         //Remove old messages
         setErrorMessage('');;
         //Prevent default
         e.preventDefault();
         try {
             setIsLoading(true);
-            //Upload the Trip Image to Cloudinary and save the url
-            const newTripImage = await handleUploadImage(tripFile, tripImage, 'trips');
-            setTripImage(newTripImage);
+            let newTripImage = tripImage;
+            //Upload the Trip Image to Cloudinary (if it has change it) and save the url
+            if (tripFile) {
+                newTripImage = await handleUploadImage(tripFile, tripImage, 'trips');
+                setTripImage(newTripImage);
+            }
             //Set the payload to upload the trip (without the places)
             const tripPayload = {
                 name: tripName,
@@ -106,9 +157,12 @@ function uploadTrip() {
             }
             //Use for ... of to use await correctly
             for (const [index, place] of places.entries()) {
-                //Upload the Place Image to Cloudinary and save the url
-                const newPlaceImage = await handleUploadImage(place.file, place.image, 'places');
-                handlePlaceChange(index, 'image', newPlaceImage, places, setPlaces);
+                let newPlaceImage = place.image;
+                //Upload the Trip Image to Cloudinary (if it has change it) and save the url
+                if (place.file) {
+                    newPlaceImage = await handleUploadImage(place.file, place.image, 'places');
+                    handlePlaceChange(index, 'image', newPlaceImage, places, setPlaces);
+                }
                 const newPlace = {
                     name: place.name,
                     image: newPlaceImage,
@@ -116,10 +170,10 @@ function uploadTrip() {
                 }
                 tripPayload.places.push(newPlace);
             }
-            //Fetch the create trip
-            const response = await fetch(`${backendUrl}/api/trips/`, {
+            //Fetch the update trip
+            const response = await fetch(`${backendUrl}/api/trips/my-trips/${tripId}`, {
                 //Select the method, header and body with the trip data
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -136,6 +190,8 @@ function uploadTrip() {
                 timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
             }
             else {
+                //Delete all images
+                imagesToDelete.map((image) => { handleDeleteImage(image) });
                 //Navigate to mytrips 
                 navigate('/mytrips');
                 //If there is a time out clear it and show a message for 10 seconds
@@ -144,7 +200,61 @@ function uploadTrip() {
             }
         }
         catch (err) {
-            console.error('Error creatting the trip: ', err);
+            console.error('Error updating the trip: ', err);
+            setErrorMessage('Unexpected Error');
+            //If there is a time out clear it and show a message for 10 seconds
+            if (timeOutId.current) clearTimeout(timeOutId.current);
+            timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+    //Delete a Trip
+    async function handleDeleteTrip(e) {
+        //Remove old messages
+        setErrorMessage('');;
+        //Prevent default
+        e.preventDefault();
+        //Show a confirm message if is not sure, return
+        const sure = confirm('Are you sure that you want to delete the whole trip?');
+        if (!sure) return
+        try {
+            setIsLoading(true);
+            //Fetch the delete trip
+            const response = await fetch(`${backendUrl}/api/trips/my-trips/${tripId}`, {
+                //Select the method, header and body with the trip data
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: 'include'
+            })
+            //If there is an error show it
+            if (!response.ok) {
+                setErrorMessage('Error deleting the trip');
+                //If there is a time out clear it and show a message for 10 seconds
+                if (timeOutId.current) clearTimeout(timeOutId.current);
+                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+            }
+            else {
+                //Delete all images
+                if (tripImage.includes('https://res.cloudinary.com/')) {
+                    handleDeleteImage(tripImage)
+                }
+                places.map((place) => {
+                    if (place.image.includes('https://res.cloudinary.com/')) {
+                        handleDeleteImage(place.image)
+                    }
+                });
+                //Navigate to mytrips 
+                navigate('/mytrips');
+                //If there is a time out clear it and show a message for 10 seconds
+                if (timeOutId.current) clearTimeout(timeOutId.current);
+                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+            }
+        }
+        catch (err) {
+            console.error('Error updating the trip: ', err);
             setErrorMessage('Unexpected Error');
             //If there is a time out clear it and show a message for 10 seconds
             if (timeOutId.current) clearTimeout(timeOutId.current);
@@ -171,7 +281,7 @@ function uploadTrip() {
         }
     }
     //Function to check if the format is valid and update the trip image
-    async function handleTripFile(file) {
+    async function handleTripImage(file) {
         try {
             await addTripImage(file, tripImageRef, setTripFile, setTripImage, setDisplayDeleteButton);
         }
@@ -195,6 +305,12 @@ function uploadTrip() {
     //Function to delete the image when button clicked
     async function handleDeleteTripImage() {
         try {
+            //If is in cloudinary, add to the array to delete it
+            if (tripImage.includes('https://res.cloudinary.com/')) {
+                const newImagesToDelete = [...imagesToDelete]
+                newImagesToDelete.push(tripImage)
+                setImagesToDelete(newImagesToDelete)
+            }
             await deleteTripImage(tripImageRef, setTripImage, setTripFile, setDisplayDeleteButton);
         }
         catch (err) {
@@ -205,6 +321,11 @@ function uploadTrip() {
     //Function to delete the image when button clicked
     async function handleDeletePlaceImage(index) {
         try {
+            if (places[index].image.includes('https://res.cloudinary.com/')) {
+                const newImagesToDelete = [...imagesToDelete]
+                newImagesToDelete.push(places[index].image)
+                setImagesToDelete(newImagesToDelete)
+            }
             await deletePlaceImage(index, placeImageRefs, places, setPlaces)
         }
         catch (err) {
@@ -217,10 +338,11 @@ function uploadTrip() {
         <>
             {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
             {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
-            {!isLoading && isLoggedIn && (
+            {isLoggedIn && !isTheirTrip && (<div className="notLoggedIn"><h1>You can't edit this trip</h1><p> Return to <Link className='link' to={'/trips'}>Trips</Link> to continue searching for interesting travel ideas</p></div>)}
+            {!isLoading && isLoggedIn && isTheirTrip && (
                 <>
                     <main className='bg-[#ECE7E2]'>
-                        <form onSubmit={handleCreateTrip}>
+                        <form onSubmit={handleEditTrip}>
                             <div className="top-green-img-section" style={{ backgroundImage: `url(${tripImage})` }}>
                                 <nav className="top-nav-bar">
                                     <img className="logo-top-left" src={logoNavBar} />
@@ -266,8 +388,9 @@ function uploadTrip() {
                                         {!isLoggedIn && (<Link to={'/signup'}
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Sign Up</Link>)}
                                     </div>)}
-                                    <div className="editable">
-                                        <input required className="editable-input trip-name white-input" value={tripName} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
+                                    <div className="flex justify-between w-[100%] items-center">
+                                        <input required className="editable-input trip-name white-input md:w-[60%] w-[100%]" value={tripName} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
+                                        <button type='button' className='red-button w-[160px] h-[50px]' onClick={(e) => {handleDeleteTrip(e)}}>Delete Whole Trip</button>
                                     </div>
                                     <div className="editable">
                                         <textarea className="editable-textarea trip-description white-input" rows={3}
@@ -291,10 +414,10 @@ function uploadTrip() {
                                         </select>
                                     </div>
                                     <input className="input-auth" ref={tripImageRef} id='trip-image' type='file' accept='image/png, image/jpg, image/jpeg'
-                                        style={{ display: 'none' }} onChange={e => handleTripFile(e.target.files[0])}></input>
+                                        style={{ display: 'none' }} onChange={e => handleTripImage(e.target.files[0])}></input>
 
                                     <div className="flex flex-row items-center gap-5 w-[min-content]">
-                                        <button className="white-border-button update-image-button" type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
+                                        <button className="white-border-button update-image-button " type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
                                         {displayDeleteButton && (
                                             <button className='red-button update-image-button' type='button' onClick={handleDeleteTripImage}>Delete Trip Image</button>
                                         )}
@@ -339,7 +462,8 @@ function uploadTrip() {
                                                     </div>
                                                 }
                                             </div>
-                                            <button className="red-border-button delete-place-button" type='button' onClick={() => deletePlace(index, places, placeImageRefs, setPlaces)}>Delete Place</button>
+                                            <button className="red-border-button delete-place-button" type='button' onClick={() =>
+                                                deletePlace(index, places, placeImageRefs, setPlaces, imagesToDelete, setImagesToDelete)}>Delete Place</button>
                                         </div>
 
                                     ))}
@@ -349,7 +473,7 @@ function uploadTrip() {
                                     )}
                                     <div className="cancel-save-buttons">
                                         <Link to={'/mytrips'}><button className="red-border-button" type='button'>Cancel</button></Link>
-                                        <button className="green-button" type='submit'>Save Trip</button>
+                                        <button className="green-button" type='submit'>Update Trip</button>
                                     </div>
                                 </div>
                             </div>
@@ -372,6 +496,5 @@ function uploadTrip() {
         </>
     )
 }
-
 //Export module
-export default uploadTrip;
+export default editTrip;

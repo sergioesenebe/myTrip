@@ -19,7 +19,6 @@ import nextNonClickableIcon from "../../public/images/next-non-clickable.png";
 import orderByIcon from "../../public/images/order-by-green.png";
 import searchIcon from "../../public/images/search-green.png";
 
-
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -29,6 +28,7 @@ function trips() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [userId, setUserId] = useState('');
     const [trips, setTrips] = useState([]);
     const [tripsSorted, setTripsSorted] = useState([]);
     const [tripsSliced, setTripsSliced] = useState([]);
@@ -90,6 +90,9 @@ function trips() {
                 if (!res.ok) {
                     setIsLoggedIn(false);
                 }
+                //Save user id
+                const json = await res.json();
+                setUserId(json.user_id);
             }
             //If there is an error catch it
             catch (err) {
@@ -503,7 +506,12 @@ function trips() {
                                 </div>
                                 <div className='places'>
                                     {tripsSliced.map((trip, index) => (
-                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => { navigate(`/trips/${trip._id}`) }}>
+                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => {
+                                            if (trip.writer === userId)
+                                                navigate(`/edittrip/${trip._id}`)
+                                            else
+                                                navigate(`/trips/${trip._id}`)
+                                        }}>
                                             <div className='place-content'>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&
@@ -534,7 +542,7 @@ function trips() {
                             {errorMessage && (
                                 <p className="error-message">{errorMessage}</p>
                             )}
-                            {infoMessage && !errorMessage &&(
+                            {infoMessage && !errorMessage && (
                                 <p className='text-center'>{infoMessage}</p>
                             )}
                             <div className='flex flex-row gap-[10px] items-center justify-center'>

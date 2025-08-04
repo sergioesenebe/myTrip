@@ -219,7 +219,6 @@ main {
     color: #ECE7E2;
     z-index: 2;
     padding: 20px;
-    width: 80%;
     display: flex;
     flex-direction: column;
     gap: 20px;

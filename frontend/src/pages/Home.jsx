@@ -63,7 +63,6 @@ function home() {
                     //Get the json and save the state
                     const json = await res.json();
                     setInterestingTrips(json.data);
-                    console.log(json);
                 }
             }
             //Catch the error
@@ -88,7 +87,6 @@ function home() {
                     //Get the json and save the state
                     const json = await res.json();
                     setInterestingUsers(json.data);
-                    console.log(json);
                 }
             }
             //Catch the error

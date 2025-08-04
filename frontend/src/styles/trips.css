@@ -36,6 +36,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: 60%;
 }
 
 .editable:hover {
@@ -103,7 +104,7 @@
         width: 200px;
     }
 
-    .trip-info {
+    .editable {
         width: 100%;
     }
 }
