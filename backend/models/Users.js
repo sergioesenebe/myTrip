@@ -50,6 +50,10 @@ const userSchema = new mongoose.Schema({
     following: {
         type: [String],
         description: "Arrays of usernames followed by the user"
+    },
+    followers: {
+        type: [String],
+        description: "Arrays of usernames that follows the user"
     }
 });
 

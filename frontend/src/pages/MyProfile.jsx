@@ -346,7 +346,7 @@ function uploadTrip() {
                                 <div className="nav-bar-links hidden md:flex gap-12">
                                     <Link to={'/'} className="nav-bar-link">Home</Link>
                                     <Link to={'/trips'} className="nav-bar-link">Trips</Link>
-                                    <a className="nav-bar-link">Travelers</a>
+                                    <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
                                     <Link to='/mytrips' className="nav-bar-link">My Trips</Link>
                                     <a className="nav-bar-link">Saved Trips</a>
                                     <Link to='/myprofile' className="nav-bar-link"><u>My Profile</u></Link>
@@ -363,8 +363,8 @@ function uploadTrip() {
                                     className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Home</Link>
                                 <Link to={'/trips'}
                                     className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Trips</Link>
-                                <a href="#"
-                                    className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Travelers</a>
+                                <Link to={'/travelers'}
+                                    className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Travelers</Link>
                                 {isLoggedIn && (<Link to={'/mytrips'}
                                     className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
                                     Trips</Link>)}

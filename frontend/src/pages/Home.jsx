@@ -115,7 +115,7 @@ function home() {
                                 <div className="nav-bar-links hidden md:flex gap-12">
                                     <Link to={'/'} className="nav-bar-link"><u>Home</u></Link>
                                     <Link to={'/trips'} className="nav-bar-link">Trips</Link>
-                                    <a className="nav-bar-link">Travelers</a>
+                                    <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
                                     {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link">My Trips</Link>)}
                                     {isLoggedIn && (<Link to={''} className="nav-bar-link">Saved Trips</Link>)}
                                     {isLoggedIn && (<Link to='/myprofile' className="nav-bar-link">My Profile</Link>)}

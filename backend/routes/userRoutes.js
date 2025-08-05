@@ -85,7 +85,7 @@ router.put('/me', authenticateJWT, async (req, res) => {
     }
 
 })
-//Get user info that is logged
+//Get all users info
 router.get('/me', authenticateJWT, async (req, res) => {
     try {
         //Get the id
@@ -97,14 +97,14 @@ router.get('/me', authenticateJWT, async (req, res) => {
             { $match: { _id: id } },
             {
                 $project: {
-                    _id: 1,
                     username: 1,
                     email: 1,
                     first_name: 1,
                     second_name: 1,
                     description: 1,
                     avatar: 1,
-                    following: 1
+                    following: 1,
+                    followers: 1,
                 }
             }
         ]);
@@ -117,6 +117,86 @@ router.get('/me', authenticateJWT, async (req, res) => {
     catch (err) {
         console.error('Error getting a specific user: ', err);
         return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Get user info that is logged
+router.get('/', async (req, res) => {
+    try {
+        //Connect to the database
+        await connectToDB();
+        //Find a user with this id
+        const users = await Users.aggregate([
+            { $addFields: { followersCount: { $size: '$followers' } } },
+            { $sort: { followersCount: -1 } },
+            {
+                $project: {
+                    username: 1,
+                    email: 1,
+                    first_name: 1,
+                    second_name: 1,
+                    description: 1,
+                    avatar: 1,
+                    following: 1,
+                    followers: 1,
+                    followersCount: 1,
+                }
+            }
+        ]);
+        //If there is not a user with this id return a message
+        if (!users)
+            return res.status(200).json({ message: 'No users founded', data: users });
+        //Return the data
+        return res.status(200).json({ data: users });
+    }
+    catch (err) {
+        console.error('Error getting a specific user: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Get a trip that match criteria
+router.post('/general-search', async (req, res) => {
+    try {
+        //Connect to the database
+        await connectToDB();
+        //If there is not a name, a city or a country, return a 400
+        if (!req.body.username && !req.body.first_name && !req.body.second_name)
+            return res.status(400).send({ message: 'Please add at list one filter' })
+        //Save the query
+        const query = [];
+        if (req.body.username)
+            query.push({username: { $regex: req.body.username, $options: 'i' }});
+        if (req.body.first_name)
+            query.push({first_name: { $regex: req.body.first_name, $options: 'i' }});
+        if (req.body.second_name)
+            query.push({second_name: { $regex: req.body.second_name, $options: 'i' }});
+        //Do the query with the options
+        const users = await Users.aggregate([
+            { $match: {$or: query} },
+            { $addFields: { followersCount: { $size: '$followers' } } },
+            { $sort: { followersCount: -1 } },
+            {
+                $project: {
+                    username: 1,
+                    email: 1,
+                    first_name: 1,
+                    second_name: 1,
+                    description: 1,
+                    avatar: 1,
+                    following: 1,
+                    followers: 1,
+                    followersCount: 1,
+                }
+            }
+        ]);
+        if (users.length > 0)
+            return res.status(200).json({ data: users });
+        else
+            return res.status(200).json({ message: 'There are not users', data: [] })
+    }
+    //Catch the error
+    catch (err) {
+        console.error('Error getting a specific user: ', err);
+        return res.status(500).json({ message: 'Unexpected error' })
     }
 })
 //Get a specific user

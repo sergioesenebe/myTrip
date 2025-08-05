@@ -43,7 +43,7 @@ function myTrips() {
     const [cities, setCities] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [changeFilter, setChangeFilter] = useState('');
-    const [showMessage, setShowMessage] = useState(true)
+    const [showMessage, setShowMessage] = useState('mine')
     //Get the url
     const url = new URL(window.location.href);
     //Get the params
@@ -64,7 +64,16 @@ function myTrips() {
     //Define navigate
     const navigate = useNavigate();
 
-
+    //Reload when go back
+    useEffect(() => {
+        const handlePopState = () => {
+            window.location.reload();
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, []);
     //Every time the searchParams change, save it
     useEffect(() => {
         //Get the params
@@ -280,7 +289,7 @@ function myTrips() {
         //If is empty show all trips
         if (!searchName) {
             getTrips();
-            setShowMessage(true);
+            setShowMessage('mine');
             url.searchParams.delete('search-trip');
             window.history.pushState(null, '', url.toString());
             return;
@@ -376,10 +385,10 @@ function myTrips() {
                                 <div className="nav-bar-links hidden md:flex gap-12">
                                     <Link to={'/'} className="nav-bar-link">Home</Link>
                                     <Link to={'/trips'} className="nav-bar-link">Trips</Link>
-                                    <a className="nav-bar-link">Travelers</a>
+                                    <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
                                     {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link"><u>My Trips</u></Link>)}
                                     {isLoggedIn && (<Link to={''} className="nav-bar-link">Saved Trips</Link>)}
-                                    {isLoggedIn && (<Link to='/myprofile' className="nav-bar-link">My Profile</Link>)}
+                                    {isLoggedIn && (<Link to={'/myprofile'} className="nav-bar-link">My Profile</Link>)}
                                     {!isLoggedIn && (<Link to={'/login'} className="nav-bar-link">Log In</Link>)}
                                     {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                                 </div>
@@ -437,8 +446,8 @@ function myTrips() {
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Home</Link>
                                     <Link to={'/trips'}
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Trips</Link>
-                                    <a href="#"
-                                        className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Travelers</a>
+                                    <Link to={'/travelers'}
+                                        className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Travelers</Link>
                                     {isLoggedIn && (<Link to={'/mytrips'}
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
                                         Trips</Link>)}
@@ -510,7 +519,7 @@ function myTrips() {
                                 </div>
                                 <div className='places'>
                                     {tripsSliced.map((trip, index) => (
-                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => { navigate(`/trips/${trip._id}`) }}>
+                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => { navigate(`/edittrip/${trip._id}`) }}>
                                             <div className='place-content'>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&

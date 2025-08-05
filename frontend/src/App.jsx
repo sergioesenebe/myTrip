@@ -12,6 +12,7 @@ import Trip from './pages/Trip'
 import MyProfile from './pages/MyProfile'
 import MyTrips from './pages/MyTrips'
 import EditTrip from './pages/EditTrip'
+import Travelers from './pages/Travelers'
 //Import Tailwind library
 import './styles/index.css'
 
@@ -30,6 +31,7 @@ function App() {
         <Route path='/myprofile' element={<MyProfile />} />
         <Route path='/mytrips' element={<MyTrips />} />
         <Route path='/edittrip/:tripId' element={<EditTrip />} />
+        <Route path='/travelers' element={<Travelers />} />
       </Routes>
     </>
   )

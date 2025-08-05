@@ -4,7 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
-import { sortByMostDetailed, sortByLikes, sortByNewest, showTrips, nextPage, previousPage, searchTrip, getCountries, getCities } from '../services/showTrips'
+import { nextPage, previousPage, showTrips } from '../services/showTrips'
 //Import images
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
@@ -18,45 +18,43 @@ import previousNonClickableIcon from "../../public/images/previous-non-clickable
 import nextNonClickableIcon from "../../public/images/next-non-clickable.png";
 import orderByIcon from "../../public/images/order-by-green.png";
 import searchIcon from "../../public/images/search-green.png";
+import notFollowed from "../../public/images/follow-green.png"
+import notFollowedWhite from "../../public/images/follow-white.png"
+import followed from "../../public/images/user-white.png"
 
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-//Function to upload a trip
-function trips() {
+//Function to get the users
+function travelers() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [userId, setUserId] = useState('');
-    const [trips, setTrips] = useState([]);
-    const [tripsSorted, setTripsSorted] = useState([]);
-    const [tripsSliced, setTripsSliced] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [usersFiltered, setUsersFiltered] = useState([]);
+    const [usersSliced, setUsersSliced] = useState([]);
+    const [filter, setFilter] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [infoMessage, setInfoMessage] = useState('');
     const [previous, setPrevious] = useState(false);
     const [next, setNext] = useState(false);
     const [maxPages, setMaxPages] = useState('');
     const [orderByOpen, setOrderByOpen] = useState(false);
-    const [searchByLocation, setSearchByLocation] = useState(false);
-    const [countries, setCountries] = useState([]);
-    const [cities, setCities] = useState([]);
-    const [searchParams, setSearchParams] = useSearchParams();
     const [changeFilter, setChangeFilter] = useState('');
+    const [usersSaved, setUsersSaved] = useState(false);
     //Get the url
     const url = new URL(window.location.href);
     //Get the params
     const page = parseInt(url.searchParams.get('page')) || 1;
-    const sortParam = url.searchParams.get('sort') || 'most-liked';
-    const country = url.searchParams.get('search-country') || '';
-    const city = url.searchParams.get('search-city') || '';
-    const trip = url.searchParams.get('search-trip') || '';
+    const sortParam = url.searchParams.get('sort') || 'all-users';
+    const search = url.searchParams.get('search') || '';
     //Save the states
     const [navPage, setNavPage] = useState(page);
     const [sort, setSort] = useState(sortParam);
-    const [searchCountry, setSearchCountry] = useState(country);
-    const [searchCity, setSearchCity] = useState(city);
-    const [searchName, setSearchName] = useState(trip);
+    const [searchName, setSearchName] = useState(search);
+    const [followIcon, setFollowIcon] = useState([])
 
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
@@ -77,16 +75,12 @@ function trips() {
     useEffect(() => {
         //Get the params
         const page = parseInt(url.searchParams.get('page')) || 1;
-        const sortParam = url.searchParams.get('sort') || 'most-liked';
-        const country = url.searchParams.get('search-country') || '';
-        const city = url.searchParams.get('search-city') || '';
-        const trip = url.searchParams.get('search-trip') || '';
+        const filterParam = url.searchParams.get('filter') || 'all-users';
+        const search = url.searchParams.get('search') || '';
         //Save the state
         setNavPage(page);
-        setSort(sortParam);
-        setSearchCountry(country);
-        setSearchCity(city);
-        setSearchName(trip);
+        setFilter(filterParam);
+        setSearchName(search);
     }, [url.searchParams.toString()]);
 
 
@@ -98,10 +92,12 @@ function trips() {
                 //If it's logged in save the state
                 if (!res.ok) {
                     setIsLoggedIn(false);
+                    return;
                 }
                 //Save user id
                 const json = await res.json();
-                setUserId(json.user_id);
+                const user = json.user_id;
+                setUserId(user);
             }
             //If there is an error catch it
             catch (err) {
@@ -110,27 +106,26 @@ function trips() {
         }
         checkAuth();
     }, [])
-    //When create the DOM get the data
+    //When user checked get the data
     useEffect(() => {
-        const manageTripsToShow = async () => {
+        const manageUsersToShow = async () => {
             if (searchName)
                 handleSearchByName();
-            else if (searchCity && searchCountry)
-                handleSearchByCountryCity();
+            else if (filter)
+                changeFilterUser(filter);
             else
-                getTrips();
+                getUsers();
         }
-        manageTripsToShow();
+        manageUsersToShow();
     }, [])
-    //When trips defined order by sort
+    //When users defined filter
     useEffect(() => {
-        if (sort === 'most-detailed')
-            handleSortByMostDetailed()
-        else if (sort === 'newest')
-            handleSortByNewest()
-        else
-            handleSortByMostLikes();
-    }, [trips])
+        if (filter === 'all-users')
+            handleFilterByAllUsers();
+        else if (filter === 'followed' && sort !== 'followed')
+            handleFilterByFollowedUsers();
+
+    }, [users])
     //When somebody click somewhere and the order by menu is open, close it
     useEffect(() => {
         //When a click anywhere check if it's open
@@ -139,105 +134,55 @@ function trips() {
             document.removeEventListener('click', handleCloseOrderBy);
         };
     }, [orderByOpen]);
-    //Get all countries with an API
-    useEffect(() => {
-        async function handleGetCountries() {
-            try {
-                await getCountries(setCountries);
-                //If country already selected call handle country change
-                if (country) {
-                    handleCountryChange(country);
-                    setSearchByLocation(true);
-                }
-            }
-            catch (err) {
-                //Log the error and set the message in state
-                console.error("Error getting the countries: ", err);
-                setErrorMessage("Could not load countries");
-                //If there is a time out clear it and show a message for 10 seconds
-                if (timeOutId.current) clearTimeout(timeOutId.current);
-                timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-            }
-        }
-        //Call async function
-        handleGetCountries();
-    }, [])
-    //Order by most detailed
-    async function handleSortByMostDetailed() {
-        try {
-            const sorted = await sortByMostDetailed(trips)
-            //Save the state
-            setTripsSorted(sorted);
-            //Show trips
-            showTrips(sorted, 'most-detailed', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url);
-        }
-        //Catch the error
-        catch (err) {
-            console.error('Error sorting most detailed trips: ', err);
-            setErrorMessage('Error sorting the trips');
-        }
-
-    }
-    //Order By Likes
-    async function handleSortByMostLikes() {
-        try {
-            const sorted = await sortByLikes(trips);
-            //Save the state
-            setTripsSorted(sorted);
-            //Show trips
-            showTrips(sorted, 'most-liked', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url);
-
-        }
-        //Catch the error
-        catch (err) {
-            console.error('Error sorting most liked trips: ', err);
-            setErrorMessage('Error sorting the trips');
-        }
-
-    }
-    //Order By Created Dates
-    async function handleSortByNewest() {
-        try {
-            const sorted = await sortByNewest(trips)
-            //Save the state
-            setTripsSorted(sorted);
-            //Show trips
-            showTrips(sorted, 'newest', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url);
-        }
-        //Catch the error
-        catch (err) {
-            console.error('Error sorting newest trips: ', err);
-            setErrorMessage('Error sorting the trips');
-        }
-
-    }
     //Go to next page
     async function handleNextPage() {
-        await nextPage(navPage, maxPages, setNext, setPrevious, tripsSorted, setTripsSliced, url);
+        await nextPage(navPage, maxPages, setNext, setPrevious, usersFiltered, setUsersSliced, url);
     }
     //Go to previous page
     async function handlePreviousPage() {
-        await previousPage(navPage, maxPages, tripsSorted, setTripsSliced, setPrevious, setNext, url);
+        await previousPage(navPage, maxPages, usersFiltered, setUsersSliced, setPrevious, setNext, url);
     }
-    //Get trips
-    const getTrips = async () => {
+    //When get the users remove theirself
+    useEffect(() => {
+        if (usersSaved) {
+            //If user is logged in delete their user
+            let copy = [...users];
+            if (userId !== '' && users.length > 0) {
+                copy = users.filter((user) => user._id !== userId)
+            }
+            //Save an array with users if followed followed, else notFollowed
+            copy.map((user, index) => {
+                if (user.followers.includes(userId))
+                    copy[index].followed = followed;
+                else
+                    copy[index].followed = notFollowed;
+            })
+            setUsers(copy);
+        }
+        setUsersSaved(false)
+    }, [usersSaved, userId])
+    //Get users
+    const getUsers = async () => {
         try {
-            //Fetch the api to get all trips
-            const res = await fetch(`${backendUrl}/api/trips/`)
-            //If it's okay update the state of the trips
+            //Fetch the api to get all users
+            const res = await fetch(`${backendUrl}/api/users/`)
+            //If it's okay update the state of the users
             if (!res.ok) {
-                setErrorMessage('Error getting the trips');
+                setErrorMessage('Error getting the users');
             }
             else {
                 //Get the json and save the state
                 const json = await res.json();
-                setTrips(json.data);
+                const data = json.data;
+                setUsers(data);
+                //Finally save the state users have been added (if not there will be a loop in the useeffect)
+                setUsersSaved(true);
             }
         }
         //Catch the error
         catch (err) {
-            console.error('Error getting trips: ', err);
-            setErrorMessage('Error getting the trips');
+            console.error('Error getting users: ', err);
+            setErrorMessage('Error getting the users');
         }
     };
     //Function to close order by
@@ -247,36 +192,30 @@ function trips() {
             setOrderByOpen(false);
         }
     }
-    //Change the order
-    function changeOrder(order) {
-        if (order === 'most-detailed' && sort !== 'most-detailed')
-            handleSortByMostDetailed();
-        else if (order === 'most-liked' && sort !== 'most-liked')
-            handleSortByMostLikes();
-        else if (order === 'newest' && sort !== 'newest')
-            handleSortByNewest();
-    }
-    //Get all cities by a country
-    async function handleCountryChange(selectedCountry) {
-        setSearchCountry(selectedCountry);
-        //If is selected any country return
-        if (selectedCountry === 'Any Country') {
-            setCities([]);
-            return;
-        }
+    //Show all users
+    function handleFilterByAllUsers() {
         try {
-            await getCities(selectedCountry, setCities)
-            if (city)
-                handleSearchByCountryCity();
+            setUsersFiltered(users);
+            //Show trips
+            showTrips(users, 'all-users', setInfoMessage, setMaxPages, setNext, setPrevious, setUsersSliced, changeFilter, sort, navPage, url, 'users');
         }
+        //Catch the error
         catch (err) {
-            //Log the error and set the message in state
-            console.error("Error getting the citties: ", err);
-            setErrorMessage("Could not load cities");
-            //If there is a time out clear it and show a message for 10 seconds
-            if (timeOutId.current) clearTimeout(timeOutId.current);
-            timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+            console.error('Error filtering all users: ', err);
+            setErrorMessage('Error filtering the users');
         }
+    }
+    function handleFilterByFollowedUsers() {
+        const filtered = users.filter((user) => user.followed == followed)
+        setUsersFiltered(filtered);
+        showTrips(filtered, 'followed', setInfoMessage, setMaxPages, setNext, setPrevious, setUsersSliced, changeFilter, sort, navPage, url, 'users');
+    }
+    //Change the order
+    function changeFilterUser(filtering) {
+        if (filtering === 'all-users' && filter !== 'all-users')
+            handleFilterByAllUsers();
+        else if (filtering === 'followed' && sort !== 'followed')
+            handleFilterByFollowedUsers();
     }
     //Search a trip that contains this name
     async function handleSearchByName(e) {
@@ -285,75 +224,41 @@ function trips() {
             e.preventDefault();
             setChangeFilter(true);
         }
-        //Remove search city and country just in case
-        url.searchParams.delete('search-country');
-        url.searchParams.delete('search-city');
-        window.history.pushState(null, '', url.toString());
-        //If is empty show all trips
+        //If is empty show all users change show messag to change info message in case is searching for all users or specific
         if (!searchName) {
-            getTrips();
-            url.searchParams.delete('search-trip');
+            getUsers();
+            url.searchParams.delete('search');
             window.history.pushState(null, '', url.toString());
             return;
         }
+        //Search users with the searchName used
         try {
-            const body = { name: searchName }
-            searchTrip(url, body, setTrips)
+            const body = { usename: searchName, first_name: searchName, second_name: searchName }
+            //fetch the search with the body send it
+            const res = await fetch(`${backendUrl}/api/users/general-search`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+            //If the result is not ok, send a message
+            if (!res.ok) {
+                throw new Error('Unexpected Error');
+            }
+            //Get the json and save the state
+            const json = await res.json();
+            setUsers(json.data);
+            //Save in the url
+            if (searchName) {
+                url.searchParams.set('search', searchName);
+                window.history.pushState(null, '', url.toString());
+            }
+            //Save the state of trips
+            setUsersSaved(true);
         }
         catch (err) {
-            console.error('Error searching a trip: ', err);
-            setErrorMessage('Unexpected Error')
-            //If there is a time out clear it and show a message for 10 seconds
-            if (timeOutId.current) clearTimeout(timeOutId.current);
-            timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
-        }
-    }
-    //Search a trip by the country or city
-    async function handleSearchByCountryCity(e) {
-        //Don't reload the page and change to state change filter (do it by hand)
-        if (e) {
-            e.preventDefault();
-            setChangeFilter(true);
-            setChangeFilter(true);
-        }
-        //Remove search city and country just in case
-        url.searchParams.delete('search-country');
-        url.searchParams.delete('search-city');
-        url.searchParams.delete('search-trip');
-        window.history.pushState(null, '', url.toString());
-        //If is selected any country get all the trips
-        if (searchCountry === 'Any Country') {
-            url.searchParams.delete('search-country');
-            url.searchParams.delete('search-city');
-            url.searchParams.delete('search-trip');
-            window.history.pushState(null, '', url.toString());
-            setSearchCity('');
-            setSearchCountry('');
-            getTrips();
-            return;
-        }
-        //Remove the search trip just in case
-        url.searchParams.delete('search-trip');
-        window.history.pushState(null, '', url.toString());
-        //If there is no country show an alert
-        if (!searchCountry) {
-            alert('Please add a country');
-            return;
-        }
-        const body = { country: searchCountry }
-        //Define the body (country and city or just city)
-        if (searchCity && searchCity !== 'Any City') {
-            body.city = searchCity;
-        }
-        if (searchCity === 'Any City') {
-            url.searchParams.set('search-city', 'Any City');
-            window.history.pushState(null, '', url.toString());
-        }
-        try {
-            searchTrip(url, body, setTrips)
-        }
-        catch (err) {
-            console.error('Error searching a trip: ', err);
+            console.error('Error searching a user: ', err);
             setErrorMessage('Unexpected Error')
             //If there is a time out clear it and show a message for 10 seconds
             if (timeOutId.current) clearTimeout(timeOutId.current);
@@ -383,8 +288,8 @@ function trips() {
                                 {/*Links visibles in desktop*/}
                                 <div className="nav-bar-links hidden md:flex gap-12">
                                     <Link to={'/'} className="nav-bar-link">Home</Link>
-                                    <Link to={'/trips'} className="nav-bar-link"><u>Trips</u></Link>
-                                    <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
+                                    <Link to={'/trips'} className="nav-bar-link">Trips</Link>
+                                    <Link to={'/travelers'} className="nav-bar-link"><u>Travelers</u></Link>
                                     {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link">My Trips</Link>)}
                                     {isLoggedIn && (<Link to={''} className="nav-bar-link">Saved Trips</Link>)}
                                     {isLoggedIn && (<Link to='/myprofile' className="nav-bar-link">My Profile</Link>)}
@@ -393,42 +298,13 @@ function trips() {
                                 </div>
                             </nav>
                             <div className="top-content-centered">
-                                {!searchByLocation && <form className="top-content-centered" onSubmit={(e) => handleSearchByName(e)}>
+                                <form className="top-content-centered" onSubmit={(e) => handleSearchByName(e)}>
                                     <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between gap-[5px] items-center'>
-                                        <input className='transparent-input w-[430px]' placeholder={`Look for a Trip`}
+                                        <input className='transparent-input w-[430px]' placeholder={`Look for a Traveler`}
                                             value={searchName} onChange={(e) => setSearchName(e.target.value)} />
                                         <button type='submit'><img src={searchIcon} className='w-[30px] h-[30px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
                                     </div>
-                                </form>}
-                                {searchByLocation && <form className="top-content-centered" onSubmit={(e) => handleSearchByCountryCity(e)}>
-                                    <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between items-center gap-[5px]'>
-                                        <select required className="green-select text-black w-[215px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
-                                            <option value='' disabled >Select a Country</option>
-                                            <option value='Any Country'>Any Country</option>
-                                            {countries.map(c => (
-                                                <option key={c.iso2} value={c.country}>{c.country}</option>
-                                            ))}
-                                        </select>
-                                        <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[215px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
-                                            <option value='' disabled>Select a City</option>
-                                            {searchCountry && searchCountry !== 'Any Country' && (<option value='Whole Country'>Whole Country</option>)}
-                                            {searchCountry && searchCountry !== 'Any Country' && (<option value='Any City'>Any City</option>)}
-                                            {cities.map(c => (
-                                                <option key={c} value={c}>{c}</option>
-                                            ))}
-                                        </select>
-                                        <button type='submit'><img src={searchIcon} className='w-[30px] h-[30px] p-[5px] rounded-full clickable bg-[#ECE7E2]' /></button>
-                                    </div>
-                                </form>}
-                                <p className='text-[#ECE7E2]'>Search By</p>
-                                <div className='rounded-[10px] bg-[#ECE7E2] w-[300px] flex flex-row items-center'>
-                                    <div className={`${!searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[150px] p-[5px] rounded-tl-[10px] rounded-bl-[10px]`}
-                                        onClick={() => setSearchByLocation(false)}>
-                                        Trip</div>
-                                    <div className={`${searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[150px] p-[5px] rounded-tr-[10px] rounded-br-[10px]`}
-                                        onClick={() => setSearchByLocation(true)}>
-                                        Country and City</div>
-                                </div>
+                                </form>
                                 {/*Links visibles in mobile, here to show it above the trip info*/}
                                 {menuOpen && (<div id="mobile-menu"
                                     className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -466,7 +342,7 @@ function trips() {
                         <div id='trip-places' className="flex flex-col gap-[50px]">
                             <div className='flex flex-col gap-[20px]'>
                                 <div className='flex flex-row justify-between items-center'>
-                                    <h1 className="text-3xl font-bold text-[#004643]">Trips</h1>
+                                    <h1 className="text-3xl font-bold text-[#004643]">Travelers</h1>
                                     <div className="relative inline-block">
                                         {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                             /*Prevent default and allow click it instead of the document page*/
@@ -476,71 +352,75 @@ function trips() {
                                         }}></img></div>}
                                         {orderByOpen && (
                                             <div className='shadow-md text-[16px] bg-[#f3f1ef] rounded-[10px] absolute top-full right-0 mt-2 w-[150px] z-[999]'>
-                                                <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                <div className={`${filter === 'all-users' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();
                                                     e.stopPropagation();
                                                     /*Close the oreder menu*/
                                                     handleCloseOrderBy();
                                                     /*Change order*/
-                                                    changeOrder('most-liked');
+                                                    changeFilterUser('all-users');
                                                 }}>
-                                                    <p>Most Liked</p>
+                                                    <p>All Users</p>
                                                 </div>
-                                                <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                <div className={`${filter === 'followed' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-bl-[10px] rounded-br-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();
                                                     e.stopPropagation();
                                                     /*Close the oreder menu*/
                                                     handleCloseOrderBy();
                                                     /*Change order*/
-                                                    changeOrder('newest');
+                                                    changeFilterUser('followed');
                                                 }}>
-                                                    <p>Newest</p>
-                                                </div>
-                                                <div className={`${sort === 'most-detailed' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-bl-[10px] rounded-br-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
-                                                    /*Prevent default and allow click it instead of the document page*/
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    /*Close the oreder menu*/
-                                                    handleCloseOrderBy();
-                                                    /*Change order*/
-                                                    changeOrder('most-detailed');
-                                                }}>
-                                                    <p>Most Detailed</p>
+                                                    <p>Followed</p>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
                                 </div>
                                 <div className='places'>
-                                    {tripsSliced.map((trip, index) => (
+                                    {usersSliced.map((user, index) => (
+
                                         <div className='place clickable border rounded-[10px] border-white' onClick={() => {
-                                            if (trip.writer === userId)
-                                                navigate(`/edittrip/${trip._id}`)
-                                            else
-                                                navigate(`/trips/${trip._id}`)
+                                            {/*
+                                                navigate(`/users/${user._id}`)*/}
                                         }}>
                                             <div className='place-content'>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&
                                                     <div className="left-place">
-                                                        <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
+                                                        <img className="place-image aspect-square md:w-[400px] w-[300px] rounded-full" src={user.avatar} />
                                                     </div>
                                                 }
-                                                <div className="right-place flex gap-[15px]">
-                                                    <h1 required className="place-name text-[#004643]" placeholder="Place Name">{trip.name}</h1>
+                                                <div className="right-place flex gap-[5px]">
+                                                    <h1 className="place-name text-[#004643]">{user.username}</h1>
+                                                    <h2 className="text-[#004643] text-[24px] md:text-[30px]">{user.first_name} {user.second_name}</h2>
                                                     <p className="place-description"
-                                                        placeholder="Place Description">{trip.description}</p>
-                                                    <p>{trip.country}, {trip.city}</p>
-                                                    <div className='flex flex-row gap-[10px] items-center'>
-                                                        <img src={trip.avatar} className='w-[35px] h-[35px] border border-white rounded-full' />
-                                                        <p>{trip.username}</p>
-                                                    </div>
+                                                        placeholder="Place Description">{user.description}</p>
+                                                    {(user.followed == notFollowed || user.followed == notFollowedWhite) && <button className='green-border-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                                        onMouseEnter={() => {
+                                                            const copy = [...users];
+                                                            copy[index].followed = notFollowedWhite;
+                                                            setUsers(copy);
+                                                        }}
+                                                        onMouseLeave={() => {
+                                                            const copy = [...users];
+                                                            copy[index].followed = notFollowed;
+                                                            setUsers(copy);
+                                                        }}
+                                                    >
+                                                        Follow
+                                                        <img className='w-[15px] h-[15px]' src={user.followed}></img>
+                                                    </button>}
+                                                    {user.followed == followed && <button className='green-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                                    >
+                                                        Followed
+                                                        <img className='w-[15px] h-[15px]' src={user.followed}></img>
+                                                    </button>}
                                                 </div>
                                                 {index % 2 !== 0 &&
                                                     <div className="left-place">
-                                                        <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
+                                                        <img className="place-image md:h-[500px] md:w-[500px] h-[300px] w-[300px] rounded-full" src={user.avatar} />
                                                     </div>
                                                 }
                                             </div>
@@ -581,4 +461,4 @@ function trips() {
 }
 
 //Export module
-export default trips;
+export default travelers;

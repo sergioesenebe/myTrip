@@ -47,14 +47,18 @@ export async function sortByNewest(trips) {
         throw new Error('Error sorting the trips');
     }
 }
-export function showTrips(sorted, order, setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url, mine) {
+export function showTrips(sorted, order, setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url, type) {
     //Substract one (in case there are a multiple of six don't add one), split by 6 to get number of pages and then add 1
     const max = Math.floor((sorted.length - 1) / 6) + 1;
     setMaxPages(max);
     //If there is no trips show a message and return
     if (sorted.length === 0) {
-        if (mine)
+        if (type === 'mine')
             setInfoMessage("Looks like you don't have trips yet");
+        if (type === 'users')
+            setInfoMessage("Looks like there are no users yet");
+        if (type === 'users-search')
+            setInfoMessage("No users match your criteria");
         else
             setInfoMessage('No trips match your criteria');
         setNext(false);
@@ -94,6 +98,11 @@ export function showTrips(sorted, order, setInfoMessage, setMaxPages, setNext, s
     }
     setTripsSliced(sliced);
     //Save params in the url
+    if (order === 'all-users' || order === 'followed') {
+        url.searchParams.set('filter', order);
+        window.history.pushState(null, '', url.toString());
+        return
+    }
     url.searchParams.set('sort', order);
     window.history.pushState(null, '', url.toString());
 }
