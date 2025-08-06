@@ -62,6 +62,23 @@ main {
     padding: 5px;
 }
 
+/*Button white when hover (darker and cursor)*/
+.white-button:hover {
+    cursor: pointer;
+    background-color: #ECE7E2;
+    color: #004643;
+}
+
+/*Button white color*/
+.white-button {
+    background-color: #ECE7E2CC;
+    border: none;
+    border-radius: 5px;
+    color: #004643;
+    padding: 5px;
+}
+
+
 /*Button border green when hover (darker and cursor)*/
 .green-border-button:hover {
     cursor: pointer;

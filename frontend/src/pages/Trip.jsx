@@ -154,8 +154,8 @@ function uploadTrip() {
                                 <p className="text-white">{tripCountry}, {tripCity}</p>
                             </div>
                             <div className='flex flex-row gap-[10px] items-center'>
-                                <img src={writerAvatar} className='w-[35px] h-[35px] border border-white rounded-full clickable' />
-                                <p>{writer}</p>
+                                <img src={writerAvatar} className='w-[50px] h-[50px] border border-white rounded-full clickable' onClick={(e) => {e.preventDefault(); navigate(`/travelers/${writerId}`)}}/>
+                                <p className='text-[16px]'>{writer}</p>
                             </div>
                         </div>
                     </div>

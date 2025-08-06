@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema({
         description: "Arrays of usernames followed by the user"
     },
     followers: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         description: "Arrays of usernames that follows the user"
     }
 });

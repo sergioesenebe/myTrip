@@ -5,6 +5,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import "../styles/index.css";
 import "../styles/common.css";
 import { nextPage, previousPage, showTrips } from '../services/showTrips'
+import { followUser, unfollowUser } from '../services/userActionsService';
 //Import images
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
@@ -16,7 +17,7 @@ import previousIcon from "../../public/images/previous.png";
 import nextIcon from "../../public/images/next.png";
 import previousNonClickableIcon from "../../public/images/previous-non-clickable.png";
 import nextNonClickableIcon from "../../public/images/next-non-clickable.png";
-import orderByIcon from "../../public/images/order-by-green.png";
+import filterIcon from "../../public/images/filter-green.png";
 import searchIcon from "../../public/images/search-green.png";
 import notFollowed from "../../public/images/follow-green.png"
 import notFollowedWhite from "../../public/images/follow-white.png"
@@ -44,6 +45,7 @@ function travelers() {
     const [orderByOpen, setOrderByOpen] = useState(false);
     const [changeFilter, setChangeFilter] = useState('');
     const [usersSaved, setUsersSaved] = useState(false);
+    const [showMessage, setShowMessage] = useState('users');
     //Get the url
     const url = new URL(window.location.href);
     //Get the params
@@ -197,7 +199,7 @@ function travelers() {
         try {
             setUsersFiltered(users);
             //Show trips
-            showTrips(users, 'all-users', setInfoMessage, setMaxPages, setNext, setPrevious, setUsersSliced, changeFilter, sort, navPage, url, 'users');
+            showTrips(users, 'all-users', setInfoMessage, setMaxPages, setNext, setPrevious, setUsersSliced, changeFilter, sort, navPage, url, showMessage);
         }
         //Catch the error
         catch (err) {
@@ -208,7 +210,7 @@ function travelers() {
     function handleFilterByFollowedUsers() {
         const filtered = users.filter((user) => user.followed == followed)
         setUsersFiltered(filtered);
-        showTrips(filtered, 'followed', setInfoMessage, setMaxPages, setNext, setPrevious, setUsersSliced, changeFilter, sort, navPage, url, 'users');
+        showTrips(filtered, 'followed', setInfoMessage, setMaxPages, setNext, setPrevious, setUsersSliced, changeFilter, sort, navPage, url, showMessage);
     }
     //Change the order
     function changeFilterUser(filtering) {
@@ -226,6 +228,7 @@ function travelers() {
         }
         //If is empty show all users change show messag to change info message in case is searching for all users or specific
         if (!searchName) {
+            setShowMessage('users')
             getUsers();
             url.searchParams.delete('search');
             window.history.pushState(null, '', url.toString());
@@ -233,6 +236,7 @@ function travelers() {
         }
         //Search users with the searchName used
         try {
+            setShowMessage('users-search')
             const body = { usename: searchName, first_name: searchName, second_name: searchName }
             //fetch the search with the body send it
             const res = await fetch(`${backendUrl}/api/users/general-search`, {
@@ -263,6 +267,32 @@ function travelers() {
             //If there is a time out clear it and show a message for 10 seconds
             if (timeOutId.current) clearTimeout(timeOutId.current);
             timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
+        }
+    }
+    //Handle follow a user
+    async function handleFollowUser(e, travelerId, index) {
+        //Prevent to click in bigger div
+        e.stopPropagation();
+        try {
+            //Call the function to follow a traveler
+            await followUser(travelerId, followed, usersSliced, setUsersSliced, index);
+        }
+        catch (err) {
+            console.error('Error following a user: ', err);
+            alert('Unexpected error');
+        }
+    }
+    //Handle follow a user
+    async function handleUnfollowUser(e, travelerId, index) {
+        //Prevent to click in bigger div
+        e.stopPropagation();
+        try {
+            //Call the function to unfollow a traveler
+            await unfollowUser(travelerId, notFollowed, usersSliced, setUsersSliced, index);
+        }
+        catch (err) {
+            console.error('Error following a user: ', err);
+            alert('Unexpected error');
         }
     }
     //DOM
@@ -341,10 +371,10 @@ function travelers() {
                         </div>
                         <div id='trip-places' className="flex flex-col gap-[50px]">
                             <div className='flex flex-col gap-[20px]'>
-                                <div className='flex flex-row justify-between items-center'>
+                                <div className='flex flex-row justify-between items-center gap-[20px]'>
                                     <h1 className="text-3xl font-bold text-[#004643]">Travelers</h1>
                                     <div className="relative inline-block">
-                                        {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
+                                        {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={filterIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                             /*Prevent default and allow click it instead of the document page*/
                                             e.preventDefault();
                                             e.stopPropagation();
@@ -385,7 +415,7 @@ function travelers() {
                                             {/*
                                                 navigate(`/users/${user._id}`)*/}
                                         }}>
-                                            <div className='place-content'>
+                                            <div className='place-content' onClick={() => navigate(`/travelers/${user._id}`)}>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&
                                                     <div className="left-place">
@@ -408,11 +438,13 @@ function travelers() {
                                                             copy[index].followed = notFollowed;
                                                             setUsers(copy);
                                                         }}
+                                                        onClick={(e) => handleFollowUser(e, user._id, index)}
                                                     >
                                                         Follow
                                                         <img className='w-[15px] h-[15px]' src={user.followed}></img>
                                                     </button>}
                                                     {user.followed == followed && <button className='green-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                                        onClick={(e) => handleUnfollowUser(e, user._id, index)}
                                                     >
                                                         Followed
                                                         <img className='w-[15px] h-[15px]' src={user.followed}></img>
@@ -420,7 +452,7 @@ function travelers() {
                                                 </div>
                                                 {index % 2 !== 0 &&
                                                     <div className="left-place">
-                                                        <img className="place-image md:h-[500px] md:w-[500px] h-[300px] w-[300px] rounded-full" src={user.avatar} />
+                                                        <img className="place-image aspect-square md:w-[400px] w-[300px] rounded-full" src={user.avatar} />
                                                     </div>
                                                 }
                                             </div>

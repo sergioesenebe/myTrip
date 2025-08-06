@@ -55,10 +55,12 @@ export function showTrips(sorted, order, setInfoMessage, setMaxPages, setNext, s
     if (sorted.length === 0) {
         if (type === 'mine')
             setInfoMessage("Looks like you don't have trips yet");
-        if (type === 'users')
+        else if (type === 'users')
             setInfoMessage("Looks like there are no users yet");
-        if (type === 'users-search')
+        else if (type === 'users-search')
             setInfoMessage("No users match your criteria");
+        else if (type === 'traveler')
+            setInfoMessage("Looks like this traveler don't have trips yet");
         else
             setInfoMessage('No trips match your criteria');
         setNext(false);

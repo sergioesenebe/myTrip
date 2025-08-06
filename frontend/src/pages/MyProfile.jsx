@@ -354,10 +354,15 @@ function uploadTrip() {
                             </nav>
                             {/*Links visibles in mobile, here to show it above the trip info*/}
                             {menuOpen && (<div id="mobile-menu"
-                                className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
+                                className="fixed inset-0 z-[999] bg-[#004643] text-[#ECE7E2] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
                                 <button id="close-menu" type='button' className="absolute top-4 right-4">
                                     <img src={closeIcon} alt="Close Menu"
-                                        className="w-6 h-6 sm:w-8 sm:h-8 hover:opacity-80 transition-opacity cursor-pointer" onClick={() => { setMenuOpen(false) }} />
+                                        className="w-6 h-6 sm:w-8 sm:h-8 hover:opacity-80 transition-opacity cursor-pointer" onClick={(e) => {
+                                            /*Prevent default and allow click it instead of the document page*/
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setMenuOpen(false);
+                                        }} />
                                 </button>
                                 <Link to={'/'}
                                     className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Home</Link>

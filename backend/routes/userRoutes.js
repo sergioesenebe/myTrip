@@ -85,7 +85,7 @@ router.put('/me', authenticateJWT, async (req, res) => {
     }
 
 })
-//Get all users info
+//Get users that is logged info
 router.get('/me', authenticateJWT, async (req, res) => {
     try {
         //Get the id
@@ -119,7 +119,7 @@ router.get('/me', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
-//Get user info that is logged
+//Get all users info
 router.get('/', async (req, res) => {
     try {
         //Connect to the database
@@ -164,14 +164,14 @@ router.post('/general-search', async (req, res) => {
         //Save the query
         const query = [];
         if (req.body.username)
-            query.push({username: { $regex: req.body.username, $options: 'i' }});
+            query.push({ username: { $regex: req.body.username, $options: 'i' } });
         if (req.body.first_name)
-            query.push({first_name: { $regex: req.body.first_name, $options: 'i' }});
+            query.push({ first_name: { $regex: req.body.first_name, $options: 'i' } });
         if (req.body.second_name)
-            query.push({second_name: { $regex: req.body.second_name, $options: 'i' }});
+            query.push({ second_name: { $regex: req.body.second_name, $options: 'i' } });
         //Do the query with the options
         const users = await Users.aggregate([
-            { $match: {$or: query} },
+            { $match: { $or: query } },
             { $addFields: { followersCount: { $size: '$followers' } } },
             { $sort: { followersCount: -1 } },
             {
@@ -199,6 +199,89 @@ router.post('/general-search', async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' })
     }
 })
+//Follow a user user
+router.put('/follow/:id', authenticateJWT, async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add the id of the traveler you want to follow' })
+        //Get the id of the followed user
+        const followedId = new mongoose.Types.ObjectId(req.params.id);
+        //Get the id of the  user
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        console.log('id: ', id);
+        console.log('req user: ', req.user.id);
+        //Connect to the database
+        await connectToDB();
+        //Update user followed
+        const follow = await Users.updateOne(
+            { _id: followedId },
+            {
+                $addToSet: {
+                    followers: id
+                }
+            }
+        );
+        const followUser = await Users.updateOne(
+            { _id: id },
+            {
+                $addToSet: {
+                    following: followedId
+                }
+            }
+        );
+
+        if (follow.matchedCount === 0 || followUser.matchedCount === 0)
+            return res.status(404).json({ data: 'Traveler not found' });
+        if (follow.modifiedCount === 0 || followUser.modifiedCount === 0)
+            return res.status(409).json({ data: 'Traveler already followed' });
+        //Return the data
+        return res.status(201).json({ data: 'Traveler Followed' });
+    }
+    catch (err) {
+        console.error('Error following a traveler: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Unfollow a user user
+router.delete('/unfollow/:id', authenticateJWT, async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add the id of the traveler you want to unfollow' })
+        //Get the id of the followed user
+        const unfollowedId = new mongoose.Types.ObjectId(req.params.id);
+        //Get the id of the  user
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to the database
+        await connectToDB();
+        //Update user followed
+        const unfollow = await Users.updateOne(
+            { _id: unfollowedId },
+            {
+                $pull: {
+                    followers: id
+                }
+            }
+        );
+        const unfollowUser = await Users.updateOne(
+            { _id: id },
+            {
+                $pull: {
+                    following: unfollowedId
+                }
+            }
+        );
+        if (unfollow.matchedCount === 0 || unfollowUser.matchedCount === 0)
+            return res.status(404).json({ data: 'Traveler not found' });
+        if (unfollow.modifiedCount === 0 || unfollowUser.modifiedCount === 0)
+            return res.status(409).json({ data: 'Traveler was not followed' });
+        //Return the data
+        return res.status(200).json({ data: 'Traveler Unfollowed' });
+    }
+    catch (err) {
+        console.error('Error unfollowing a traveler: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
 //Get a specific user
 router.get('/:id', async (req, res) => {
     try {
@@ -220,7 +303,8 @@ router.get('/:id', async (req, res) => {
                     second_name: 1,
                     description: 1,
                     avatar: 1,
-                    following: 1
+                    following: 1,
+                    followers: 1,
                 }
             }
         ]);

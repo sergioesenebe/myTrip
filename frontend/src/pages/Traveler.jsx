@@ -1,10 +1,11 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
 import { sortByMostDetailed, sortByLikes, sortByNewest, showTrips, nextPage, previousPage, searchTrip, getCountries, getCities } from '../services/showTrips'
+import { followUser, unfollowUser } from '../services/userActionsService';
 //Import images
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
@@ -18,17 +19,22 @@ import previousNonClickableIcon from "../../public/images/previous-non-clickable
 import nextNonClickableIcon from "../../public/images/next-non-clickable.png";
 import orderByIcon from "../../public/images/order-by-green.png";
 import searchIcon from "../../public/images/search-green.png";
-
+import notFollowedGreen from "../../public/images/follow-green.png"
+import notFollowed from "../../public/images/follow-white.png"
+import followed from "../../public/images/user-green.png"
 
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 //Function to upload a trip
-function myTrips() {
+function travelerTrip() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [userId, setUserId] = useState('');
+    const [traveler, setTraveler] = useState('');
+    const [followedByUser, setFollowedByUser] = useState(notFollowed)
     const [trips, setTrips] = useState([]);
     const [tripsSorted, setTripsSorted] = useState([]);
     const [tripsSliced, setTripsSliced] = useState([]);
@@ -41,11 +47,12 @@ function myTrips() {
     const [searchByLocation, setSearchByLocation] = useState(false);
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
-    const [searchParams, setSearchParams] = useSearchParams();
     const [changeFilter, setChangeFilter] = useState('');
-    const [showMessage, setShowMessage] = useState('mine')
+    const [showMessage, setShowMessage] = useState('traveler')
     //Get the url
     const url = new URL(window.location.href);
+    //Get the trip id
+    const { travelerId } = useParams();
     //Get the params
     const page = parseInt(url.searchParams.get('page')) || 1;
     const sortParam = url.searchParams.get('sort') || 'most-liked';
@@ -98,6 +105,13 @@ function myTrips() {
                 if (!res.ok) {
                     setIsLoggedIn(false);
                 }
+                //If user is the same than the traveler go to my trips
+                //Save user id
+                const json = await res.json();
+                const user = json.user_id;
+                setUserId(user);
+                if (user === travelerId)
+                    navigate('/mytrips');
             }
             //If there is an error catch it
             catch (err) {
@@ -106,6 +120,26 @@ function myTrips() {
         }
         checkAuth();
     }, [])
+    //Get User info
+    useEffect(() => {
+        const getUserInfo = async () => {
+            try {
+                const res = await fetch(`${backendUrl}/api/users/${travelerId}`)
+                const json = await res.json();
+                const travelUser = json.data[0];
+                setTraveler(travelUser);
+                //Save if the user follows the traveler
+                if (travelUser.followers.includes(userId))
+                    setFollowedByUser(followed)
+            }
+            //If there is an error catch it
+            catch (err) {
+                console.error('Error verifying the session: ', err);
+            }
+        }
+        if (userId !== '')
+            getUserInfo()
+    }, [userId])
     //When create the DOM get the data
     useEffect(() => {
         const manageTripsToShow = async () => {
@@ -218,8 +252,17 @@ function myTrips() {
     //Get trips
     const getTrips = async () => {
         try {
+            const body = { writer: travelerId };
             //Fetch the api to get all trips
-            const res = await fetch(`${backendUrl}/api/trips/my-trips`, { credentials: 'include' })
+            const res = await fetch(`${backendUrl}/api/trips/search`, {
+                //Select the method, header and body with the trip data
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: 'include',
+                body: JSON.stringify(body),
+            })
             //If it's okay update the state of the trips
             if (!res.ok) {
                 setErrorMessage('Error getting the trips');
@@ -289,7 +332,7 @@ function myTrips() {
         //If is empty show all trips
         if (!searchName) {
             getTrips();
-            setShowMessage('mine');
+            setShowMessage('traveler');
             url.searchParams.delete('search-trip');
             window.history.pushState(null, '', url.toString());
             return;
@@ -326,7 +369,7 @@ function myTrips() {
             url.searchParams.delete('search-city');
             url.searchParams.delete('search-trip');
             window.history.pushState(null, '', url.toString());
-            setShowMessage(false);
+            setShowMessage('traveler');
             setSearchCity('');
             setSearchCountry('');
             getTrips();
@@ -361,6 +404,35 @@ function myTrips() {
             timeOutId.current = setTimeout(() => { setErrorMessage(''), timeOutId.current = null }, 10000);
         }
     }
+    //Handle follow a user
+    async function handleFollowUser(e) {
+        //Prevent to click in bigger div
+        e.stopPropagation();
+        try {
+            //Call the function to follow a traveler
+            await followUser(travelerId);
+            setFollowedByUser(followed);
+        }
+        catch (err) {
+            console.error('Error following a user: ', err);
+            alert('Unexpected error');
+        }
+    }
+    //Handle follow a user
+    async function handleUnfollowUser(e) {
+        //Prevent to click in bigger div
+        e.stopPropagation();
+        try {
+            //Call the function to unfollow a traveler
+            await unfollowUser(travelerId);
+            setFollowedByUser(notFollowed);
+        }
+        catch (err) {
+            console.error('Error following a user: ', err);
+            alert('Unexpected error');
+        }
+    }
+
     //DOM
     return (
         <>
@@ -385,18 +457,42 @@ function myTrips() {
                                 <div className="nav-bar-links hidden md:flex gap-12">
                                     <Link to={'/'} className="nav-bar-link">Home</Link>
                                     <Link to={'/trips'} className="nav-bar-link">Trips</Link>
-                                    <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
-                                    {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link"><u>My Trips</u></Link>)}
+                                    <Link to={'/travelers'} className="nav-bar-link"><u>Travelers</u></Link>
+                                    {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link">My Trips</Link>)}
                                     {isLoggedIn && (<Link to={''} className="nav-bar-link">Saved Trips</Link>)}
-                                    {isLoggedIn && (<Link to={'/myprofile'} className="nav-bar-link">My Profile</Link>)}
+                                    {isLoggedIn && (<Link to='/myprofile' className="nav-bar-link">My Profile</Link>)}
                                     {!isLoggedIn && (<Link to={'/login'} className="nav-bar-link">Log In</Link>)}
                                     {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                                 </div>
                             </nav>
                             <div className="top-content-centered">
-                                <h1>Your Trips</h1>
-                                <p>View and manage all your trips. You can edit details, update places, or remove any trip at any time.</p>
+                                <div className='flex flex-row content-center content-left items-center gap-[20px] w-[100%] md:w-[60%]'>
+                                    <img className='place-image aspect-square md:w-[300px] w-[200px] rounded-full' src={traveler.avatar} />
+                                    <div className='flex flex-col gap-[10px]'>
+                                        <h1>{traveler.username}</h1>
+                                        <h2 className='text-[25px]'>{traveler.first_name} {traveler.second_name}</h2>
+                                        <span>{traveler.description}</span>
+                                        {(followedByUser == notFollowed || followedByUser == notFollowedGreen) && <button className='white-border-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                            onMouseEnter={() => {
+                                                setFollowedByUser(notFollowedGreen);
+                                            }}
+                                            onMouseLeave={() => {
+                                                setFollowedByUser(notFollowed)
+                                            }}
+                                            onClick={(e) => handleFollowUser(e)}
+                                        >
+                                            Follow
+                                            <img className='w-[15px] h-[15px]' src={followedByUser}></img>
+                                        </button>}
+                                        {followedByUser == followed && <button className='white-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                            onClick={(e) => handleUnfollowUser(e)}
+                                        >
+                                            Followed
+                                            <img className='w-[15px] h-[15px]' src={followedByUser}></img>
+                                        </button>}
 
+                                    </div>
+                                </div>
                                 {/*Links visibles in mobile, here to show it above the trip info*/}
                                 {menuOpen && (<div id="mobile-menu"
                                     className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -434,7 +530,7 @@ function myTrips() {
                         <div id='trip-places' className="flex flex-col gap-[50px]">
                             <div className='flex flex-col gap-[20px]'>
                                 <div className='grid grid-cols-3 items-top'>
-                                    <Link to='/createtrip' className='justify-self-start w-min pt-[10px]'><button className='green-button w-[100px] md:w-[160px]'>Create New Trip</button></Link>
+                                    <h1 className="justify-self-start text-3xl font-bold text-[#004643] pt-[5px]">Trips</h1>
                                     {!menuOpen && <div className='justify-self-center flex flex-col gap-[5px] items-center justify-center pt-[10px]'>
                                         {!searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByName(e)}>
                                             <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
@@ -464,10 +560,10 @@ function myTrips() {
                                             </div>
                                         </form>}
                                         <div className='rounded-[10px] border-[#00464366] border-[1px] bg-[#ECE7E2] w-[100px] flex flex-row items-center'>
-                                            <div className={`${!searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] p-[1px] rounded-tl-[10px] rounded-bl-[10px]`}
+                                            <div className={`${!searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] rounded-tl-[10px] rounded-bl-[10px]`}
                                                 onClick={() => setSearchByLocation(false)}>
                                                 Trip</div>
-                                            <div className={`${searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] p-[1px] rounded-tr-[10px] rounded-br-[10px]`}
+                                            <div className={`${searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] rounded-tr-[10px] rounded-br-[10px]`}
                                                 onClick={() => setSearchByLocation(true)}>
                                                 Place</div>
                                         </div>
@@ -480,20 +576,8 @@ function myTrips() {
                                             setOrderByOpen(!orderByOpen)
                                         }}></img></div>}
                                         {orderByOpen && (
-                                            <div className='shadow-md text-[16px] bg-[#f3f1ef] rounded-[10px] absolute right-0 mt-2 w-[150px] z-[999]'>
-                                                <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
-                                                    /*Prevent default and allow click it instead of the document page*/
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    /*Close the oreder menu*/
-                                                    handleCloseOrderBy();
-                                                    /*Change order*/
-                                                    changeOrder('newest');
-                                                }}>
-                                                    <p>Newest</p>
-                                                </div>
-
-                                                <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                            <div className='shadow-md text-[16px] bg-[#f3f1ef] rounded-[10px] absolute top-full right-0 mt-2 w-[150px] z-[999]'>
+                                                <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();
                                                     e.stopPropagation();
@@ -504,7 +588,17 @@ function myTrips() {
                                                 }}>
                                                     <p>Most Liked</p>
                                                 </div>
-
+                                                <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                    /*Prevent default and allow click it instead of the document page*/
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    /*Close the oreder menu*/
+                                                    handleCloseOrderBy();
+                                                    /*Change order*/
+                                                    changeOrder('newest');
+                                                }}>
+                                                    <p>Newest</p>
+                                                </div>
                                                 <div className={`${sort === 'most-detailed' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-bl-[10px] rounded-br-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();
@@ -522,7 +616,12 @@ function myTrips() {
                                 </div>
                                 <div className='places'>
                                     {tripsSliced.map((trip, index) => (
-                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => { navigate(`/edittrip/${trip._id}`) }}>
+                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => {
+                                            /*if (trip.writer === userId)
+                                                navigate(`/edittrip/${trip._id}`)
+                                            else*/
+                                            navigate(`/trips/${trip._id}`)
+                                        }}>
                                             <div className='place-content'>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&
@@ -579,4 +678,4 @@ function myTrips() {
 }
 
 //Export module
-export default myTrips;
+export default travelerTrip;
