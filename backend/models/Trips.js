@@ -61,7 +61,7 @@ const tripSchema = new mongoose.Schema({
         default: Date.now
     },
     likes: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         default: [],
         description: "Arrays of username that likes the trip"
     }

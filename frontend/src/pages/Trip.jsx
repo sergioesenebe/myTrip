@@ -11,7 +11,10 @@ import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
 import esenebeLogo from "../../public/images/esenebe-logo.png";
 import loadingGif from "../../public/images/loading.gif";
-
+import likeIcon from "../../public/images/like-green.png"
+import likedIcon from "../../public/images/liked-green.png"
+import saveIcon from "../../public/images/save-green.png"
+import savedIcon from "../../public/images/saved-green.png"
 
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -20,6 +23,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function uploadTrip() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
+    const [userId, setUserId] = useState('');
     const [tripName, setTripName] = useState('');
     const [tripDescription, setTripDescription] = useState('');
     const [tripImageUrl, setTripImageUrl] = useState('');
@@ -27,11 +31,17 @@ function uploadTrip() {
     const [tripCity, setTripCity] = useState('');
     const [places, setPlaces] = useState([]);
     const [writer, setWriter] = useState([]);
-    const [writerId, setWriterId] = useState([]);
+    const [writerId, setWriterId] = useState('');
     const [writerAvatar, setWriterAvatar] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [likes, setLikes] = useState([]);
+    const [likesCount, setLikesCount] = useState(0);
+    const [liked, setLiked] = useState(false);
+    const [saved, setSaved] = useState(false);
+    const [likeImg, setLikeImg] = useState(likeIcon);
+    const [saveImg, setSaveImg] = useState(saveIcon);
 
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
@@ -62,6 +72,8 @@ function uploadTrip() {
                 setWriter(data.username);
                 setWriterId(data.writer);
                 setWriterAvatar(data.avatar);
+                setLikes(data.likes)
+                setLikesCount(data.likes.length)
             }
             //Catch any error
             catch (err) {
@@ -71,6 +83,14 @@ function uploadTrip() {
         }
         getTrips();
     }, [])
+    //Check if user has liked
+    useEffect(() => {
+        if (userId !== '' && likes.length > 0) {
+            setLiked(likes.includes(userId));
+            console.log('here')
+            setLikeImg(likedIcon);
+        }
+    }, [userId, likes])
     //Check if is logged in
     useEffect(() => {
         const checkAuth = async () => {
@@ -82,9 +102,8 @@ function uploadTrip() {
                 }
                 //If it's their trip, navegate to edit trip
                 const json = await res.json();
-                if (writerId === json.user_id ){
-                    console.log('writer id: ', writerId);
-                    console.log('user id: ', json.user_id);
+                setUserId(json.user_id);
+                if (writerId === json.user_id) {
                     navigate(`/edittrip/${tripId}`)
                 }
             }
@@ -93,8 +112,128 @@ function uploadTrip() {
                 console.error('Error verifying the session: ', err);
             }
         }
-        checkAuth();
+        if (writerId !== '')
+            checkAuth();
     }, [writerId])
+    //Get user saved trips
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const res = await fetch(`${backendUrl}/api/users/me`, { credentials: 'include' })
+                //If it's logged in save the state
+                if (!res.ok) {
+                    alert('Unexpected error getting your saved trips')
+                }
+                //Check if 
+                const json = await res.json();
+                const savedTrips = json.data[0].saved_trips;
+                if (savedTrips.includes(tripId)) {
+                    setSaveImg(savedIcon);
+                    setSaved(true);
+                }
+            }
+            //If there is 
+            catch (err) {
+                console.error('Error getting user info: ', err);
+            }
+        }
+        if (isLoggedIn === true && tripId !== '')
+            getUser();
+    }, [isLoggedIn, tripId])
+    //Function to like a trip
+    async function handleLike() {
+        try {
+            const res = await fetch(`${backendUrl}/api/trips/like/${tripId}`, {
+                //Select the method, and credentials
+                method: 'PUT',
+                credentials: 'include'
+            })
+            //If response is not ok return a message
+            if (!res.ok) {
+                const json = await res.json();
+                throw new Error(res.message);
+            }
+            //Unlike and change icon
+            setLiked(true);
+            setLikeImg(likedIcon);
+            setLikesCount(likesCount + 1);
+        }
+        //If there is an error catch it
+        catch (err) {
+            console.error('Error liking a trip: ', err);
+            throw new Error(err);
+        }
+    }
+    //Function to unlike a trip
+    async function handleUnlike() {
+        try {
+            const res = await fetch(`${backendUrl}/api/trips/unlike/${tripId}`, {
+                //Select the method, and credentials
+                method: 'DELETE',
+                credentials: 'include'
+            })
+            //If response is not ok return a message
+            if (!res.ok) {
+                const json = await res.json();
+                alert(res.message);
+            }
+            //Unlike and change icon
+            setLiked(false);
+            setLikeImg(likeIcon);
+            setLikesCount(likesCount - 1);
+        }
+        //If there is an error catch it
+        catch (err) {
+            console.error('Error unliking a trip: ', err);
+            alert('Error unliking a trip');
+        }
+    }
+    //Function to save a trip
+    async function handleSave() {
+        try {
+            const res = await fetch(`${backendUrl}/api/users/save/${tripId}`, {
+                //Select the method, and credentials
+                method: 'PUT',
+                credentials: 'include'
+            })
+            //If response is not ok return a message
+            if (!res.ok) {
+                const json = await res.json();
+                throw new Error(res.message);
+            }
+            //Unsave and change icon
+            setSaved(true);
+            setSaveImg(savedIcon);
+        }
+        //If there is an error catch it
+        catch (err) {
+            console.error('Error saving a trip: ', err);
+            throw new Error(err);
+        }
+    }
+    //Function to unlike a trip
+    async function handleUnsave() {
+        try {
+            const res = await fetch(`${backendUrl}/api/users/unsave/${tripId}`, {
+                //Select the method, and credentials
+                method: 'DELETE',
+                credentials: 'include'
+            })
+            //If response is not ok return a message
+            if (!res.ok) {
+                const json = await res.json();
+                alert(res.message);
+            }
+            //Unlike and change icon
+            setSaved(false);
+            setSaveImg(saveIcon);
+        }
+        //If there is an error catch it
+        catch (err) {
+            console.error('Error unsaving a trip: ', err);
+            alert('Error unsaving a trip');
+        }
+    }
     //DOM
     return (
         <>
@@ -113,9 +252,11 @@ function uploadTrip() {
                                 <Link to={'/'} className="nav-bar-link">Home</Link>
                                 <Link to={'/trips'} className="nav-bar-link"><u>Trips</u></Link>
                                 <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
-                                <Link to={'/mytrips'} className="nav-bar-link">My Trips</Link>
-                                <a className="nav-bar-link">Saved Trips</a>
-                                <Link to='/myprofile' className="nav-bar-link">My Profile</Link>
+                                {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link">My Trips</Link>)}
+                                {isLoggedIn && (<Link to={''} className="nav-bar-link">Saved Trips</Link>)}
+                                {isLoggedIn && (<Link to='/myprofile' className="nav-bar-link">My Profile</Link>)}
+                                {!isLoggedIn && (<Link to={'/login'} className="nav-bar-link">Log In</Link>)}
+                                {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                             </div>
                         </nav>
                         <div className="trip-info">
@@ -123,7 +264,7 @@ function uploadTrip() {
                             {menuOpen && (<div id="mobile-menu"
                                 className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
                                 <button id="close-menu" type='button' className="absolute top-4 right-4">
-                                    <img src={closeIcon} alt="Close Menu"
+                                    <img src={closeIcon}
                                         className="w-6 h-6 sm:w-8 sm:h-8 hover:opacity-80 transition-opacity cursor-pointer" onClick={() => { setMenuOpen(false) }} />
                                 </button>
                                 <Link to={'/'}
@@ -154,7 +295,7 @@ function uploadTrip() {
                                 <p className="text-white">{tripCountry}, {tripCity}</p>
                             </div>
                             <div className='flex flex-row gap-[10px] items-center'>
-                                <img src={writerAvatar} className='w-[50px] h-[50px] border border-white rounded-full clickable' onClick={(e) => {e.preventDefault(); navigate(`/travelers/${writerId}`)}}/>
+                                <img src={writerAvatar} className='w-[50px] h-[50px] border border-white rounded-full clickable' onClick={(e) => { e.preventDefault(); navigate(`/travelers/${writerId}`) }} />
                                 <p className='text-[16px]'>{writer}</p>
                             </div>
                         </div>
@@ -190,6 +331,31 @@ function uploadTrip() {
                             {errorMessage && (
                                 <p className="error-message">{errorMessage}</p>
                             )}
+                            <div className='md:w-[80%] w-[100%] flex flex-row items-center'>
+                                <p className='text-[16px] text-[#004643]'>{likesCount}</p>
+                                {!liked && isLoggedIn && <button
+                                    onMouseEnter={() => setLikeImg(likedIcon)}
+                                    onMouseLeave={() => setLikeImg(likeIcon)}
+                                    onClick={() => handleLike()}
+                                ><img className='w-[50px] h-[50px]' src={likeImg} /></button>}
+                                {liked && isLoggedIn && <button
+                                    onMouseEnter={() => setLikeImg(likeIcon)}
+                                    onMouseLeave={() => setLikeImg(likedIcon)}
+                                    onClick={() => handleUnlike()}
+                                ><img className='w-[50px] h-[50px]' src={likeImg} /></button>}
+                                {!isLoggedIn && <button className='pointer-events-none'><img alt='Like' className='w-[50px] h-[50px]' src={likeIcon} /></button>}
+                                {!saved && isLoggedIn && <button
+                                    onMouseEnter={() => setSaveImg(savedIcon)}
+                                    onMouseLeave={() => setSaveImg(saveIcon)}
+                                    onClick={() => handleSave()}
+                                ><img className='w-[40px] h-[40px]' src={saveImg} /></button>}
+                                {saved && isLoggedIn && <button
+                                    onMouseEnter={() => setSaveImg(saveIcon)}
+                                    onMouseLeave={() => setSaveImg(savedIcon)}
+                                    onClick={() => handleUnsave()}
+                                ><img className='w-[40px] h-[40px]' src={saveImg} /></button>}
+                            </div>
+
                         </div>
                     </div>
                 </main>

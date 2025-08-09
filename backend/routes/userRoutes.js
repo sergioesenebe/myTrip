@@ -105,6 +105,7 @@ router.get('/me', authenticateJWT, async (req, res) => {
                     avatar: 1,
                     following: 1,
                     followers: 1,
+                    saved_trips: 1,
                 }
             }
         ]);
@@ -282,6 +283,71 @@ router.delete('/unfollow/:id', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
+//Save a trip
+router.put('/save/:id', authenticateJWT, async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add the id of the trip you want to save' })
+        //Get the id of the followed user
+        const saveId = new mongoose.Types.ObjectId(req.params.id);
+        //Get the id of the  user
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to the database
+        await connectToDB();
+        //Update user followed
+        const saved = await Users.updateOne(
+            { _id: id },
+            {
+                $addToSet: {
+                    saved_trips: saveId
+                }
+            }
+        );
+        if (saved.matchedCount === 0)
+            return res.status(404).json({ data: 'Trip not found' });
+        if (saved.modifiedCount === 0)
+            return res.status(409).json({ data: 'Trip already saved' });
+        //Return the data
+        return res.status(201).json({ data: 'Trip saved' });
+    }
+    catch (err) {
+        console.error('Error saving a trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Unsave a trip
+router.delete('/unsave/:id', authenticateJWT, async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add the id of the trip you want to unsave' })
+        //Get the id of the followed user
+        const unsaveId = new mongoose.Types.ObjectId(req.params.id);
+        //Get the id of the  user
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to the database
+        await connectToDB();
+        //Update user followed
+        const unsaved = await Users.updateOne(
+            { _id: id },
+            {
+                $pull: {
+                    saved_trips: unsaveId
+                }
+            }
+        );
+        if (unsaved.matchedCount === 0)
+            return res.status(404).json({ data: 'Trip not found' });
+        if (unsaved.modifiedCount === 0)
+            return res.status(409).json({ data: 'Trip was not saved' });
+        //Return the data
+        return res.status(200).json({ data: 'Trip unsaved' });
+    }
+    catch (err) {
+        console.error('Error unsaving a trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+
 //Get a specific user
 router.get('/:id', async (req, res) => {
     try {

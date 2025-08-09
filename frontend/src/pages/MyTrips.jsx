@@ -365,7 +365,8 @@ function myTrips() {
     return (
         <>
             {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
-            {!isLoading && (
+            {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
+            {!isLoading && isLoggedIn && (
                 <>
                     <main className='bg-[#ECE7E2]'>
                         <div className="top-green-img-section" style={{ backgroundImage: `url(${backgroundImage})` }}>

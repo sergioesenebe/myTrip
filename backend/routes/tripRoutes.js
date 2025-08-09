@@ -431,7 +431,70 @@ router.delete('/my-trips/:id', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
-
+//Follow a user user
+router.put('/like/:id', authenticateJWT, async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add the id of the trip you want to like' })
+        //Get the id of the followed user
+        const likedId = new mongoose.Types.ObjectId(req.params.id);
+        //Get the id of the  user
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to the database
+        await connectToDB();
+        //Update user followed
+        const liked = await Trip.updateOne(
+            { _id: likedId },
+            {
+                $addToSet: {
+                    likes: id
+                }
+            }
+        );
+        if (liked.matchedCount === 0)
+            return res.status(404).json({ data: 'Trip not found' });
+        if (liked.modifiedCount === 0)
+            return res.status(409).json({ data: 'Trip already liked' });
+        //Return the data
+        return res.status(201).json({ data: 'Trip Liked' });
+    }
+    catch (err) {
+        console.error('Error liking a trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
+//Unlike a user user
+router.delete('/unlike/:id', authenticateJWT, async (req, res) => {
+    try {
+        if (!req.params.id)
+            return res.status(400).send({ message: 'Please add the id of the trip you want to unlike' })
+        //Get the id of the followed user
+        const unLikedId = new mongoose.Types.ObjectId(req.params.id);
+        //Get the id of the  user
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to the database
+        await connectToDB();
+        //Update user followed
+        const unLiked = await Trip.updateOne(
+            { _id: unLikedId },
+            {
+                $pull: {
+                    likes: id
+                }
+            }
+        );
+        if (unLiked.matchedCount === 0)
+            return res.status(404).json({ data: 'Trip not found' });
+        if (unLiked.modifiedCount === 0)
+            return res.status(409).json({ data: 'Trip was not liked' });
+        //Return the data
+        return res.status(200).json({ data: 'Trip unliked' });
+    }
+    catch (err) {
+        console.error('Error unliking a trip: ', err);
+        return res.status(500).json({ message: 'Unexpected error' });
+    }
+})
 //Get a specific trip
 router.get('/:id', async (req, res) => {
     try {
@@ -470,6 +533,7 @@ router.get('/:id', async (req, res) => {
                     places: 1,
                     created_date: 1,
                     writer: 1,
+                    likes: 1,
                     username: "$user.username",
                     avatar: "$user.avatar"
                 }

@@ -54,6 +54,11 @@ const userSchema = new mongoose.Schema({
     followers: {
         type: [mongoose.Schema.Types.ObjectId],
         description: "Arrays of usernames that follows the user"
+    },
+    saved_trips: {
+        type: [mongoose.Schema.Types.ObjectId],
+        default: [],
+        description: "Arrays of trips saved by the user"
     }
 });
 
