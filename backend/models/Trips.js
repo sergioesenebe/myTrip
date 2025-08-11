@@ -63,6 +63,7 @@ const tripSchema = new mongoose.Schema({
     likes: {
         type: [mongoose.Schema.Types.ObjectId],
         default: [],
+        ref: 'User',
         description: "Arrays of username that likes the trip"
     }
 })

@@ -151,23 +151,41 @@ export function previousPage(navPage, maxPages, tripsSorted, setTripsSliced, set
     }
 }
 //Search a trip by name
-export async function searchTrip(url, body, setTrips) {
+export async function searchTrip(url, body, setTrips, savedTrips) {
     try {
-        //fetch the search with the body send it
-        const res = await fetch(`${backendUrl}/api/trips/search`, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
+        let res;
+        if (savedTrips) {
+            //fetch the search with the body send it
+            res = await fetch(`${backendUrl}/api/users/my-saved-trips/search`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(body)
+            })
+
+        }
+        else {
+            //fetch the search with the body send it
+            res = await fetch(`${backendUrl}/api/trips/search`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+        }
         //If the result is not ok, send a message
         if (!res.ok) {
             throw new Error('Unexpected Error');
         }
         //Get the json and save the state
         const json = await res.json();
-        setTrips(json.data);
+        if (savedTrips)
+            setTrips(json.data.saved_trips)
+        else
+            setTrips(json.data);
         //Save in the url
         if (body.name)
             url.searchParams.set('search-trip', body.name);

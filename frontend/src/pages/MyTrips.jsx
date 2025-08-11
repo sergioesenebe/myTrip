@@ -29,6 +29,7 @@ function myTrips() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [userId, setUserId] = useState('');
     const [trips, setTrips] = useState([]);
     const [tripsSorted, setTripsSorted] = useState([]);
     const [tripsSliced, setTripsSliced] = useState([]);
@@ -98,6 +99,10 @@ function myTrips() {
                 if (!res.ok) {
                     setIsLoggedIn(false);
                 }
+                //Save user id
+                const json = await res.json();
+                const user = json.user_id;
+                setUserId(user);
             }
             //If there is an error catch it
             catch (err) {
@@ -296,7 +301,7 @@ function myTrips() {
         }
         try {
             setShowMessage(false);
-            const body = { name: searchName }
+            const body = { name: searchName, writer: userId }
             searchTrip(url, body, setTrips)
         }
         catch (err) {
@@ -340,7 +345,7 @@ function myTrips() {
             alert('Please add a country');
             return;
         }
-        const body = { country: searchCountry }
+        const body = { country: searchCountry, writer: userId }
         //Define the body (country and city or just city)
         if (searchCity && searchCity !== 'Any City') {
             body.city = searchCity;
@@ -388,7 +393,7 @@ function myTrips() {
                                     <Link to={'/trips'} className="nav-bar-link">Trips</Link>
                                     <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
                                     {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link"><u>My Trips</u></Link>)}
-                                    {isLoggedIn && (<Link to={''} className="nav-bar-link">Saved Trips</Link>)}
+                                    {isLoggedIn && (<Link to={'/savedtrips'} className="nav-bar-link">Saved Trips</Link>)}
                                     {isLoggedIn && (<Link to={'/myprofile'} className="nav-bar-link">My Profile</Link>)}
                                     {!isLoggedIn && (<Link to={'/login'} className="nav-bar-link">Log In</Link>)}
                                     {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
@@ -419,9 +424,9 @@ function myTrips() {
                                     {isLoggedIn && (<Link to={'/mytrips'}
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
                                         Trips</Link>)}
-                                    {isLoggedIn && (<a href="#"
+                                    {isLoggedIn && (<Link to={'/savedtrips'}
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Saved
-                                        Trips</a>)}
+                                        Trips</Link>)}
                                     {isLoggedIn && (<Link to='/myprofile'
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
                                         Profile</Link>)}

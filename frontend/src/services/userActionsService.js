@@ -28,7 +28,7 @@ export async function followUser(travelerId, followed, usersSliced, setUsersSlic
     }
 }
 //Function to unfollow a user
-export async function unfollowUser(travelerId, notFollowed, usersSliced, setUsersSliced, index) {
+export async function unfollowUser(travelerId, notFollowedWhite, usersSliced, setUsersSliced, index) {
     try {
         const res = await fetch(`${backendUrl}/api/users/unfollow/${travelerId}`, {
             //Select the method, and credentials
@@ -43,7 +43,7 @@ export async function unfollowUser(travelerId, notFollowed, usersSliced, setUser
         if (usersSliced) {
             //Update the users sliced (now will be followed by the user)
             const copy = [...usersSliced];
-            copy[index].followed = notFollowed;
+            copy[index].followed = notFollowedWhite;
             setUsersSliced(copy);
         }
     }

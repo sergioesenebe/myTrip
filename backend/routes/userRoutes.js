@@ -347,6 +347,72 @@ router.delete('/unsave/:id', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
+//Get all user trips
+router.get('/my-saved-trips', authenticateJWT, async (req, res) => {
+    try {
+        //Get the id
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        console.log('ID: ', id);
+        //Connect to database
+        await connectToDB();
+        //Get all trips with user info
+        const savedTrips = await Users.findById(id).populate({
+            path: 'saved_trips',
+            populate: {
+                path: 'writer',
+                select: 'username avatar'
+            }
+        })
+            .select('saved_trips');
+        //If there is no liked trips return a message
+        if (savedTrips.length === 0)
+            return res.status(200).json({ message: 'There are not saved trips', data: [] })
+        return res.status(200).json({ data: savedTrips })
+    }
+    catch (err) {
+        console.error('Error getting the saved trips: ', err);
+        return res.status(500).json({ message: `Unexpected error` });
+    }
+})
+//search a user saved trips
+router.post('/my-saved-trips/search', authenticateJWT, async (req, res) => {
+    try {
+        //Get the id
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        console.log('ID: ', id);
+        //Connect to database
+        await connectToDB();
+        //If there is not a name, a city or a country, return a 400
+        if (!req.body.name && !req.body.city && !req.body.country && !req.body.writer)
+            return res.status(400).send({ message: 'Please add at list one filter' })
+        //Save the query
+        const query = {};
+        if (req.body.name)
+            query.name = { $regex: req.body.name, $options: 'i' };
+        if (req.body.city)
+            query.city = req.body.city;
+        if (req.body.country)
+            query.country = req.body.country;
+        //Get all trips with user info
+        const savedTrips = await Users.findById(id).populate({
+            path: 'saved_trips',
+            match: query,
+            populate: {
+                path: 'writer',
+                select: 'username avatar'
+            }
+        })
+            .select('saved_trips');
+        //If there is no liked trips return a message
+        if (savedTrips.length === 0)
+            return res.status(200).json({ message: 'There are not saved trips', data: [] })
+        return res.status(200).json({ data: savedTrips })
+    }
+    catch (err) {
+        console.error('Error getting the saved trips: ', err);
+        return res.status(500).json({ message: `Unexpected error` });
+    }
+})
 
 //Get a specific user
 router.get('/:id', async (req, res) => {

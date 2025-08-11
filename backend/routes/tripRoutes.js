@@ -431,7 +431,7 @@ router.delete('/my-trips/:id', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
-//Follow a user user
+//Follow a trip
 router.put('/like/:id', authenticateJWT, async (req, res) => {
     try {
         if (!req.params.id)
@@ -463,7 +463,7 @@ router.put('/like/:id', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
-//Unlike a user user
+//Unlike a trip
 router.delete('/unlike/:id', authenticateJWT, async (req, res) => {
     try {
         if (!req.params.id)

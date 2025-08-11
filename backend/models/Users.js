@@ -57,6 +57,7 @@ const userSchema = new mongoose.Schema({
     },
     saved_trips: {
         type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Trip',
         default: [],
         description: "Arrays of trips saved by the user"
     }

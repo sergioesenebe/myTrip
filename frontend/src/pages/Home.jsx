@@ -117,7 +117,7 @@ function home() {
                                     <Link to={'/trips'} className="nav-bar-link">Trips</Link>
                                     <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
                                     {isLoggedIn && (<Link to={'/mytrips'} className="nav-bar-link">My Trips</Link>)}
-                                    {isLoggedIn && (<Link to={''} className="nav-bar-link">Saved Trips</Link>)}
+                                    {isLoggedIn && (<Link to={'/savedtrips'} className="nav-bar-link">Saved Trips</Link>)}
                                     {isLoggedIn && (<Link to='/myprofile' className="nav-bar-link">My Profile</Link>)}
                                     {!isLoggedIn && (<Link to={'/login'} className="nav-bar-link">Log In</Link>)}
                                     {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
@@ -142,9 +142,9 @@ function home() {
                                     {isLoggedIn && (<Link to={'/mytrips'}
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
                                         Trips</Link>)}
-                                    {isLoggedIn && (<a href="#"
+                                    {isLoggedIn && (<Link to={'/savedtrips'}
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Saved
-                                        Trips</a>)}
+                                        Trips</Link>)}
                                     {isLoggedIn && (<Link to='/myprofile' href="#"
                                         className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
                                         Profile</Link>)}
