@@ -4,7 +4,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
-import { sortByMostDetailed, sortByLikes, sortByNewest, showTrips, nextPage, previousPage, searchTrip, getCountries, getCities } from '../services/showTrips'
+import { sortByMostDetailed, sortByLikes, showTrips, nextPage, previousPage, searchTrip, getCountries, getCities } from '../services/showTrips'
 //Import images
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
@@ -78,7 +78,7 @@ function savedTrips() {
     useEffect(() => {
         //Get the params
         const page = parseInt(url.searchParams.get('page')) || 1;
-        const sortParam = url.searchParams.get('sort') || 'newest';
+        const sortParam = url.searchParams.get('sort') || 'last-saved';
         const country = url.searchParams.get('search-country') || '';
         const city = url.searchParams.get('search-city') || '';
         const trip = url.searchParams.get('search-trip') || '';
@@ -125,7 +125,7 @@ function savedTrips() {
         else if (sort === 'most-liked')
             handleSortByMostLikes();
         else
-            handleSortByNewest()
+            handleSortByLastSaved()
     }, [trips])
     //When somebody click somewhere and the order by menu is open, close it
     useEffect(() => {
@@ -192,17 +192,19 @@ function savedTrips() {
 
     }
     //Order By Created Dates
-    async function handleSortByNewest() {
+    async function handleSortByLastSaved() {
         try {
-            const sorted = await sortByNewest(trips)
+            const sorted = [...trips];
+            sorted.reverse();
+            console.log(sorted);
             //Save the state
             setTripsSorted(sorted);
             //Show trips
-            showTrips(sorted, 'newest', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url, showMessage);
+            showTrips(sorted, 'last-saved', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url, showMessage);
         }
         //Catch the error
         catch (err) {
-            console.error('Error sorting newest trips: ', err);
+            console.error('Error sorting last saved trips: ', err);
             setErrorMessage('Error sorting the trips');
         }
 
@@ -249,8 +251,8 @@ function savedTrips() {
             handleSortByMostDetailed();
         else if (order === 'most-liked' && sort !== 'most-liked')
             handleSortByMostLikes();
-        else if (order === 'newest' && sort !== 'newest')
-            handleSortByNewest();
+        else if (order === 'last-saved' && sort !== 'last-saved')
+            handleSortByLastSaved();
     }
     //Get all cities by a country
     async function handleCountryChange(selectedCountry) {
@@ -297,7 +299,7 @@ function savedTrips() {
         try {
             setShowMessage(false);
             const body = { name: searchName }
-            searchTrip(url, body, setTrips, true)
+            searchTrip(url, body, setTrips, 'saved-trips')
         }
         catch (err) {
             console.error('Error searching a trip: ', err);
@@ -465,10 +467,10 @@ function savedTrips() {
                                             </div>
                                         </form>}
                                         <div className='rounded-[10px] border-[#00464366] border-[1px] bg-[#ECE7E2] w-[100px] flex flex-row items-center'>
-                                            <div className={`${!searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] p-[1px] rounded-tl-[10px] rounded-bl-[10px]`}
+                                            <div className={`${!searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] rounded-tl-[10px] rounded-bl-[10px]`}
                                                 onClick={() => setSearchByLocation(false)}>
                                                 Trip</div>
-                                            <div className={`${searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] p-[1px] rounded-tr-[10px] rounded-br-[10px]`}
+                                            <div className={`${searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] rounded-tr-[10px] rounded-br-[10px]`}
                                                 onClick={() => setSearchByLocation(true)}>
                                                 Place</div>
                                         </div>
@@ -482,16 +484,16 @@ function savedTrips() {
                                         }}></img></div>}
                                         {orderByOpen && (
                                             <div className='shadow-md text-[16px] bg-[#f3f1ef] rounded-[10px] absolute right-0 mt-2 w-[150px] z-[999]'>
-                                                <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                <div className={`${sort === 'last-saved' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();
                                                     e.stopPropagation();
                                                     /*Close the oreder menu*/
                                                     handleCloseOrderBy();
                                                     /*Change order*/
-                                                    changeOrder('newest');
+                                                    changeOrder('last-saved');
                                                 }}>
-                                                    <p>Newest</p>
+                                                    <p>Last Saved</p>
                                                 </div>
 
                                                 <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
@@ -523,7 +525,7 @@ function savedTrips() {
                                 </div>
                                 <div className='places'>
                                     {tripsSliced.map((trip, index) => (
-                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => { navigate(`/edittrip/${trip._id}`) }}>
+                                        <div className='place clickable border rounded-[10px] border-white' onClick={() => { navigate(`/trips/${trip._id}`) }}>
                                             <div className='place-content'>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&

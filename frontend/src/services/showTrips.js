@@ -24,7 +24,7 @@ export async function sortByLikes(trips) {
     try {
         //Sort by likes
         let sorted = [...trips];
-        sorted.sort((a, b) => b.likesCount - a.likesCount);
+        sorted.sort((a, b) => b.likes.length - a.likes.length);
         return sorted;
     }
     //Catch the error
@@ -151,10 +151,11 @@ export function previousPage(navPage, maxPages, tripsSorted, setTripsSliced, set
     }
 }
 //Search a trip by name
-export async function searchTrip(url, body, setTrips, savedTrips) {
+export async function searchTrip(url, body, setTrips, tripType) {
     try {
         let res;
-        if (savedTrips) {
+        //Search trips in saved trips
+        if (tripType === 'saved-trips') {
             //fetch the search with the body send it
             res = await fetch(`${backendUrl}/api/users/my-saved-trips/search`, {
                 method: 'POST',
@@ -166,6 +167,19 @@ export async function searchTrip(url, body, setTrips, savedTrips) {
             })
 
         }
+        //Search trips in travelers followed trips
+        else if (tripType === 'followed-trips'){
+                        //fetch the search with the body send it
+            res = await fetch(`${backendUrl}/api/users/followed-trips/search`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(body)
+            })
+        }
+        //Search for all trips
         else {
             //fetch the search with the body send it
             res = await fetch(`${backendUrl}/api/trips/search`, {
@@ -182,7 +196,7 @@ export async function searchTrip(url, body, setTrips, savedTrips) {
         }
         //Get the json and save the state
         const json = await res.json();
-        if (savedTrips)
+        if (tripType === 'saved-trips')
             setTrips(json.data.saved_trips)
         else
             setTrips(json.data);

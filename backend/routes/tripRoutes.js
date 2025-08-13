@@ -147,6 +147,7 @@ router.get('/', async (req, res) => {
                     city: 1,
                     image: 1,
                     description: 1,
+                    likes: 1,
                     likesCount: 1,
                     created_date: 1,
                     places: 1,
@@ -495,6 +496,7 @@ router.delete('/unlike/:id', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
+
 //Get a specific trip
 router.get('/:id', async (req, res) => {
     try {

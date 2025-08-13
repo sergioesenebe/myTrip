@@ -200,7 +200,7 @@ router.post('/general-search', async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' })
     }
 })
-//Follow a user user
+//Follow a user
 router.put('/follow/:id', authenticateJWT, async (req, res) => {
     try {
         if (!req.params.id)
@@ -243,7 +243,7 @@ router.put('/follow/:id', authenticateJWT, async (req, res) => {
         return res.status(500).json({ message: 'Unexpected error' });
     }
 })
-//Unfollow a user user
+//Unfollow a user
 router.delete('/unfollow/:id', authenticateJWT, async (req, res) => {
     try {
         if (!req.params.id)
@@ -410,6 +410,145 @@ router.post('/my-saved-trips/search', authenticateJWT, async (req, res) => {
     }
     catch (err) {
         console.error('Error getting the saved trips: ', err);
+        return res.status(500).json({ message: `Unexpected error` });
+    }
+})
+//Get friends' trips
+router.get('/followed-trips', authenticateJWT, async (req, res) => {
+    try {
+        //Get the id
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //Connect to database
+        await connectToDB();
+        //Get all trips with user info
+        const followedTrips = await Users.aggregate([
+            { $match: { _id: id } },
+            { $project: { following: 1 } },
+            {
+                $lookup: {
+                    from: 'trips',
+                    localField: 'following',
+                    foreignField: 'writer',
+                    as: 'followedTrips'
+                }
+            },
+            {
+                $unwind: '$followedTrips'
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'followedTrips.writer',
+                    foreignField: '_id',
+                    as: 'writerInfo'
+                }
+            },
+            {
+                $unwind: '$writerInfo'
+            },
+            {
+                $addFields: {
+                    'followedTrips.username': '$writerInfo.username',
+                    'followedTrips.avatar': '$writerInfo.avatar',
+                }
+            },
+            {
+                $group: {
+                    _id: '$id',
+                    followedTrips: { $push: '$followedTrips' }
+                }
+            },
+            {
+                $project: {
+                    followedTrips: 1,
+                    _id: 0
+                }
+            }
+        ])
+        //If there is no liked trips return a message
+        if (followedTrips[0].followedTrips.length === 0)
+            return res.status(200).json({ message: "Your friends don't have any trips", data: [] })
+        return res.status(200).json({ data: followedTrips[0].followedTrips })
+    }
+    catch (err) {
+        console.error("Error getting your friend's trips: ", err);
+        return res.status(500).json({ message: `Unexpected error` });
+    }
+})
+//search in friends' trips
+router.post('/followed-trips/search', authenticateJWT, async (req, res) => {
+    try {
+        //Get the id
+        const id = new mongoose.Types.ObjectId(req.user.id);
+        //If there is not a name, a city or a country, return a 400
+        if (!req.body.name && !req.body.city && !req.body.country && !req.body.writer)
+            return res.status(400).send({ message: 'Please add at list one filter' })
+        //Save the query
+        const query = {};
+        if (req.body.name)
+            query['followedTrips.name'] = { $regex: req.body.name, $options: 'i' };
+        if (req.body.city)
+            query['followedTrips.city'] = req.body.city;
+        if (req.body.country)
+            query['followedTrips.country'] = req.body.country;
+
+        //Connect to database
+        await connectToDB();
+        //Get all trips with user info
+        const followedTrips = await Users.aggregate([
+            { $match: { _id: id } },
+            { $project: { following: 1 } },
+            {
+                $lookup: {
+                    from: 'trips',
+                    localField: 'following',
+                    foreignField: 'writer',
+                    as: 'followedTrips'
+                }
+            },
+            {
+                $unwind: '$followedTrips'
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'followedTrips.writer',
+                    foreignField: '_id',
+                    as: 'writerInfo'
+                }
+            },
+            {
+                $unwind: '$writerInfo'
+            },
+            {
+                $addFields: {
+                    'followedTrips.username': '$writerInfo.username',
+                    'followedTrips.avatar': '$writerInfo.avatar',
+                }
+            },
+            {
+                $match: query
+            },
+            {
+                $group: {
+                    _id: '$id',
+                    followedTrips: { $push: '$followedTrips' }
+                }
+            },
+            {
+                $project: {
+                    followedTrips: 1,
+                    _id: 0
+                }
+            }
+        ])
+        //If there is no liked trips return a message
+        if (followedTrips.length === 0 || followedTrips[0].followedTrips.length === 0)
+            return res.status(200).json({ message: "Your friends don't have any trips", data: [] })
+        return res.status(200).json({ data: followedTrips[0].followedTrips })
+    }
+    catch (err) {
+        console.error("Error getting your friend's trips: ", err);
         return res.status(500).json({ message: `Unexpected error` });
     }
 })

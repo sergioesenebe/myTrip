@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
         default: 'https://res.cloudinary.com/drmjf3gno/image/upload/v1752485544/default-user_qq6fjc.png'
     },
     following: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         description: "Arrays of usernames followed by the user"
     },
     followers: {

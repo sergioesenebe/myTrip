@@ -18,6 +18,7 @@ import previousNonClickableIcon from "../../public/images/previous-non-clickable
 import nextNonClickableIcon from "../../public/images/next-non-clickable.png";
 import orderByIcon from "../../public/images/order-by-green.png";
 import searchIcon from "../../public/images/search-green.png";
+import friendsIcon from "../../public/images/friends-green.png";
 
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -41,7 +42,6 @@ function trips() {
     const [searchByLocation, setSearchByLocation] = useState(false);
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
-    const [searchParams, setSearchParams] = useSearchParams();
     const [changeFilter, setChangeFilter] = useState('');
     //Get the url
     const url = new URL(window.location.href);
@@ -51,18 +51,19 @@ function trips() {
     const country = url.searchParams.get('search-country') || '';
     const city = url.searchParams.get('search-city') || '';
     const trip = url.searchParams.get('search-trip') || '';
+    const friends = url.searchParams.get('friends') || false;
     //Save the states
     const [navPage, setNavPage] = useState(page);
     const [sort, setSort] = useState(sortParam);
     const [searchCountry, setSearchCountry] = useState(country);
     const [searchCity, setSearchCity] = useState(city);
     const [searchName, setSearchName] = useState(trip);
+    const [followedTrips, setFollowedTrips] = useState(friends);
 
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
     //Define navigate
     const navigate = useNavigate();
-
     //Reload when go back
     useEffect(() => {
         const handlePopState = () => {
@@ -81,15 +82,15 @@ function trips() {
         const country = url.searchParams.get('search-country') || '';
         const city = url.searchParams.get('search-city') || '';
         const trip = url.searchParams.get('search-trip') || '';
+        const friends = url.searchParams.get('friends') || '';
         //Save the state
         setNavPage(page);
         setSort(sortParam);
         setSearchCountry(country);
         setSearchCity(city);
         setSearchName(trip);
+        friends ? setFollowedTrips(true) : setFollowedTrips(false);
     }, [url.searchParams.toString()]);
-
-
     //Check if is logged in
     useEffect(() => {
         const checkAuth = async () => {
@@ -117,6 +118,8 @@ function trips() {
                 handleSearchByName();
             else if (searchCity && searchCountry)
                 handleSearchByCountryCity();
+            else if (followedTrips)
+                getFollowedTrips();
             else
                 getTrips();
         }
@@ -233,6 +236,15 @@ function trips() {
                 const json = await res.json();
                 setTrips(json.data);
             }
+            //Delete params and set followed trips to false
+            if (followedTrips) {
+                url.searchParams.delete('search-country');
+                url.searchParams.delete('search-city');
+                url.searchParams.delete('search-trip');
+                setFollowedTrips(false);
+                url.searchParams.delete('friends');
+                window.history.pushState(null, '', url.toString());
+            }
         }
         //Catch the error
         catch (err) {
@@ -240,6 +252,41 @@ function trips() {
             setErrorMessage('Error getting the trips');
         }
     };
+    //Get trips by followed users
+    const getFollowedTrips = async () => {
+        if (!isLoggedIn) return;
+        try {
+            //Fetch the api to get all trips
+            const res = await fetch(`${backendUrl}/api/users/followed-trips`, { credentials: 'include' })
+            //If it's okay update the state of the trips
+            if (!res.ok) {
+                setErrorMessage('Error getting friends trips');
+            }
+            else {
+                //Get the json and save the state
+                const json = await res.json();
+                setTrips(json.data);
+                //Delete params and set followed trips to false
+                if (!followedTrips) {
+                    url.searchParams.delete('search-country');
+                    url.searchParams.delete('search-city');
+                    url.searchParams.delete('search-trip');
+                    setFollowedTrips(true);
+                    url.searchParams.delete('friends');
+                    window.history.pushState(null, '', url.toString());
+                }
+                //Save in the url
+                url.searchParams.set('friends', true);
+                window.history.pushState(null, '', url.toString());
+            }
+        }
+        //Catch the error
+        catch (err) {
+            console.error('Error getting trips: ', err);
+            setErrorMessage('Error getting the trips');
+        }
+    };
+
     //Function to close order by
     function handleCloseOrderBy() {
         //If open close it
@@ -291,14 +338,15 @@ function trips() {
         window.history.pushState(null, '', url.toString());
         //If is empty show all trips
         if (!searchName) {
-            getTrips();
+            followedTrips ? getFollowedTrips : getTrips;
             url.searchParams.delete('search-trip');
             window.history.pushState(null, '', url.toString());
             return;
         }
         try {
             const body = { name: searchName }
-            searchTrip(url, body, setTrips)
+            const searchFollowed = followedTrips ? 'followed-trips' : false;
+            searchTrip(url, body, setTrips, searchFollowed)
         }
         catch (err) {
             console.error('Error searching a trip: ', err);
@@ -467,50 +515,61 @@ function trips() {
                             <div className='flex flex-col gap-[20px]'>
                                 <div className='flex flex-row justify-between items-center'>
                                     <h1 className="text-3xl font-bold text-[#004643]">Trips</h1>
-                                    <div className="relative inline-block">
-                                        {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
-                                            /*Prevent default and allow click it instead of the document page*/
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            setOrderByOpen(!orderByOpen)
-                                        }}></img></div>}
-                                        {orderByOpen && (
-                                            <div className='shadow-md text-[16px] bg-[#f3f1ef] rounded-[10px] absolute top-full right-0 mt-2 w-[150px] z-[999]'>
-                                                <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                    <div className='flex flex-row'>
+                                        {!menuOpen && <div className={`clickable rounded-full p-[5px] bg-[#ECE7E2] ${followedTrips ? 'brightness-[80%] hover:brightness-[90%]' : ''} `}>
+                                            <img title="Friends' Trips" src={friendsIcon} className='w-[30px] h-[30px]' onClick={(e) => {
+                                                /*Prevent default and allow click it instead of the document page*/
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                followedTrips ? getTrips() : getFollowedTrips();
+                                            }}></img>
+                                        </div>}
+                                        <div className="relative inline-block">
+                                            {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'>
+                                                <img title='Sort' src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                                     /*Prevent default and allow click it instead of the document page*/
                                                     e.preventDefault();
                                                     e.stopPropagation();
-                                                    /*Close the oreder menu*/
-                                                    handleCloseOrderBy();
-                                                    /*Change order*/
-                                                    changeOrder('most-liked');
-                                                }}>
-                                                    <p>Most Liked</p>
+                                                    setOrderByOpen(!orderByOpen)
+                                                }}></img></div>}
+                                            {orderByOpen && (
+                                                <div className='shadow-md text-[16px] bg-[#f3f1ef] rounded-[10px] absolute top-full right-0 mt-2 w-[150px] z-[999]'>
+                                                    <div className={`${sort === 'most-liked' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-tl-[10px] rounded-tr-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                        /*Prevent default and allow click it instead of the document page*/
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        /*Close the oreder menu*/
+                                                        handleCloseOrderBy();
+                                                        /*Change order*/
+                                                        changeOrder('most-liked');
+                                                    }}>
+                                                        <p>Most Liked</p>
+                                                    </div>
+                                                    <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                        /*Prevent default and allow click it instead of the document page*/
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        /*Close the oreder menu*/
+                                                        handleCloseOrderBy();
+                                                        /*Change order*/
+                                                        changeOrder('newest');
+                                                    }}>
+                                                        <p>Newest</p>
+                                                    </div>
+                                                    <div className={`${sort === 'most-detailed' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-bl-[10px] rounded-br-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
+                                                        /*Prevent default and allow click it instead of the document page*/
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        /*Close the oreder menu*/
+                                                        handleCloseOrderBy();
+                                                        /*Change order*/
+                                                        changeOrder('most-detailed');
+                                                    }}>
+                                                        <p>Most Detailed</p>
+                                                    </div>
                                                 </div>
-                                                <div className={`${sort === 'newest' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] clickable bg-[#f3f1ef]`} onClick={(e) => {
-                                                    /*Prevent default and allow click it instead of the document page*/
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    /*Close the oreder menu*/
-                                                    handleCloseOrderBy();
-                                                    /*Change order*/
-                                                    changeOrder('newest');
-                                                }}>
-                                                    <p>Newest</p>
-                                                </div>
-                                                <div className={`${sort === 'most-detailed' ? 'pointer-events-none filter brightness-[80%]' : ''} w-[100%] p-[5px] rounded-bl-[10px] rounded-br-[10px] clickable bg-[#f3f1ef]`} onClick={(e) => {
-                                                    /*Prevent default and allow click it instead of the document page*/
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    /*Close the oreder menu*/
-                                                    handleCloseOrderBy();
-                                                    /*Change order*/
-                                                    changeOrder('most-detailed');
-                                                }}>
-                                                    <p>Most Detailed</p>
-                                                </div>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='places'>

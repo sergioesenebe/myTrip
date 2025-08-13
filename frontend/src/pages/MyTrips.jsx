@@ -470,10 +470,10 @@ function myTrips() {
                                             </div>
                                         </form>}
                                         <div className='rounded-[10px] border-[#00464366] border-[1px] bg-[#ECE7E2] w-[100px] flex flex-row items-center'>
-                                            <div className={`${!searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] p-[1px] rounded-tl-[10px] rounded-bl-[10px]`}
+                                            <div className={`${!searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] rounded-tl-[10px] rounded-bl-[10px]`}
                                                 onClick={() => setSearchByLocation(false)}>
                                                 Trip</div>
-                                            <div className={`${searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] p-[1px] rounded-tr-[10px] rounded-br-[10px]`}
+                                            <div className={`${searchByLocation ? 'bg-[#00464366] text-[#ECE7E2] pointer-events-none' : 'text-[#004643] bg-[#ECE7E2] hover:cursor-pointer hover:bg-[00464366]'} border-0 flex justify-center w-[50px] rounded-tr-[10px] rounded-br-[10px]`}
                                                 onClick={() => setSearchByLocation(true)}>
                                                 Place</div>
                                         </div>
