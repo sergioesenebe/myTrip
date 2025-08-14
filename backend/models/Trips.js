@@ -6,6 +6,7 @@ const placeSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        maxlength: 150,
         description: "Name of the place"
     },
     image: {
@@ -15,6 +16,7 @@ const placeSchema = new mongoose.Schema({
     },
     description: {
         type: String,
+        maxlength: 1500,
         description: "Short description of the trip",
     }
 
@@ -25,16 +27,19 @@ const tripSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        maxlength: 150,
         description: "Name of the trip"
     },
     country: {
         type: String,
         required: true,
+        maxlength: 100,
         description: "Country where trip is done"
     },
     city: {
         type: String,
         required: true,
+        maxlength: 120,
         description: "City where trip is done"
     },
     image: {
@@ -44,6 +49,7 @@ const tripSchema = new mongoose.Schema({
     },
     description: {
         type: String,
+        maxlength: 2000,
         description: "Short description of the trip"
     },
     writer: {

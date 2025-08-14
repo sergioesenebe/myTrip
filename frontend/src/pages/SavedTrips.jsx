@@ -27,7 +27,6 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function savedTrips() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [trips, setTrips] = useState([]);
     const [tripsSorted, setTripsSorted] = useState([]);
@@ -41,7 +40,6 @@ function savedTrips() {
     const [searchByLocation, setSearchByLocation] = useState(false);
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
-    const [searchParams, setSearchParams] = useSearchParams();
     const [changeFilter, setChangeFilter] = useState('');
     const [showMessage, setShowMessage] = useState('mine')
     //Get the url
@@ -366,9 +364,8 @@ function savedTrips() {
     //DOM
     return (
         <>
-            {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
             {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
-            {!isLoading && isLoggedIn && (
+            {isLoggedIn && (
                 <>
                     <main className='bg-[#ECE7E2]'>
                         <div className="top-green-img-section" style={{ backgroundImage: `url(${backgroundImage})` }}>

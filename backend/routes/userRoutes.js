@@ -17,6 +17,11 @@ router.put('/me', authenticateJWT, async (req, res) => {
         if (!req.body.username && !req.body.email && !req.body.first_name && !req.body.second_name && !req.body.description && !req.body.avatar && !req.body.password) {
             return res.status(400).json({ message: 'Please make sure to fill at least one field' })
         }
+        //Check if name of the trip, country and the city, have been added
+        const { username = '', email = '', first_name = '', second_name = '', description = '' } = req.body;
+        if (username.length > 30 || email.length > 100 || first_name.length > 50 || second_name.length > 50 || description.length > 160) {
+            return res.status(400).json({ message: 'Please ensure that you do not add data that is too long' });
+        }
         await connectToDB();
         //Save the body
         let body = {};
@@ -466,7 +471,7 @@ router.get('/followed-trips', authenticateJWT, async (req, res) => {
             }
         ])
         //If there is no liked trips return a message
-        if (followedTrips[0].followedTrips.length === 0)
+        if (followedTrips.length === 0 || followedTrips[0].followedTrips.length === 0)
             return res.status(200).json({ message: "Your friends don't have any trips", data: [] })
         return res.status(200).json({ data: followedTrips[0].followedTrips })
     }

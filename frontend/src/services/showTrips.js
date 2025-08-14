@@ -61,6 +61,8 @@ export function showTrips(sorted, order, setInfoMessage, setMaxPages, setNext, s
             setInfoMessage("No users match your criteria");
         else if (type === 'traveler')
             setInfoMessage("Looks like this traveler don't have trips yet");
+        else if (type === 'followed')
+            setInfoMessage("The travelers you follow haven't posted anything yet");
         else
             setInfoMessage('No trips match your criteria');
         setNext(false);
@@ -168,8 +170,8 @@ export async function searchTrip(url, body, setTrips, tripType) {
 
         }
         //Search trips in travelers followed trips
-        else if (tripType === 'followed-trips'){
-                        //fetch the search with the body send it
+        else if (tripType === 'followed-trips') {
+            //fetch the search with the body send it
             res = await fetch(`${backendUrl}/api/users/followed-trips/search`, {
                 method: 'POST',
                 headers: {

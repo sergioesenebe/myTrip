@@ -10,7 +10,6 @@ import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
 import esenebeLogo from "../../public/images/esenebe-logo.png";
-import loadingGif from "../../public/images/loading.gif";
 import backgroundImage from "../../public/images/budapest-background.jpg";
 import previousIcon from "../../public/images/previous.png";
 import nextIcon from "../../public/images/next.png";
@@ -27,7 +26,6 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function myTrips() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [userId, setUserId] = useState('');
     const [trips, setTrips] = useState([]);
@@ -42,7 +40,6 @@ function myTrips() {
     const [searchByLocation, setSearchByLocation] = useState(false);
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
-    const [searchParams, setSearchParams] = useSearchParams();
     const [changeFilter, setChangeFilter] = useState('');
     const [showMessage, setShowMessage] = useState('mine')
     //Get the url
@@ -369,9 +366,8 @@ function myTrips() {
     //DOM
     return (
         <>
-            {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
             {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
-            {!isLoading && isLoggedIn && (
+            {isLoggedIn && (
                 <>
                     <main className='bg-[#ECE7E2]'>
                         <div className="top-green-img-section" style={{ backgroundImage: `url(${backgroundImage})` }}>

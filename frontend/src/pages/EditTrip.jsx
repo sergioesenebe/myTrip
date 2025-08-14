@@ -389,11 +389,11 @@ function editTrip() {
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Sign Up</Link>)}
                                     </div>)}
                                     <div className="flex justify-between w-[100%] items-center">
-                                        <input required className="editable-input trip-name white-input md:w-[60%] w-[100%]" value={tripName} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
+                                        <input required className="editable-input trip-name white-input md:w-[60%] w-[100%]" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
                                         <button type='button' className='red-button w-[160px] h-[50px]' onClick={(e) => {handleDeleteTrip(e)}}>Delete Whole Trip</button>
                                     </div>
                                     <div className="editable">
-                                        <textarea className="editable-textarea trip-description white-input" rows={3}
+                                        <textarea className="editable-textarea trip-description white-input" rows={3} maxLength={2000}
                                             placeholder="Trip Description" value={tripDescription} onChange={(e) => setTripDescription(e.target.value)} />
                                     </div>
                                     <div className="selections">
@@ -443,11 +443,11 @@ function editTrip() {
                                                 }
                                                 <div className="right-place">
                                                     <div className="editable">
-                                                        <input required className="editable-input place-name green-input" placeholder="Place Name"
+                                                        <input required className="editable-input place-name green-input" placeholder="Place Name" maxLength={150}
                                                             value={place.name} onChange={(e) => handlePlaceChange(index, 'name', e.target.value, places, setPlaces)} />
                                                     </div>
                                                     <div className="editable">
-                                                        <textarea className="editable-textarea place-description black-input" rows={5}
+                                                        <textarea className="editable-textarea place-description black-input" rows={5} maxLength={1500}
                                                             placeholder="Place Description" value={place.description} onChange={(e) => handlePlaceChange(index, 'description', e.target.value, places, setPlaces)} />
                                                     </div>
                                                 </div>

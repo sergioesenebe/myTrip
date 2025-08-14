@@ -18,6 +18,11 @@ router.post('/', authenticateJWT, async (req, res) => {
         if (!req.body.name || req.body.name.trim() === '' || !req.body.country || req.body.country.trim() === '' || !req.body.city || req.body.city.trim() === '') {
             return res.status(400).json({ message: 'Please make sure to fill in all fields' });
         }
+        //Check if name of the trip, country and the city, have been added
+        const { name = '', country = '', city = '', description = '' } = req.body;
+        if (name.length > 150 || country.length > 100 || city.length > 120 || description.length > 2000) {
+            return res.status(400).json({ message: 'Please ensure that you do not add data that is too long' });
+        }
         //By default there is an empty array of places
         const places = [];
         //Cehck if it's a valid Array, if not return a message
@@ -29,18 +34,18 @@ router.post('/', authenticateJWT, async (req, res) => {
             if (!place.name || place.name.trim() === '')
                 return res.status(400).json({ message: 'Please make sure to fill in all place fields' });
             places.push({
-                name: place.name || '',
-                image: place.image || '',
-                description: place.description || ''
+                name: place.name.trim() || '',
+                image: place.image.trim() || '',
+                description: place.description.trim() || ''
             })
         }
         //Insert the new Trip
         const newTrip = new Trip({
-            name: req.body.name,
-            country: req.body.country,
-            city: req.body.city,
-            image: req.body.image,
-            description: req.body.description,
+            name: req.body.name.trim(),
+            country: req.body.country.trim(),
+            city: req.body.city.trim(),
+            image: req.body.image.trim(),
+            description: req.body.description.trim(),
             writer: req.user.id,
             places: places,
         });
@@ -351,19 +356,24 @@ router.put('/my-trips/:id', authenticateJWT, async (req, res) => {
     try {
         //Connect to the database
         await connectToDB();
+        //Check if name of the trip, country and the city, have been added
+        const { name = '', country = '', city = '', description = '' } = req.body;
+        if (name.length > 150 || country.length > 100 || city.length > 120 || description.length > 2000) {
+            return res.status(400).json({ message: 'Please ensure that you do not add data that is too long' });
+        }
         //Add all the data to a body
         const body = {};
         //Check if name of the trip, country and the city, have been added
         if (req.body.name)
-            body.name = req.body.name;
+            body.name = req.body.name.trim();
         if (req.body.country)
-            body.country = req.body.country;
+            body.country = req.body.country.trim();
         if (req.body.city)
-            body.city = req.body.city;
+            body.city = req.body.city.trim();
         if (req.body.image)
-            body.image = req.body.image;
+            body.image = req.body.image.trim();
         if (req.body.description)
-            body.description = req.body.description;
+            body.description = req.body.description.trim();
         if (req.body.places) {
             //Check if it's a valid Array, if not return a message
             if (!Array.isArray(req.body.places)) {
@@ -376,9 +386,9 @@ router.put('/my-trips/:id', authenticateJWT, async (req, res) => {
                 if (!place.name || place.name.trim() === '')
                     return res.status(400).json({ message: 'Please make sure to fill in all place fields' });
                 places.push({
-                    name: place.name || '',
-                    image: place.image || '',
-                    description: place.description || ''
+                    name: place.name.trim() || '',
+                    image: place.image.trim() || '',
+                    description: place.description.trim() || ''
                 })
             }
             body.places = places;
