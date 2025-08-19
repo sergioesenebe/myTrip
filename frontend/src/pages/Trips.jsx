@@ -421,7 +421,7 @@ function trips() {
         <>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>myTrip - Create Trip</title>
+                <title>myTrip - Trips</title>
                 <link rel="icon" href={logo} />
             </Helmet>
             <main className='bg-[#ECE7E2]'>
