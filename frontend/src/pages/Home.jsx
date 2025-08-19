@@ -182,7 +182,7 @@ function home() {
                         <div className='flex flex-row items-center justify-center'>
                             {interestingUsers.map(user => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                    <img className="w-[300px] aspect-square place-image clickable rounded-full" src={user.avatar} />
+                                    <img className="w-[300px] aspect-square place-image clickable rounded-full" src={user.avatar} onClick={() => { navigate(`/trips/${user._id}`) }}/>
                                     <p className='text-[16px]'>{user.username}</p>
                                 </div>
                             ))}
