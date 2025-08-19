@@ -103,7 +103,8 @@ function home() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
+                <meta charSet="utf-8" />
+                {/*name="viewport" content="width=device-width, initial-scale=1.0"*/}
                 <title>myTrip - Home</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -141,8 +142,8 @@ function home() {
                                 className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Home</Link>
                             <Link to={'/trips'}
                                 className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Trips</Link>
-                            <a href="#"
-                                className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Travelers</a>
+                            <Link to={'/travelers'}
+                                className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Travelers</Link>
                             {isLoggedIn && (<Link to={'/mytrips'}
                                 className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">My
                                 Trips</Link>)}
