@@ -103,7 +103,7 @@ function home() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>myTrip - Home</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -182,7 +182,7 @@ function home() {
                         <div className='flex flex-row items-center justify-center'>
                             {interestingUsers.map(user => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                    <img className="w-[300px] aspect-square place-image clickable rounded-full" src={user.avatar} onClick={() => { navigate(`/users/${user._id}`) }}/>
+                                    <img className="w-[300px] aspect-square place-image clickable rounded-full" src={user.avatar} onClick={() => { navigate(`/travelers/${user._id}`) }}/>
                                     <p className='text-[16px]'>{user.username}</p>
                                 </div>
                             ))}
