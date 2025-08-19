@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 //Import internal libraries, css and images
 import { validImage, deleteImage, handleUploadImage, handleDeleteImage } from '../services/uploadService';
 import "../styles/index.css";
 import "../styles/common.css";
 
 //Import images
+import logo from "../../public/images/logo.png";
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
@@ -332,6 +334,11 @@ function uploadTrip() {
     //DOM
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - My Profile</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
             {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
             {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
             {!isLoading && isLoggedIn && (

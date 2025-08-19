@@ -1,11 +1,13 @@
 //Import external Library
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 //Import internal libraries, pages, css and images
-import { deleteImage, uploadImage, validImage, handleUploadImage } from '../services/uploadService';
+import { deleteImage, validImage, handleUploadImage } from '../services/uploadService';
 import '../styles/common.css';
 import '../styles/auth.css';
-import logo from '../../public/images/mytrip-logo-text.png';
+import logo from "../../public/images/logo.png";
+import logotext from '../../public/images/mytrip-logo-text.png';
 import loadingGif from "../../public/images/loading.gif";
 
 //Get backend url
@@ -141,6 +143,11 @@ function SignUp() {
     }
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - Sign Up</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
             <style>{`
                 #root {
                     display: flex;
@@ -187,7 +194,7 @@ function SignUp() {
                             <label htmlFor='avatar'>Avatar</label>
                             <img className='avatar clickable' src={avatarUrl} onClick={() => avatarRef.current && avatarRef.current.click()} />
                             <input className="input-auth" ref={avatarRef} id='avatar' type='file' accept='image/png, image/jpg, image/jpeg'
-                                style={{ display: 'none' }} onChange={handleImage}/>
+                                style={{ display: 'none' }} onChange={handleImage} />
                             {displayDeleteButton && (
                                 <button className='red-border-button' type='button' onClick={handleDeleteImage}>Delete</button>
                             )}
@@ -203,7 +210,7 @@ function SignUp() {
                     </div >
                     <div className="auth-right">
                         <div className="auth-message">
-                            <img src={logo} className="logo-text" />
+                            <img src={logotext} className="logo-text" />
                             <h1>Travel better together</h1>
                             <h3>Upload your journeys and save the best trips from the community.</h3>
                         </div>

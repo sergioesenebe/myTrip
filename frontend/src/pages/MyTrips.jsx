@@ -1,11 +1,13 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
 import { sortByMostDetailed, sortByLikes, sortByNewest, showTrips, nextPage, previousPage, searchTrip, getCountries, getCities } from '../services/showTrips'
 //Import images
+import logo from "../../public/images/logo.png";
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
@@ -368,6 +370,11 @@ function myTrips() {
     //DOM
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - My Trips</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
             {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
             {isLoggedIn && (
                 <>

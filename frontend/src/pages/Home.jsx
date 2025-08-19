@@ -1,10 +1,12 @@
 //Import external libraries
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
 //Import images
+import logo from "../../public/images/logo.png";
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
@@ -100,6 +102,11 @@ function home() {
     //DOM
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - Create Trip</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
             <main className='bg-[#ECE7E2]'>
                 <div className="top-green-img-section" style={{ backgroundImage: `url(${backgroundImage})` }}>
                     <nav className="top-nav-bar">
@@ -193,7 +200,7 @@ function home() {
                                 <p className='text-[16px]'>Berlin</p>
                             </div>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                <img className="w-[400px] aspect-square place-image clickable" src={trendingTrips} onClick={() => navigate('/trips?sort=newest')}/>
+                                <img className="w-[400px] aspect-square place-image clickable" src={trendingTrips} onClick={() => navigate('/trips?sort=newest')} />
                                 <p className='text-[16px]'>Newest Trips</p>
                             </div>
                         </div>

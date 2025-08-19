@@ -1,10 +1,12 @@
 //Import external libraries
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 //Import internal libraries, css and images
+import logo from "../../public/images/logo.png";
 import "../styles/common.css";
 import "../styles/auth.css";
-import logo from '../../public/images/mytrip-logo-text.png';
+import logotext from '../../public/images/mytrip-logo-text.png';
 
 //Get backend url
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -58,6 +60,11 @@ function logIn() {
     //Return the DOM
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - Log In</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
             <style>{`
                 #root {
                     display: flex;
@@ -94,7 +101,7 @@ function logIn() {
             </div >
             <div className="auth-right">
                 <div className="auth-message">
-                    <img src={logo} className="logo-text" />
+                    <img src={logotext} className="logo-text" />
                     <h1>Travel better together</h1>
                     <h3>Upload your journeys and save the best trips from the community.</h3>
                 </div>

@@ -1,6 +1,7 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 //Import internal libraries, css and images
 import { handleUploadImage, handleDeleteImage } from '../services/uploadService';
 import { addTripImage, addPlaceImage, handlePlaceChange, deleteTripImage, addEmptyPlace, deletePlace, deletePlaceImage } from '../services/editTripService';
@@ -9,6 +10,7 @@ import "../styles/index.css";
 import "../styles/common.css";
 import "../styles/trips.css";
 //Import images
+import logo from "../../public/images/logo.png";
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
@@ -338,6 +340,11 @@ function editTrip() {
     //DOM
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - Edit Trip</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
             {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
             {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
             {isLoggedIn && !isTheirTrip && (<div className="notLoggedIn"><h1>You can't edit this trip</h1><p> Return to <Link className='link' to={'/trips'}>Trips</Link> to continue searching for interesting travel ideas</p></div>)}
@@ -392,7 +399,7 @@ function editTrip() {
                                     </div>)}
                                     <div className="flex justify-between w-[100%] items-center">
                                         <input required className="editable-input trip-name white-input md:w-[60%] w-[100%]" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
-                                        <button type='button' className='red-button w-[160px] h-[50px]' onClick={(e) => {handleDeleteTrip(e)}}>Delete Whole Trip</button>
+                                        <button type='button' className='red-button w-[160px] h-[50px]' onClick={(e) => { handleDeleteTrip(e) }}>Delete Whole Trip</button>
                                     </div>
                                     <div className="editable">
                                         <textarea className="editable-textarea trip-description white-input" rows={3} maxLength={2000}

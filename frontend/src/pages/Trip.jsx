@@ -1,11 +1,13 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Helmet } from "react-helmet";
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
 import "../styles/trips.css";
 //Import images
+import logo from "../../public/images/logo.png";
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
@@ -238,6 +240,11 @@ function uploadTrip() {
     //DOM
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - Trip</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
             <main className='bg-[#ECE7E2]'>
                 <div className="top-green-img-section" style={{ backgroundImage: `url(${tripImageUrl})` }}>
                     <nav className="top-nav-bar">

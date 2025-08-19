@@ -1,5 +1,6 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
+import { Helmet } from "react-helmet";
 import { Link, useNavigate } from 'react-router-dom';
 //Import internal libraries, css and images
 import { handleUploadImage } from '../services/uploadService';
@@ -9,6 +10,7 @@ import "../styles/index.css";
 import "../styles/common.css";
 import "../styles/trips.css";
 //Import images
+import logo from "../../public/images/logo.png";
 import logoNavBar from "../../public/images/mytrip-text-logo-nav-bar.png";
 import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
@@ -217,6 +219,12 @@ function uploadTrip() {
     //DOM
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>myTrip - Create Trip</title>
+                <link rel="icon" href={logo} />
+            </Helmet>
+
             {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
             {!isLoggedIn && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
             {!isLoading && isLoggedIn && (
@@ -236,7 +244,7 @@ function uploadTrip() {
                                         <Link to={'/trips'} className="nav-bar-link">Trips</Link>
                                         <Link to={'/travelers'} className="nav-bar-link">Travelers</Link>
                                         <Link to={'/mytrips'} className="nav-bar-link"><u>My Trips</u></Link>
-                                        <Link to={'/savedtrips'}  className="nav-bar-link">Saved Trips</Link>
+                                        <Link to={'/savedtrips'} className="nav-bar-link">Saved Trips</Link>
                                         <Link to={'/myprofile'} className="nav-bar-link">My Profile</Link>
                                     </div>
                                 </nav>
