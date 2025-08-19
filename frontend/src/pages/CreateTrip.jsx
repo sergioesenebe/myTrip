@@ -225,7 +225,6 @@ function uploadTrip() {
                 <title>myTrip - Create Trip</title>
                 <link rel="icon" href={logo} />
             </Helmet>
-
             {isLoading && (<div className="loading"><img src={loadingGif}></img>Loading...</div>)}
             {isLoggedIn === false && (<div className="notLoggedIn"><h1>You're not logged in</h1><p>Please <Link className='link' to={'/login'}>Log In</Link> to access this page.</p></div>)}
             {!isLoading && isLoggedIn && (
