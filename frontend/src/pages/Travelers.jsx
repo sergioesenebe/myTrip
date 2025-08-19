@@ -29,7 +29,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function travelers() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [userId, setUserId] = useState('');
     const [users, setUsers] = useState([]);
     const [usersFiltered, setUsersFiltered] = useState([]);
@@ -92,8 +92,9 @@ function travelers() {
                 //If it's logged in save the state
                 if (!res.ok) {
                     setIsLoggedIn(false);
-                    return;
                 }
+                else
+                    setIsLoggedIn(true)
                 //Save user id
                 const json = await res.json();
                 const user = json.user_id;
@@ -368,8 +369,8 @@ function travelers() {
                     <div className='flex flex-col gap-[20px]'>
                         <div className='flex flex-row justify-between items-center gap-[20px]'>
                             <h1 className="text-3xl font-bold text-[#004643]">Travelers</h1>
-                            <div className="relative inline-block">
-                                {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={filterIcon} className='w-[30px] h-[30px]' onClick={(e) => {
+                            {isLoggedIn && <div className="relative inline-block">
+                                {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img title='Filter' src={filterIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                     /*Prevent default and allow click it instead of the document page*/
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -401,7 +402,7 @@ function travelers() {
                                         </div>
                                     </div>
                                 )}
-                            </div>
+                            </div>}
                         </div>
                         <div className='places'>
                             {usersSliced.map((user, index) => (
@@ -422,7 +423,7 @@ function travelers() {
                                             <h2 className="text-[#004643] text-[24px] md:text-[30px]">{user.first_name} {user.second_name}</h2>
                                             <p className="place-description"
                                                 placeholder="Place Description">{user.description}</p>
-                                            {(user.followed == notFollowed || user.followed == notFollowedWhite) && <button className='green-border-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                            {isLoggedIn && (user.followed == notFollowed || user.followed == notFollowedWhite) && <button className='green-border-button w-[100px] h-[30px] flex flex-row gap-[5px] justify-center'
                                                 onMouseEnter={() => {
                                                     const copy = [...users];
                                                     copy[index].followed = notFollowedWhite;
@@ -438,7 +439,7 @@ function travelers() {
                                                 Follow
                                                 <img className='w-[15px] h-[15px]' src={user.followed}></img>
                                             </button>}
-                                            {user.followed == followed && <button className='green-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                            {isLoggedIn && user.followed == followed && <button className='green-button w-[100px] h-[30px] flex flex-row gap-[5px] justify-center'
                                                 onClick={(e) => handleUnfollowUser(e, user._id, index)}
                                             >
                                                 Followed

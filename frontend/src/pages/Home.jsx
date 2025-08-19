@@ -10,8 +10,8 @@ import menuIcon from "../../public/images/menu-white.png";
 import closeIcon from "../../public/images/close-white.png";
 import esenebeLogo from "../../public/images/esenebe-logo.png";
 import backgroundImage from "../../public/images/budapest-background.jpg"
-import citiesMap from "../../public/images/cities-map.png"
-import countriesMap from "../../public/images/countries-map.png"
+import berlinImg from "../../public/images/berlin.jpg"
+import italyImg from "../../public/images/italy.jpg"
 import trendingTrips from "../../public/images/trending-trips.jpg"
 
 //Get backend url
@@ -25,7 +25,7 @@ function home() {
     const [interestingUsers, setInterestingUsers] = useState([]);
     const [errorMessageTrips, setErrorMessageTrips] = useState('');
     const [errorMessageUsers, setErrorMessageUsers] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     //Set navigate
     const navigate = useNavigate();
 
@@ -38,7 +38,9 @@ function home() {
                 //If it's logged in save the state
                 if (!res.ok) {
                     setIsLoggedIn(false);
+                    return;
                 }
+                setIsLoggedIn(true)
             }
             //If there is 
             catch (err) {
@@ -183,16 +185,16 @@ function home() {
                         <h1 className="text-3xl font-bold text-[#004643] mb-4">Explore</h1>
                         <div className='flex flex-row items-center justify-center'>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                <img className="w-[400px] aspect-square place-image clickable" src={countriesMap} />
-                                <p className='text-[16px]'>Countries</p>
+                                <img className="w-[400px] aspect-square place-image clickable" src={italyImg} onClick={() => navigate('/trips?search-country=Italy&search-city=Any+City')} />
+                                <p className='text-[16px]'>Italy</p>
                             </div>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                <img className="w-[400px] aspect-square place-image clickable" src={citiesMap} />
-                                <p className='text-[16px]'>Cities</p>
+                                <img className="w-[400px] aspect-square place-image clickable" src={berlinImg} onClick={() => navigate('/trips?search-country=Germany&search-city=Berlin')} />
+                                <p className='text-[16px]'>Berlin</p>
                             </div>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                <img className="w-[400px] aspect-square place-image clickable" src={trendingTrips} />
-                                <p className='text-[16px]'>Trending Trips</p>
+                                <img className="w-[400px] aspect-square place-image clickable" src={trendingTrips} onClick={() => navigate('/trips?sort=newest')}/>
+                                <p className='text-[16px]'>Newest Trips</p>
                             </div>
                         </div>
                     </div>

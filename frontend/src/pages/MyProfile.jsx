@@ -28,7 +28,7 @@ function uploadTrip() {
     const [updatePasswordErrorMessage, setUpdatePasswordErrorMessage] = useState("");
     const [updatePasswordSuccessMessage, setUpdatePasswordSuccessMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     const [currentFirstName, setCurrentFirstName] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -62,7 +62,9 @@ function uploadTrip() {
                 //If it's not logged in save the state
                 if (!res.ok) {
                     setIsLoggedIn(false);
+                    return;
                 }
+                setIsLoggedIn(true)
             }
             //If there is an error catch it
             catch (err) {

@@ -26,7 +26,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function trips() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [userId, setUserId] = useState('');
     const [trips, setTrips] = useState([]);
     const [tripsSorted, setTripsSorted] = useState([]);
@@ -49,14 +49,14 @@ function trips() {
     const country = url.searchParams.get('search-country') || '';
     const city = url.searchParams.get('search-city') || '';
     const trip = url.searchParams.get('search-trip') || '';
-    const friends = url.searchParams.get('friends') || false;
+    const followed = url.searchParams.get('followed') || false;
     //Save the states
     const [navPage, setNavPage] = useState(page);
     const [sort, setSort] = useState(sortParam);
     const [searchCountry, setSearchCountry] = useState(country);
     const [searchCity, setSearchCity] = useState(city);
     const [searchName, setSearchName] = useState(trip);
-    const [followedTrips, setFollowedTrips] = useState(friends);
+    const [followedTrips, setFollowedTrips] = useState(followed);
 
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
@@ -80,14 +80,14 @@ function trips() {
         const country = url.searchParams.get('search-country') || '';
         const city = url.searchParams.get('search-city') || '';
         const trip = url.searchParams.get('search-trip') || '';
-        const friends = url.searchParams.get('friends') || '';
+        const followed = url.searchParams.get('followed') || '';
         //Save the state
         setNavPage(page);
         setSort(sortParam);
         setSearchCountry(country);
         setSearchCity(city);
         setSearchName(trip);
-        friends ? setFollowedTrips(true) : setFollowedTrips(false);
+        followed ? setFollowedTrips(true) : setFollowedTrips(false);
     }, [url.searchParams.toString()]);
     //Check if is logged in
     useEffect(() => {
@@ -98,6 +98,8 @@ function trips() {
                 if (!res.ok) {
                     setIsLoggedIn(false);
                 }
+                else
+                    setIsLoggedIn(true)
                 //Save user id
                 const json = await res.json();
                 setUserId(json.user_id);
@@ -171,7 +173,6 @@ function trips() {
             setTripsSorted(sorted);
             //Save the type
             const type = followedTrips && searchName === '' && searchCountry === '' ? 'followed' : false;
-            console.log(type);
             //Show trips
             showTrips(sorted, 'most-detailed', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url, type);
         }
@@ -190,7 +191,6 @@ function trips() {
             setTripsSorted(sorted);
             //Save the type
             const type = followedTrips && searchName === '' && searchCountry === '' ? 'followed' : false;
-            console.log(type);
             //Show trips
             showTrips(sorted, 'most-liked', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url, type);
 
@@ -210,7 +210,6 @@ function trips() {
             setTripsSorted(sorted);
             //Save the type
             const type = followedTrips && searchName === '' && searchCountry === '' ? 'followed' : false;
-            console.log(type);
             //Show trips
             showTrips(sorted, 'newest', setInfoMessage, setMaxPages, setNext, setPrevious, setTripsSliced, changeFilter, sort, navPage, url, type);
         }
@@ -249,7 +248,7 @@ function trips() {
                 url.searchParams.delete('search-city');
                 url.searchParams.delete('search-trip');
                 setFollowedTrips(false);
-                url.searchParams.delete('friends');
+                url.searchParams.delete('followed');
                 window.history.pushState(null, '', url.toString());
             }
         }
@@ -267,7 +266,7 @@ function trips() {
             const res = await fetch(`${backendUrl}/api/users/followed-trips`, { credentials: 'include' })
             //If it's okay update the state of the trips
             if (!res.ok) {
-                setErrorMessage('Error getting friends trips');
+                setErrorMessage("Error getting followed travelers' trips");
             }
             else {
                 //Get the json and save the state
@@ -279,11 +278,11 @@ function trips() {
                     url.searchParams.delete('search-city');
                     url.searchParams.delete('search-trip');
                     setFollowedTrips(true);
-                    url.searchParams.delete('friends');
+                    url.searchParams.delete('followed');
                     window.history.pushState(null, '', url.toString());
                 }
                 //Save in the url
-                url.searchParams.set('friends', true);
+                url.searchParams.set('followed', true);
                 window.history.pushState(null, '', url.toString());
             }
         }
@@ -521,7 +520,7 @@ function trips() {
                             <h1 className="text-3xl font-bold text-[#004643]">Trips</h1>
                             <div className='flex flex-row'>
                                 {!menuOpen && isLoggedIn && <div className={`clickable rounded-full p-[5px] bg-[#ECE7E2] ${followedTrips ? 'brightness-[80%] hover:brightness-[90%]' : ''} `}>
-                                    <img title="Friends' Trips" src={friendsIcon} className='w-[30px] h-[30px]' onClick={(e) => {
+                                    <img title="Followed Travelers’ Trips" src={friendsIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                         /*Prevent default and allow click it instead of the document page*/
                                         e.preventDefault();
                                         e.stopPropagation();

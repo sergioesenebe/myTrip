@@ -125,7 +125,9 @@ export function nextPage(navPage, maxPages, setNext, setPrevious, tripsSorted, s
         if (navPage === 1)
             setPrevious(true);
         //Go to the top of the trips
-        document.getElementById('trip-places').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+            document.getElementById('trip-places').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100)
         //Update page in the url
         url.searchParams.set('page', navPage + 1);
         window.history.pushState(null, '', url.toString());
@@ -146,7 +148,9 @@ export function previousPage(navPage, maxPages, tripsSorted, setTripsSliced, set
         if (navPage === maxPages)
             setNext(true);
         //Go to the top of the trips
-        document.getElementById('trip-places').scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+            document.getElementById('trip-places').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100)
         //Update page in the url
         url.searchParams.set('page', navPage - 1);
         window.history.pushState(null, '', url.toString());

@@ -27,7 +27,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function savedTrips() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [trips, setTrips] = useState([]);
     const [tripsSorted, setTripsSorted] = useState([]);
     const [tripsSliced, setTripsSliced] = useState([]);
@@ -95,7 +95,9 @@ function savedTrips() {
                 //If it's logged in save the state
                 if (!res.ok) {
                     setIsLoggedIn(false);
+                    return;
                 }
+                setIsLoggedIn(true)
             }
             //If there is an error catch it
             catch (err) {
@@ -194,7 +196,6 @@ function savedTrips() {
         try {
             const sorted = [...trips];
             sorted.reverse();
-            console.log(sorted);
             //Save the state
             setTripsSorted(sorted);
             //Show trips
@@ -473,7 +474,7 @@ function savedTrips() {
                                         </div>
                                     </div>}
                                     <div className="justify-self-end relative inline-block">
-                                        {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
+                                        {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img title='Sort' src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                             /*Prevent default and allow click it instead of the document page*/
                                             e.preventDefault();
                                             e.stopPropagation();

@@ -26,7 +26,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function myTrips() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [userId, setUserId] = useState('');
     const [trips, setTrips] = useState([]);
     const [tripsSorted, setTripsSorted] = useState([]);
@@ -96,6 +96,8 @@ function myTrips() {
                 if (!res.ok) {
                     setIsLoggedIn(false);
                 }
+                else
+                    setIsLoggedIn(true)
                 //Save user id
                 const json = await res.json();
                 const user = json.user_id;
@@ -475,7 +477,7 @@ function myTrips() {
                                         </div>
                                     </div>}
                                     <div className="justify-self-end relative inline-block">
-                                        {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
+                                        {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img title='Sort' src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                             /*Prevent default and allow click it instead of the document page*/
                                             e.preventDefault();
                                             e.stopPropagation();

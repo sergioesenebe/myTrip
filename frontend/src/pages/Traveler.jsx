@@ -29,8 +29,8 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 function travelerTrip() {
     //Define states
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
-    const [userId, setUserId] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
+    const [userId, setUserId] = useState(null);
     const [traveler, setTraveler] = useState('');
     const [followedByUser, setFollowedByUser] = useState(notFollowed)
     const [trips, setTrips] = useState([]);
@@ -103,6 +103,8 @@ function travelerTrip() {
                 if (!res.ok) {
                     setIsLoggedIn(false);
                 }
+                else
+                    setIsLoggedIn(true)
                 //If user is the same than the traveler go to my trips
                 //Save user id
                 const json = await res.json();
@@ -135,7 +137,7 @@ function travelerTrip() {
                 console.error('Error verifying the session: ', err);
             }
         }
-        if (userId !== '')
+        if (userId !== null)
             getUserInfo()
     }, [userId])
     //When create the DOM get the data
@@ -467,7 +469,7 @@ function travelerTrip() {
                                 <h1>{traveler.username}</h1>
                                 <h2 className='text-[25px]'>{traveler.first_name} {traveler.second_name}</h2>
                                 <span>{traveler.description}</span>
-                                {(followedByUser == notFollowed || followedByUser == notFollowedGreen) && <button className='white-border-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                {isLoggedIn && (followedByUser == notFollowed || followedByUser == notFollowedGreen) && <button className='white-border-button w-[100px] h-[30px] flex flex-row gap-[5px] justify-center'
                                     onMouseEnter={() => {
                                         setFollowedByUser(notFollowedGreen);
                                     }}
@@ -479,7 +481,7 @@ function travelerTrip() {
                                     Follow
                                     <img className='w-[15px] h-[15px]' src={followedByUser}></img>
                                 </button>}
-                                {followedByUser == followed && <button className='white-button w-[100px] flex flex-row gap-[5px] justify-center'
+                                {isLoggedIn && followedByUser == followed && <button className='white-button w-[100px] h-[30px] flex flex-row gap-[5px] justify-center'
                                     onClick={(e) => handleUnfollowUser(e)}
                                 >
                                     Followed
@@ -564,7 +566,7 @@ function travelerTrip() {
                                 </div>
                             </div>}
                             <div className="justify-self-end relative inline-block">
-                                {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
+                                {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img title='Sort' src={orderByIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                     /*Prevent default and allow click it instead of the document page*/
                                     e.preventDefault();
                                     e.stopPropagation();
@@ -612,9 +614,6 @@ function travelerTrip() {
                         <div className='places'>
                             {tripsSliced.map((trip, index) => (
                                 <div className='place clickable border rounded-[10px] border-white' onClick={() => {
-                                    /*if (trip.writer === userId)
-                                        navigate(`/edittrip/${trip._id}`)
-                                    else*/
                                     navigate(`/trips/${trip._id}`)
                                 }}>
                                     <div className='place-content'>

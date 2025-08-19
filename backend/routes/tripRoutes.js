@@ -216,6 +216,7 @@ router.post('/search', async (req, res) => {
                     description: 1,
                     likesCount: 1,
                     created_date: 1,
+                    likes: 1,
                     places: 1,
                     writer: 1,
                     username: "$user.username",

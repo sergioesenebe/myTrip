@@ -40,7 +40,7 @@ function editTrip() {
     const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isTheirTrip, setIsTheirTrip] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
     const [imagesToDelete, setImagesToDelete] = useState([]);
 
     //Define a timeOutId to know if there is some one running
@@ -63,7 +63,9 @@ function editTrip() {
                 //If it's logged in save the state
                 if (!res.ok) {
                     setIsLoggedIn(false);
+                    return;
                 }
+                setIsLoggedIn(true)
             }
             //If there is 
             catch (err) {

@@ -214,8 +214,6 @@ router.put('/follow/:id', authenticateJWT, async (req, res) => {
         const followedId = new mongoose.Types.ObjectId(req.params.id);
         //Get the id of the  user
         const id = new mongoose.Types.ObjectId(req.user.id);
-        console.log('id: ', id);
-        console.log('req user: ', req.user.id);
         //Connect to the database
         await connectToDB();
         //Update user followed
@@ -357,7 +355,6 @@ router.get('/my-saved-trips', authenticateJWT, async (req, res) => {
     try {
         //Get the id
         const id = new mongoose.Types.ObjectId(req.user.id);
-        console.log('ID: ', id);
         //Connect to database
         await connectToDB();
         //Get all trips with user info
@@ -384,7 +381,6 @@ router.post('/my-saved-trips/search', authenticateJWT, async (req, res) => {
     try {
         //Get the id
         const id = new mongoose.Types.ObjectId(req.user.id);
-        console.log('ID: ', id);
         //Connect to database
         await connectToDB();
         //If there is not a name, a city or a country, return a 400

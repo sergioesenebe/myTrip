@@ -38,7 +38,7 @@ function uploadTrip() {
     const [tripImage, setTripImage] = useState('https://res.cloudinary.com/drmjf3gno/image/upload/v1753346706/default-country_hxzjcd.jpg');
     const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
 
     //Define a timeOutId to know if there is some one running
     const timeOutId = useRef(null);
@@ -57,7 +57,9 @@ function uploadTrip() {
                 //If it's logged in save the state
                 if (!res.ok) {
                     setIsLoggedIn(false);
+                    return;
                 }
+                setIsLoggedIn(true)
             }
             //If there is 
             catch (err) {
