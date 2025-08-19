@@ -98,7 +98,7 @@ router.get('/interesting-users', async (req, res) => {
             { $unwind: "$user" },
             {
                 $project: {
-                    _id: 0, user_id: "user._id",
+                    _id: 0, _id: "user._id",
                     username: "$user.username",
                     first_name: "$user.first_name",
                     second_name: "$user.second_name",
