@@ -66,7 +66,7 @@ router.post('/register', async (req, res) => {
             httpOnly: true,
             secure: true, //Work with https
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-            sameSite: 'lax', //Prevent CSRF
+            sameSite: 'None', //Prevent CSRF
         })
         //Return a success status
         return res.status(201).json({ message: 'User created' });
@@ -107,7 +107,7 @@ router.post('/login', async (req, res) => {
             httpOnly: true,
             secure: true, //Work with https
             maxAge: 7 * 24 * 60 * 60 * 1000, //7 days
-            sameSite: 'lax', //Prevent CSRF
+            sameSite: 'None', //Prevent CSRF
         })
         //Return a success status
         return res.status(200).json({ message: 'Login succesful' });
