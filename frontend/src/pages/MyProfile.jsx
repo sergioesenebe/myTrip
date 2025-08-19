@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 //Import internal libraries, css and images
 import { validImage, deleteImage, handleUploadImage, handleDeleteImage } from '../services/uploadService';
 import "../styles/index.css";

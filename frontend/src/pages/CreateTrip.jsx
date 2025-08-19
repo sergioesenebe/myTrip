@@ -1,6 +1,6 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from 'react-router-dom';
 //Import internal libraries, css and images
 import { handleUploadImage } from '../services/uploadService';

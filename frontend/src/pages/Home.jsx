@@ -1,7 +1,7 @@
 //Import external libraries
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 //Import internal libraries, css and images
 import "../styles/index.css";
 import "../styles/common.css";
@@ -104,7 +104,7 @@ function home() {
         <>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>myTrip - Create Trip</title>
+                <title>myTrip - Home</title>
                 <link rel="icon" href={logo} />
             </Helmet>
             <main className='bg-[#ECE7E2]'>

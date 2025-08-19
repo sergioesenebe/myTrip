@@ -1,7 +1,7 @@
 //Import external Library
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 //Import internal libraries, pages, css and images
 import { deleteImage, validImage, handleUploadImage } from '../services/uploadService';
 import '../styles/common.css';

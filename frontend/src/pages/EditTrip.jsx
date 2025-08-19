@@ -1,7 +1,7 @@
 //Import external libraries
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 //Import internal libraries, css and images
 import { handleUploadImage, handleDeleteImage } from '../services/uploadService';
 import { addTripImage, addPlaceImage, handlePlaceChange, deleteTripImage, addEmptyPlace, deletePlace, deletePlaceImage } from '../services/editTripService';
