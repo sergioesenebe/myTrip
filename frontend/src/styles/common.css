@@ -334,12 +334,10 @@ main {
 
 /*Footer with space between, green color, and padding*/
 footer {
-    padding: 50px;
     background-color: #004643;
     color: #ECE7E2;
     display: flex;
     justify-content: space-between;
-    font-size: 16px;
     align-items: center;
 }
 

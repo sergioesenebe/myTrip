@@ -128,8 +128,8 @@ function home() {
                         </div>
                     </nav>
                     <div className="top-content-centered">
-                        <h1 className='md:text-[50px] text-[20px]'>Welcome to myTrip</h1>
-                        <p>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
+                        <h1 className='md:text-[50px] text-[30px] text-center'>Welcome to myTrip</h1>
+                        <p className='text-12px md:text-16px'>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
                         {menuOpen && (<div id="mobile-menu"
                             className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -161,25 +161,25 @@ function home() {
                 </div>
                 <div id='trip-places' className="flex flex-col gap-[50px]">
                     <div className='flex flex-col gap-[20px]'>
-                        <h1 className="text-3xl font-bold text-[#004643] md:text-[50px] text-[20px]">Interesting Trips</h1>
+                        <h1 className="text-3xl font-bold text-[#004643] md:text-[30px] text-[20px]">Interesting Trips</h1>
                         {errorMessageTrips && (
                             <p className="error-message">{errorMessageTrips}</p>
                         )}
                         <div className='flex flex-row items-start justify-center'>
                             {interestingTrips.map(trip => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                    <img className="h-[150px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
-                                    <p className='text-[16px]'>{trip.name}</p>
+                                    <img className="w-[400px] h-[150px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
+                                    <p className='text-[16px] text-center'>{trip.name}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className='flex flex-col gap-[20px]'>
-                        <h1 className="text-3xl font-bold text-[#004643]">Interesting Travellers</h1>
+                        <h1 className="text-3xl font-bold text-[#004643] md:text-[30px] text-[20px]">Interesting Travellers</h1>
                         {errorMessageUsers && (
                             <p className="error-message">{errorMessageUsers}</p>
                         )}
-                        <div className='flex flex-row items-center justify-center'>
+                        <div className='flex flex-row items-start justify-center'>
                             {interestingUsers.map(user => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
                                     <img className="w-[300px] aspect-square place-image clickable rounded-full" src={user.avatar} onClick={() => { navigate(`/travelers/${user._id}`) }}/>
@@ -189,8 +189,8 @@ function home() {
                         </div>
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-[#004643] mb-4">Explore</h1>
-                        <div className='flex flex-row items-center justify-center'>
+                        <h1 className="text-3xl font-bold text-[#004643] mb-4 md:text-[30px] text-[20px]">Explore</h1>
+                        <div className='flex flex-row items-start justify-center'>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
                                 <img className="w-[400px] aspect-square place-image clickable" src={italyImg} onClick={() => navigate('/trips?search-country=Italy&search-city=Any+City')} />
                                 <p className='text-[16px]'>Italy</p>
@@ -207,7 +207,7 @@ function home() {
                     </div>
                 </div>
             </main>
-            <footer>
+            <footer className='text-12px md:16px p-10px md:p-50px'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
                     <p>Learning by building real projects</p>
