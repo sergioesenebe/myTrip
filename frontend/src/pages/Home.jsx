@@ -207,7 +207,7 @@ function home() {
                     </div>
                 </div>
             </main>
-            <footer className='p-25px md:p-50px'>
+            <footer className='p-[25px] md:p-[50px]'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
                     {/*<p className='text-10px md:text-16px'>Learning by building real projects</p>*/}
