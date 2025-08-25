@@ -207,16 +207,16 @@ function home() {
                     </div>
                 </div>
             </main>
-            <footer className='text-12px md:text-16px p-25px md:p-50px'>
+            <footer className='p-25px md:p-50px'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
-                    <p>Learning by building real projects</p>
+                    <p className='text-12px md:text-16px'>Learning by building real projects</p>
                 </div>
                 <div className="footer-contact">
-                    <a href="https://www.esenebe.com">About Me</a>
-                    <a href="https://github.com/sergioesenebe">GitHub</a>
-                    <a href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
-                    <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
+                    <a className='text-12px md:text-16px' href="https://www.esenebe.com">About Me</a>
+                    <a className='text-12px md:text-16px' href="https://github.com/sergioesenebe">GitHub</a>
+                    <a className='text-12px md:text-16px' href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                    <a className='text-12px md:text-16px' href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                 </div>
             </footer>
         </>
