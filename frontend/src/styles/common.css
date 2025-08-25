@@ -346,6 +346,7 @@ footer {
 
 .footer-contact a {
     color: #ECE7E2;
+    margin: 0;
 }
 
 .footer-contact a:hover {
