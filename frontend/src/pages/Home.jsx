@@ -212,7 +212,7 @@ function home() {
                     <img className="esenebe-footer-log" src={esenebeLogo} />
                     {/*<p className='text-10px md:text-16px'>Learning by building real projects</p>*/}
                 </div>
-                <div className="footer-contact gap-[50px] md:gap-[10px] items-right">
+                <div className="footer-contact gap-[50px] md:gap-[10px] justify-items-end">
                     <a className='text-10px md:text-16px' href="https://www.esenebe.com">About Me</a>
                     <a className='text-10px md:text-16px' href="https://github.com/sergioesenebe">GitHub</a>
                     <a className='text-10px md:text-16px' href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
