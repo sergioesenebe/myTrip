@@ -129,7 +129,7 @@ function home() {
                     </nav>
                     <div className="top-content-centered">
                         <h1 className='md:text-[50px] text-[30px] text-center'>Welcome to myTrip</h1>
-                        <p className='text-12px md:text-16px'>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
+                        <p className='text-12px md:text-16px text-center'>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
                         {menuOpen && (<div id="mobile-menu"
                             className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -207,7 +207,7 @@ function home() {
                     </div>
                 </div>
             </main>
-            <footer className='text-12px md:16px p-10px md:p-50px'>
+            <footer className='text-12px md:text-16px p-25px md:p-50px'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
                     <p>Learning by building real projects</p>

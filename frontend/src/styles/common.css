@@ -255,16 +255,6 @@ main {
     justify-content: center;
 }
 
-/*Size for header and p in top-content*/
-.top-content-centered h1 {
-    font-size: 50px;
-}
-
-.top-content-centered p {
-    font-size: 16px;
-    text-align: center;
-}
-
 /*Trip places padding*/
 #trip-places {
     padding: 20px;
