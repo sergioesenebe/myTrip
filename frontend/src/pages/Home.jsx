@@ -129,7 +129,7 @@ function home() {
                     </nav>
                     <div className="top-content-centered">
                         <h1 className='md:text-[50px] text-[30px] text-center'>Welcome to myTrip</h1>
-                        <p className='text-12px md:text-16px text-center'>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
+                        <p className='text-[12px] md:text-[16px] text-center'>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
                         {menuOpen && (<div id="mobile-menu"
                             className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -212,11 +212,11 @@ function home() {
                     <img className="esenebe-footer-log" src={esenebeLogo} />
                     {/*<p className='text-10px md:text-16px'>Learning by building real projects</p>*/}
                 </div>
-                <div className="footer-contact gap-[50px] md:gap-[10px] justify-end">
-                    <a className='text-[10px] md:text-[16px]' href="https://www.esenebe.com">About Me</a>
-                    <a className='text-[10px] md:text-[16px]' href="https://github.com/sergioesenebe">GitHub</a>
-                    <a className='text-[10px] md:text-[16px]' href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
-                    <a className='text-[10px] md:text-[16px]' href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
+                <div className="footer-contact gap-[50px] md:gap-[10px] justify-end text-[10px] md:text-[16px] p-[10px] md:p-[25px]">
+                    <a href="https://www.esenebe.com">About Me</a>
+                    <a href="https://github.com/sergioesenebe">GitHub</a>
+                    <a href="https://www.linkedin.com/in/sergionbonet">LinkedIn</a>
+                    <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                 </div>
             </footer>
         </>

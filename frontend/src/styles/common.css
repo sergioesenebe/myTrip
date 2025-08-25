@@ -330,7 +330,7 @@ footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    gap: 10px;
 }
 
 /*Logo in footer width*/
@@ -341,9 +341,7 @@ footer {
 /*Footer content with space between*/
 .footer-contact {
     display: flex;
-    gap: 1rem;
     flex-wrap: wrap;
-    padding: 1rem;
 }
 
 .footer-contact a {
