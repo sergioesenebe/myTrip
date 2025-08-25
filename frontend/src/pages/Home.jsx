@@ -213,10 +213,10 @@ function home() {
                     {/*<p className='text-10px md:text-16px'>Learning by building real projects</p>*/}
                 </div>
                 <div className="footer-contact gap-[50px] md:gap-[10px] justify-end">
-                    <a className='text-10px md:text-16px' href="https://www.esenebe.com">About Me</a>
-                    <a className='text-10px md:text-16px' href="https://github.com/sergioesenebe">GitHub</a>
-                    <a className='text-10px md:text-16px' href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
-                    <a className='text-10px md:text-16px' href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
+                    <a className='text-[10px] md:text-[16px]' href="https://www.esenebe.com">About Me</a>
+                    <a className='text-[10px] md:text-[16px]' href="https://github.com/sergioesenebe">GitHub</a>
+                    <a className='text-[10px] md:text-[16px]' href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                    <a className='text-[10px] md:text-[16px]' href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                 </div>
             </footer>
         </>
