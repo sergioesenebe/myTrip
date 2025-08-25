@@ -128,7 +128,7 @@ function home() {
                         </div>
                     </nav>
                     <div className="top-content-centered">
-                        <h1>Welcome to myTrip</h1>
+                        <h1 className='md:text-[50px] text-[20px]'>Welcome to myTrip</h1>
                         <p>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
                         {menuOpen && (<div id="mobile-menu"
@@ -161,14 +161,14 @@ function home() {
                 </div>
                 <div id='trip-places' className="flex flex-col gap-[50px]">
                     <div className='flex flex-col gap-[20px]'>
-                        <h1 className="text-3xl font-bold text-[#004643]">Interesting Trips</h1>
+                        <h1 className="text-3xl font-bold text-[#004643] md:text-[50px] text-[20px]">Interesting Trips</h1>
                         {errorMessageTrips && (
                             <p className="error-message">{errorMessageTrips}</p>
                         )}
                         <div className='flex flex-row items-start justify-center'>
                             {interestingTrips.map(trip => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                    <img className="max-w-[400px] h-[150px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
+                                    <img className="h-[150px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
                                     <p className='text-[16px]'>{trip.name}</p>
                                 </div>
                             ))}
