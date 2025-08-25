@@ -247,6 +247,7 @@ main {
     color: #ECE7E2;
     z-index: 2;
     padding: 20px;
+    padding-bottom: 40px;
     width: 100%;
     display: flex;
     flex-direction: column;
