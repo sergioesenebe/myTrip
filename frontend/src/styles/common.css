@@ -339,7 +339,6 @@ footer {
 /*Footer content with space between*/
 .footer-contact {
     display: flex;
-    gap: 50px;
 }
 
 .footer-contact a {
