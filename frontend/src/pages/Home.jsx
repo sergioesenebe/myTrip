@@ -165,10 +165,10 @@ function home() {
                         {errorMessageTrips && (
                             <p className="error-message">{errorMessageTrips}</p>
                         )}
-                        <div className='flex flex-row items-center justify-center'>
+                        <div className='flex flex-row items-start justify-center'>
                             {interestingTrips.map(trip => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
-                                    <img className="w-[400px] h-[300px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
+                                    <img className="max-w-[400px] h-[150px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
                                     <p className='text-[16px]'>{trip.name}</p>
                                 </div>
                             ))}
