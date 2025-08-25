@@ -103,8 +103,7 @@ function home() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
-                {/*name="viewport" content="width=device-width, initial-scale=1.0"*/}
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <title>myTrip - Home</title>
                 <link rel="icon" href={logo} />
             </Helmet>
