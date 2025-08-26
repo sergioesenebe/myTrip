@@ -425,7 +425,7 @@ function trips() {
                 <link rel="icon" href={logo} />
             </Helmet>
             <main className='bg-[#ECE7E2]'>
-                <div className="top-green-img-section min-h-[200px] md:min-h-[300px]" style={{ backgroundImage: `url(${backgroundImage})` }}>
+                <div className="top-green-img-section" style={{ backgroundImage: `url(${backgroundImage})` }}>
                     <nav className="top-nav-bar">
                         <img className="logo-top-left" src={logoNavBar} />
                         <button id="menu-button" type='button'
