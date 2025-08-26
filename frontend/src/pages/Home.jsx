@@ -127,7 +127,7 @@ function home() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="top-content-centered">
+                    <div className="top-content-centered min-h-[200px] md:min-h-[300px]">
                         <h1 className='md:text-[50px] text-[30px] text-center'>Welcome to myTrip</h1>
                         <p className='text-[12px] md:text-[16px] text-center'>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
