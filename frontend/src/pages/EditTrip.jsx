@@ -397,39 +397,40 @@ function editTrip() {
                                         {!isLoggedIn && (<Link to={'/signup'}
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Sign Up</Link>)}
                                     </div>)}
-                                    <div className="flex md:flex-row md:justify-between flex-col-reverse w-[100%] items-center">
-                                        <input required className="editable-input text-[30px] md:text-[50px] trip-name white-input md:w-[60%] w-[100%]" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
+                                    <div className='flex md:flex-row md:justify-between flex-col-reverse w-[100%] items-top'>
+                                        <div className="flex flex-col">
+                                            <input required className="editable-input text-[30px] md:text-[50px] trip-name white-input w-[100%]" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
+                                            <div className="editable">
+                                                <textarea className="editable-textarea text-[12px] md:text-[16px] trip-description white-input" rows={3} maxLength={2000}
+                                                    placeholder="Trip Description" value={tripDescription} onChange={(e) => setTripDescription(e.target.value)} />
+                                            </div>
+                                            <div className="selections">
+                                                <label htmlFor="country">Country</label>
+                                                <select required className="white-select w-[100px] md:w-[270px]" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                                                    <option value='' disabled >Select a Country</option>
+                                                    {countries.map(c => (
+                                                        <option key={c.iso2} value={c.country}>{c.country}</option>
+                                                    ))}
+                                                </select>
+                                                <label htmlFor="city">City</label>
+                                                <select required className="white-select w-[100px] md:w-[270px]" id="city" name="city" value={tripCity} onChange={(e) => setTripCity(e.target.value)}>
+                                                    <option value='' disabled>Select a City</option>
+                                                    {tripCountry && (<option value='Whole Country'>Whole Country</option>)}
+                                                    {cities.map(c => (
+                                                        <option key={c} value={c}>{c}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <input className="input-auth" ref={tripImageRef} id='trip-image' type='file' accept='image/png, image/jpg, image/jpeg'
+                                                style={{ display: 'none' }} onChange={e => handleTripImage(e.target.files[0])}></input>
+                                            <div className="flex flex-row items-center gap-5 w-[min-content]">
+                                                <button className="white-border-button w-[85px] md:w-[100px]" type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
+                                                {displayDeleteButton && (
+                                                    <button className='red-button  w-[85px] md:w-[100px]' type='button' onClick={handleDeleteTripImage}>Delete Trip Image</button>
+                                                )}
+                                            </div>
+                                        </div>
                                         <button type='button' className='red-button w-[100%] md:w-[160px] md:h-[50px]' onClick={(e) => { handleDeleteTrip(e) }}>Delete Whole Trip</button>
-                                    </div>
-                                    <div className="editable">
-                                        <textarea className="editable-textarea text-[12px] md:text-[16px]  trip-description white-input" rows={3} maxLength={2000}
-                                            placeholder="Trip Description" value={tripDescription} onChange={(e) => setTripDescription(e.target.value)} />
-                                    </div>
-                                    <div className="selections">
-                                        <label htmlFor="country">Country</label>
-                                        <select required className="white-select w-[100px] md:w-[270px]" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e.target.value)}>
-                                            <option value='' disabled >Select a Country</option>
-                                            {countries.map(c => (
-                                                <option key={c.iso2} value={c.country}>{c.country}</option>
-                                            ))}
-                                        </select>
-                                        <label htmlFor="city">City</label>
-                                        <select required className="white-select w-[100px] md:w-[270px]" id="city" name="city" value={tripCity} onChange={(e) => setTripCity(e.target.value)}>
-                                            <option value='' disabled>Select a City</option>
-                                            {tripCountry && (<option value='Whole Country'>Whole Country</option>)}
-                                            {cities.map(c => (
-                                                <option key={c} value={c}>{c}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <input className="input-auth" ref={tripImageRef} id='trip-image' type='file' accept='image/png, image/jpg, image/jpeg'
-                                        style={{ display: 'none' }} onChange={e => handleTripImage(e.target.files[0])}></input>
-
-                                    <div className="flex flex-row items-center gap-5 w-[min-content]">
-                                        <button className="white-border-button w-[85px] md:w-[100px]" type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
-                                        {displayDeleteButton && (
-                                            <button className='red-button  w-[85px] md:w-[100px]' type='button' onClick={handleDeleteTripImage}>Delete Trip Image</button>
-                                        )}
                                     </div>
                                 </div>
                             </div>
