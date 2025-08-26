@@ -1,18 +1,8 @@
-/*Width for white botton*/
-.update-image-button {
-    width: 100px;
-}
-
 /*Selections will have a gap*/
 .selections {
     display: flex;
     gap: 20px;
     align-items: center;
-}
-
-/*Change the width of the delete button*/
-.delete-place-button {
-    width: 100px;
 }
 
 /*Change the width of the delete button*/
@@ -67,9 +57,11 @@
     .place {
         width: 90%;
     }
+
     .esenebe-footer-log {
         width: 100px;
     }
+
     .white-select {
         width: 200px;
     }

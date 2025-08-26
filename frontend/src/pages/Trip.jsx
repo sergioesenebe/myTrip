@@ -320,7 +320,7 @@ function uploadTrip() {
                                     }
                                     <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
                                         <div>
-                                            <h1 required className="ttext-[#004643] md:text-[50px] text-[30px]">{place.name}</h1>
+                                            <h1 required className="text-[#004643] md:text-[50px] text-[30px]">{place.name}</h1>
                                             <p >{place.description}</p>
                                         </div>
                                     </div>

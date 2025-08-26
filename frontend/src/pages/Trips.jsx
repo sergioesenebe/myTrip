@@ -458,7 +458,7 @@ function trips() {
                                 <button type='submit'><img src={searchIcon} className='w-[25px] h-[25px] md:w-[30px] md:h-[30px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
                             </div>
                         </form>}
-                        {searchByLocation && <form className="top-content-centered" onSubmit={(e) => handleSearchByCountryCity(e)}>
+                        {searchByLocation && <form className="top-search" onSubmit={(e) => handleSearchByCountryCity(e)}>
                             <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between items-center gap-[5px]'>
                                 <select required className="green-select text-black w-[215px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
                                     <option value='' disabled >Select a Country</option>
