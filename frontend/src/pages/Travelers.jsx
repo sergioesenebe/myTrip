@@ -422,11 +422,11 @@ function travelers() {
                                         onClick={() => navigate(`/travelers/${user._id}`)}>
                                         {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                         {index % 2 === 0 &&
-                                            <div className="left-place">
+                                            <div className="left-place md:w-[50%] w-[100%]">
                                                 <img className="place-image aspect-square md:w-[400px] w-[300px] rounded-full" src={user.avatar} />
                                             </div>
                                         }
-                                        <div className="right-place flex gap-[5px]">
+                                        <div className="right-place flex gap-[5px] md:w-[50%] w-[100%]">
                                             <h1 className="text-[#004643] md:text-[50px] text-[30px]">{user.username}</h1>
                                             <h2 className="text-[#004643] md:text-[30px] text-[16px]">{user.first_name} {user.second_name}</h2>
                                             <p>{user.description}</p>
@@ -454,7 +454,7 @@ function travelers() {
                                             </button>}
                                         </div>
                                         {index % 2 !== 0 &&
-                                            <div className="left-place">
+                                            <div className="left-place md:w-[50%] w-[100%]">
                                                 <img className="place-image aspect-square md:w-[400px] w-[300px] rounded-full" src={user.avatar} />
                                             </div>
                                         }
