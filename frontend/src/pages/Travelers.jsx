@@ -418,7 +418,7 @@ function travelers() {
                                     {/*
                                                 navigate(`/users/${user._id}`)*/}
                                 }}>
-                                    <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}
+                                    <div className={`place-content md:flex-row ${index % 2 === 0 ?  'flex-col' : 'flex-col-reverse'}`}
                                         onClick={() => navigate(`/travelers/${user._id}`)}>
                                         {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                         {index % 2 === 0 &&
