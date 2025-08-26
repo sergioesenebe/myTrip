@@ -450,10 +450,10 @@ function trips() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="top-content-centered">
+                    <div className="top-content-centered md:gap-[20px] gap-[10px]">
                         {!searchByLocation && <form className="top-search" onSubmit={(e) => handleSearchByName(e)}>
-                            <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[200px] md:h-[52px] h-[42px] p-[10px] flex flex-row justify-between gap-[5px] items-center'>
-                                <input className='transparent-input md:w-[430px] w-[150px]' placeholder={`Look for a Trip`}
+                            <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[200px] md:h-[52px] h-[42px] p-[10px] md:p-[20px] flex flex-row justify-between gap-[5px] items-center'>
+                                <input className='transparent-input md:w-[430px] w-[148px]' placeholder={`Look for a Trip`}
                                     value={searchName} onChange={(e) => setSearchName(e.target.value)} />
                                 <button type='submit'><img src={searchIcon} className='w-[25px] h-[25px] md:w-[30px] md:h-[30px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
                             </div>
