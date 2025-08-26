@@ -326,11 +326,6 @@ main {
     object-fit: cover;
 }
 
-/*Place name size*/
-.place-name {
-    font-size: 50px;
-}
-
 /*Footer with space between, green color, and padding*/
 footer {
     background-color: #004643;
