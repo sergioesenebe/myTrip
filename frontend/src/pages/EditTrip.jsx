@@ -407,14 +407,14 @@ function editTrip() {
                                     </div>
                                     <div className="selections">
                                         <label htmlFor="country">Country</label>
-                                        <select required className="white-select w-150px" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                                        <select required className="white-select w-[150px]" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e.target.value)}>
                                             <option value='' disabled >Select a Country</option>
                                             {countries.map(c => (
                                                 <option key={c.iso2} value={c.country}>{c.country}</option>
                                             ))}
                                         </select>
                                         <label htmlFor="city">City</label>
-                                        <select required className="white-select w-150px" id="city" name="city" value={tripCity} onChange={(e) => setTripCity(e.target.value)}>
+                                        <select required className="white-select w-[150px]" id="city" name="city" value={tripCity} onChange={(e) => setTripCity(e.target.value)}>
                                             <option value='' disabled>Select a City</option>
                                             {tripCountry && (<option value='Whole Country'>Whole Country</option>)}
                                             {cities.map(c => (
