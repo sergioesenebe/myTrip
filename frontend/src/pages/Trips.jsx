@@ -451,7 +451,7 @@ function trips() {
                         </div>
                     </nav>
                     <div className="top-content-centered">
-                        {!searchByLocation && <form className="top-content-centered" onSubmit={(e) => handleSearchByName(e)}>
+                        {!searchByLocation && <form className="top-search" onSubmit={(e) => handleSearchByName(e)}>
                             <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between gap-[5px] items-center'>
                                 <input className='transparent-input w-[430px]' placeholder={`Look for a Trip`}
                                     value={searchName} onChange={(e) => setSearchName(e.target.value)} />
