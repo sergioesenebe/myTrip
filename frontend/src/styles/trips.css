@@ -67,28 +67,9 @@
     .place {
         width: 90%;
     }
-
-    /*Change sizes*/
-    .place-name {
-        font-size: 32px;
-    }
-
-    .place-description {
-        font-size: 12px;
-    }
-
-    .trip-name {
-        font-size: 40px;
-    }
-
-    .trip-description {
-        font-size: 12px;
-    }
-
     .esenebe-footer-log {
         width: 100px;
     }
-
     .white-select {
         width: 200px;
     }

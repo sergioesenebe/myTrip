@@ -330,12 +330,12 @@ function travelers() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="top-content-centered">
+                    <div className="top-content-centered md:gap-[20px] gap-[10px]">
                         <form className="top-content-centered" onSubmit={(e) => handleSearchByName(e)}>
-                            <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between gap-[5px] items-center'>
-                                <input className='transparent-input w-[430px]' placeholder={`Look for a Traveler`}
+                            <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[300px] md:h-[52px] h-[42px] p-[10px] md:p-[20px] flex flex-row justify-between gap-[5px] items-center'>
+                                <input className='transparent-input md:w-[430px] w-[250px]' placeholder={`Look for a Traveler`}
                                     value={searchName} onChange={(e) => setSearchName(e.target.value)} />
-                                <button type='submit'><img src={searchIcon} className='w-[30px] h-[30px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
+                                <button type='submit'><img src={searchIcon} className='w-[25px] h-[25px] md:w-[30px] md:h-[30px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
                             </div>
                         </form>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
@@ -375,7 +375,7 @@ function travelers() {
                 <div id='trip-places' className="flex flex-col gap-[50px]">
                     <div className='flex flex-col gap-[20px]'>
                         <div className='flex flex-row justify-between items-center gap-[20px]'>
-                            <h1 className="text-3xl font-bold text-[#004643]">Travelers</h1>
+                            <h1 className="text-3xl font-bold text-[#004643] md:text-[30px] text-[20px]">Travelers</h1>
                             {isLoggedIn && <div className="relative inline-block">
                                 {!menuOpen && <div className='clickable rounded-full p-[5px] bg-[#ECE7E2]'><img title='Filter' src={filterIcon} className='w-[30px] h-[30px]' onClick={(e) => {
                                     /*Prevent default and allow click it instead of the document page*/
@@ -418,7 +418,8 @@ function travelers() {
                                     {/*
                                                 navigate(`/users/${user._id}`)*/}
                                 }}>
-                                    <div className='place-content' onClick={() => navigate(`/travelers/${user._id}`)}>
+                                    <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}
+                                        onClick={() => navigate(`/travelers/${user._id}`)}>
                                         {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                         {index % 2 === 0 &&
                                             <div className="left-place">
@@ -426,10 +427,9 @@ function travelers() {
                                             </div>
                                         }
                                         <div className="right-place flex gap-[5px]">
-                                            <h1 className="place-name text-[#004643]">{user.username}</h1>
-                                            <h2 className="text-[#004643] text-[24px] md:text-[30px]">{user.first_name} {user.second_name}</h2>
-                                            <p className="place-description"
-                                                placeholder="Place Description">{user.description}</p>
+                                            <h1 className="text-[#004643] md:text-[50px] text-[30px]">{user.username}</h1>
+                                            <h2 className="text-[#004643] md:text-[30px] text-[16px]">{user.first_name} {user.second_name}</h2>
+                                            <p>{user.description}</p>
                                             {isLoggedIn && (user.followed == notFollowed || user.followed == notFollowedWhite) && <button className='green-border-button w-[100px] h-[30px] flex flex-row gap-[5px] justify-center'
                                                 onMouseEnter={() => {
                                                     const copy = [...users];

@@ -224,10 +224,6 @@ main {
     height: 30px;
 }
 
-/*Trip name size*/
-.trip-name {
-    font-size: 50px;
-}
 
 /*Info of the trip, add a greater z-index to be shown*/
 .trip-info {

@@ -599,8 +599,7 @@ function trips() {
                                         }
                                         <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
                                             <h1 required className="text-[#004643] md:text-[50px] text-[30px]" placeholder="Place Name">{trip.name}</h1>
-                                            <p className="place-description"
-                                                placeholder="Place Description">{trip.description}</p>
+                                            <p>{trip.description}</p>
                                             <p>{trip.country}, {trip.city}</p>
                                             <div className='flex flex-row gap-[10px] items-center'>
                                                 <img src={trip.avatar} className='w-[35px] h-[35px] border border-white rounded-full' />
