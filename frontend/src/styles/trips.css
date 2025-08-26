@@ -10,16 +10,6 @@
     width: 100px;
 }
 
-/*Div for cancel and save buttons with space between*/
-.cancel-save-buttons {
-    display: flex;
-    justify-content: space-between;
-}
-
-.cancel-save-buttons button {
-    width: 160px;
-}
-
 /*Content editable, add it together and when hover underline*/
 .editable {
     display: flex;

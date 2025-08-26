@@ -399,7 +399,7 @@ function editTrip() {
                                     </div>)}
                                     <div className="flex md:flex-row md:justify-between flex-col-reverse w-[100%] items-center">
                                         <input required className="editable-input text-[30px] md:text-[50px] trip-name white-input md:w-[60%] w-[100%]" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
-                                        <button type='button' className='red-button w-[100%] md:w-[160] md:h-[50px]' onClick={(e) => { handleDeleteTrip(e) }}>Delete Whole Trip</button>
+                                        <button type='button' className='red-button w-[100%] md:w-[160px] md:h-[50px]' onClick={(e) => { handleDeleteTrip(e) }}>Delete Whole Trip</button>
                                     </div>
                                     <div className="editable">
                                         <textarea className="editable-textarea text-[12px] md:text-[16px]  trip-description white-input" rows={3} maxLength={2000}
@@ -426,9 +426,9 @@ function editTrip() {
                                         style={{ display: 'none' }} onChange={e => handleTripImage(e.target.files[0])}></input>
 
                                     <div className="flex flex-row items-center gap-5 w-[min-content]">
-                                        <button className="white-border-button w-[75px] md:w-[100px]" type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
+                                        <button className="white-border-button w-[85px] md:w-[100px]" type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
                                         {displayDeleteButton && (
-                                            <button className='red-button  w-[75px] md:w-[100px]' type='button' onClick={handleDeleteTripImage}>Delete Trip Image</button>
+                                            <button className='red-button  w-[85px] md:w-[100px]' type='button' onClick={handleDeleteTripImage}>Delete Trip Image</button>
                                         )}
                                     </div>
                                 </div>
@@ -446,7 +446,7 @@ function editTrip() {
                                                             style={{ display: 'none' }} onChange={(e) => handlePlaceImage(e.target.files[0], index)}></input>
                                                         <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={place.image} onClick={() => placeImageRefs.current[index] && placeImageRefs.current[index].current.click()} />
                                                         {place.placeImageDeleteButton && (
-                                                            <button className='red-border-button w-[75px] md:w-[100px] p-[5px]' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
+                                                            <button className='red-border-button w-[85px] md:w-[100px] p-[5px]' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
                                                         )}
                                                     </div>
                                                 }
@@ -466,7 +466,7 @@ function editTrip() {
                                                             style={{ display: 'none' }} onChange={(e) => handlePlaceImage(e.target.files[0], index)}></input>
                                                         <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={place.image} onClick={() => placeImageRefs.current[index] && placeImageRefs.current[index].current.click()} />
                                                         {place.placeImageDeleteButton && (
-                                                            <button className='red-border-button w-[75px] md:w-[100px] p-0' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
+                                                            <button className='red-border-button w-[85px] md:w-[100px] p-5px' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
                                                         )}
                                                     </div>
                                                 }
@@ -480,7 +480,7 @@ function editTrip() {
                                     {errorMessage && (
                                         <p className="error-message">{errorMessage}</p>
                                     )}
-                                    <div className="flex md:justify-between md:flex-row flex-col w-[100%] md:w-[80%]">
+                                    <div className="flex md:justify-between md:flex-row flex-col w-[100%] md:w-[80%] gap-[20px]">
                                         <Link to={'/mytrips'}><button className="red-border-button w-[100%] md:w-[160px]" type='button'>Cancel</button></Link>
                                         <button className="green-button w-[100%] md:w-[160px]" type='submit'>Update Trip</button>
                                     </div>

@@ -231,6 +231,7 @@ main {
     color: #ECE7E2;
     z-index: 2;
     padding: 20px;
+    padding-bottom: 40px;
     display: flex;
     flex-direction: column;
 }
