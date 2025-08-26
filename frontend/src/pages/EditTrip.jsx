@@ -399,7 +399,7 @@ function editTrip() {
                                     </div>)}
                                     <div className="flex md:flex-row md:justify-between flex-col-reverse w-[100%] items-center">
                                         <input required className="editable-input text-[30px] md:text-[50px] trip-name white-input md:w-[60%] w-[100%]" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
-                                        <button type='button' className='red-button w-[125px] md:w-[100%] md:h-[50px]' onClick={(e) => { handleDeleteTrip(e) }}>Delete Whole Trip</button>
+                                        <button type='button' className='red-button w-[100%] md:w-[160] md:h-[50px]' onClick={(e) => { handleDeleteTrip(e) }}>Delete Whole Trip</button>
                                     </div>
                                     <div className="editable">
                                         <textarea className="editable-textarea text-[12px] md:text-[16px]  trip-description white-input" rows={3} maxLength={2000}
@@ -480,9 +480,9 @@ function editTrip() {
                                     {errorMessage && (
                                         <p className="error-message">{errorMessage}</p>
                                     )}
-                                    <div className="cancel-save-buttons">
-                                        <Link to={'/mytrips'}><button className="red-border-button" type='button'>Cancel</button></Link>
-                                        <button className="green-button" type='submit'>Update Trip</button>
+                                    <div className="flex md:justify-between md:flex-row flex-col w-[100%] md:w-[80%]">
+                                        <Link to={'/mytrips'}><button className="red-border-button w-[100%] md:w-[160px]" type='button'>Cancel</button></Link>
+                                        <button className="green-button w-[100%] md:w-[160px]" type='submit'>Update Trip</button>
                                     </div>
                                 </div>
                             </div>
