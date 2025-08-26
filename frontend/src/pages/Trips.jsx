@@ -450,7 +450,7 @@ function trips() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="top-content-centered min-h-[200px] md:min-h-[300px] md:gap-[20px] gap-[10px]">
+                    <div className="top-content-centered min-h-[150px] md:min-h-[250px] md:gap-[20px] gap-[10px]">
                         {!searchByLocation && <form className="top-search" onSubmit={(e) => handleSearchByName(e)}>
                             <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[300px] md:h-[52px] h-[42px] p-[10px] md:p-[20px] flex flex-row justify-between gap-[5px] items-center'>
                                 <input className='transparent-input md:w-[430px] w-[250px]' placeholder={`Look for a Trip`}
@@ -524,7 +524,7 @@ function trips() {
                 <div id='trip-places' className="flex flex-col gap-[50px]">
                     <div className='flex flex-col gap-[20px]'>
                         <div className='flex flex-row justify-between items-center'>
-                            <h1 className="text-3xl font-bold text-[#004643] md:text-[30px] text-[20px]">Trips</h1>
+                            <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Trips</h1>
                             <div className='flex flex-row'>
                                 {!menuOpen && isLoggedIn && <div className={`clickable rounded-full p-[5px] bg-[#ECE7E2] ${followedTrips ? 'brightness-[80%] hover:brightness-[90%]' : ''} `}>
                                     <img title="Followed Travelers’ Trips" src={friendsIcon} className='w-[30px] h-[30px]' onClick={(e) => {
@@ -629,15 +629,14 @@ function trips() {
                     </div>
                 </div>
             </main>
-            <footer>
+            <footer className='p-[25px] md:p-[50px]'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
-                    <p>Learning by building real projects</p>
                 </div>
-                <div className="footer-contact">
+                <div className="footer-contact gap-[10px] md:gap-[25px] justify-end text-[10px] md:text-[16px]">
                     <a href="https://www.esenebe.com">About Me</a>
                     <a href="https://github.com/sergioesenebe">GitHub</a>
-                    <a href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                    <a href="https://www.linkedin.com/in/sergionbonet">LinkedIn</a>
                     <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                 </div>
             </footer>

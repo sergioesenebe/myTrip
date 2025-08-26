@@ -330,7 +330,7 @@ function travelers() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="top-content-centered min-h-[200px] md:min-h-[300px] md:gap-[20px] gap-[10px]">
+                    <div className="top-content-centered min-h-[150px] md:min-h-[250px] md:gap-[20px] gap-[10px]">
                         <form className="top-content-centered" onSubmit={(e) => handleSearchByName(e)}>
                             <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[300px] md:h-[52px] h-[42px] p-[10px] md:p-[20px] flex flex-row justify-between gap-[5px] items-center'>
                                 <input className='transparent-input md:w-[430px] w-[250px]' placeholder={`Look for a Traveler`}

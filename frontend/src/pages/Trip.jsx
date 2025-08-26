@@ -241,7 +241,7 @@ function uploadTrip() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>myTrip - Trip</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -265,7 +265,7 @@ function uploadTrip() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="trip-info">
+                    <div className="trip-info min-h-[150px] md:min-h-[250px] md:gap-[20px] gap-[10px]">
                         {/*Links visibles in mobile, here to show it above the trip info*/}
                         {menuOpen && (<div id="mobile-menu"
                             className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -294,8 +294,8 @@ function uploadTrip() {
                                 className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Sign Up</Link>)}
                         </div>)}
                         <div>
-                            <h1 className="text-white text-[50px] trip-name" >{tripName}</h1>
-                            <p className="text-white text-[16px] trip-description">{tripDescription}</p>
+                            <h1 className="text-white text-[30px] md:text-[50px] trip-name" >{tripName}</h1>
+                            <p className="text-white text-[12px] md:text-[16px] trip-description">{tripDescription}</p>
                         </div>
                         <div >
                             <p className="text-white">{tripCountry}, {tripCity}</p>
@@ -307,25 +307,25 @@ function uploadTrip() {
                     </div>
                 </div>
                 <div id="trip-places" className='flex flex-col gap-[20px]'>
-                    <h1 className="text-3xl font-bold text-[#004643]">Places to Visit</h1>
+                    <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Places to Visit</h1>
                     <div className="places">
                         {places.length > 0 ? places.map((place, index) => (
                             <div className="place" key={index}>
-                                <div className="place-content">
+                                <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}>
                                     {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                     {index % 2 === 0 &&
-                                        <div className="left-place">
+                                        <div className="left-place md:w-[50%] w-[100%]">
                                             <img className="place-image" src={place.image} />
                                         </div>
                                     }
-                                    <div className="right-place">
+                                    <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
                                         <div>
                                             <h1 required className="text-[#004643] text-[50px] place-name">{place.name}</h1>
                                             <p className="text-[16px] place-description" >{place.description}</p>
                                         </div>
                                     </div>
                                     {index % 2 !== 0 &&
-                                        <div className="left-place">
+                                        <div className="left-place md:w-[50%] w-[100%]">
                                             <img className="place-image" src={place.image} />
                                         </div>
                                     }
@@ -365,15 +365,14 @@ function uploadTrip() {
                     </div>
                 </div>
             </main>
-            <footer>
+            <footer className='p-[25px] md:p-[50px]'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
-                    <p>Learning by building real projects</p>
                 </div>
-                <div className="footer-contact">
+                <div className="footer-contact gap-[10px] md:gap-[25px] justify-end text-[10px] md:text-[16px]">
                     <a href="https://www.esenebe.com">About Me</a>
                     <a href="https://github.com/sergioesenebe">GitHub</a>
-                    <a href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                    <a href="https://www.linkedin.com/in/sergionbonet">LinkedIn</a>
                     <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                 </div>
             </footer>

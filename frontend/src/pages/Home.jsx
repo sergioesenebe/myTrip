@@ -127,7 +127,7 @@ function home() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="top-content-centered min-h-[200px] md:min-h-[300px]">
+                    <div className="top-content-centered min-h-[150px] md:min-h-[250px]">
                         <h1 className='md:text-[50px] text-[30px] text-center'>Welcome to myTrip</h1>
                         <p className='text-[12px] md:text-[16px] text-center'>Explore curated travel routes from real adventurers.<br />Find inspiration to plan your next adventure.</p>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
@@ -210,7 +210,6 @@ function home() {
             <footer className='p-[25px] md:p-[50px]'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
-                    {/*<p className='text-10px md:text-16px'>Learning by building real projects</p>*/}
                 </div>
                 <div className="footer-contact gap-[10px] md:gap-[25px] justify-end text-[10px] md:text-[16px]">
                     <a href="https://www.esenebe.com">About Me</a>
