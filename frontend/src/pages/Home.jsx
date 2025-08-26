@@ -169,7 +169,7 @@ function home() {
                             {interestingTrips.map(trip => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
                                     <img className="w-[400px] h-[150px] md:h-[500px] place-image clickable" src={trip.image} onClick={() => { navigate(`/trips/${trip._id}`) }} />
-                                    <p className='text-[16px] text-center'>{trip.name}</p>
+                                    <p className='text-[12px] md:text-[16px] text-center'>{trip.name}</p>
                                 </div>
                             ))}
                         </div>
@@ -183,7 +183,7 @@ function home() {
                             {interestingUsers.map(user => (
                                 <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
                                     <img className="w-[300px] aspect-square place-image clickable rounded-full" src={user.avatar} onClick={() => { navigate(`/travelers/${user._id}`) }}/>
-                                    <p className='text-[16px]'>{user.username}</p>
+                                    <p className='text-[12px] md:text-[16px]'>{user.username}</p>
                                 </div>
                             ))}
                         </div>
@@ -193,15 +193,15 @@ function home() {
                         <div className='flex flex-row items-start justify-center'>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
                                 <img className="w-[400px] aspect-square place-image clickable" src={italyImg} onClick={() => navigate('/trips?search-country=Italy&search-city=Any+City')} />
-                                <p className='text-[16px]'>Italy</p>
+                                <p className='text-[12px] md:text-[16px]'>Italy</p>
                             </div>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
                                 <img className="w-[400px] aspect-square place-image clickable" src={berlinImg} onClick={() => navigate('/trips?search-country=Germany&search-city=Berlin')} />
-                                <p className='text-[16px]'>Berlin</p>
+                                <p className='text-[12px] md:text-[16px]'>Berlin</p>
                             </div>
                             <div className='flex flex-col gap-[10px] w-1/3 items-center justify-center'>
                                 <img className="w-[400px] aspect-square place-image clickable" src={trendingTrips} onClick={() => navigate('/trips?sort=newest')} />
-                                <p className='text-[16px]'>Newest Trips</p>
+                                <p className='text-[12px] md:text-[16px]'>Newest Trips</p>
                             </div>
                         </div>
                     </div>

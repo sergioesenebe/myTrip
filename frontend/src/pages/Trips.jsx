@@ -524,7 +524,7 @@ function trips() {
                 <div id='trip-places' className="flex flex-col gap-[50px]">
                     <div className='flex flex-col gap-[20px]'>
                         <div className='flex flex-row justify-between items-center'>
-                            <h1 className="text-3xl font-bold text-[#004643]">Trips</h1>
+                            <h1 className="text-3xl font-bold text-[#004643] md:text-[30px] text-[20px]">Trips</h1>
                             <div className='flex flex-row'>
                                 {!menuOpen && isLoggedIn && <div className={`clickable rounded-full p-[5px] bg-[#ECE7E2] ${followedTrips ? 'brightness-[80%] hover:brightness-[90%]' : ''} `}>
                                     <img title="Followed Travelers’ Trips" src={friendsIcon} className='w-[30px] h-[30px]' onClick={(e) => {
@@ -598,7 +598,7 @@ function trips() {
                                             </div>
                                         }
                                         <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
-                                            <h1 required className="place-name text-[#004643]" placeholder="Place Name">{trip.name}</h1>
+                                            <h1 required className="text-[#004643] md:text-[50px] text-[30px]" placeholder="Place Name">{trip.name}</h1>
                                             <p className="place-description"
                                                 placeholder="Place Description">{trip.description}</p>
                                             <p>{trip.country}, {trip.city}</p>
