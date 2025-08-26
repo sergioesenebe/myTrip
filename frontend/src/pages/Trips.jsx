@@ -420,7 +420,7 @@ function trips() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>myTrip - Trips</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -590,7 +590,7 @@ function trips() {
                                     else
                                         navigate(`/trips/${trip._id}`)
                                 }}>
-                                    <div className='place-content'>
+                                    <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}>
                                         {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                         {index % 2 === 0 &&
                                             <div className="left-place">
