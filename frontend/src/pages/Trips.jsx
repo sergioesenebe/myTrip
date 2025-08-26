@@ -420,7 +420,7 @@ function trips() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
                 <title>myTrip - Trips</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -452,7 +452,7 @@ function trips() {
                     </nav>
                     <div className="top-content-centered">
                         {!searchByLocation && <form className="top-search" onSubmit={(e) => handleSearchByName(e)}>
-                            <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between gap-[5px] items-center'>
+                            <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[200px] h-[52px] p-[10px] flex flex-row justify-between gap-[5px] items-center'>
                                 <input className='transparent-input w-[430px]' placeholder={`Look for a Trip`}
                                     value={searchName} onChange={(e) => setSearchName(e.target.value)} />
                                 <button type='submit'><img src={searchIcon} className='w-[30px] h-[30px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
