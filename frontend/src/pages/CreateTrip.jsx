@@ -61,7 +61,7 @@ function uploadTrip() {
                     setIsLoggedIn(false);
                     return;
                 }
-                else 
+                else
                     setIsLoggedIn(true);
             }
             //If there is 
@@ -221,7 +221,7 @@ function uploadTrip() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>myTrip - Create Trip</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -248,7 +248,7 @@ function uploadTrip() {
                                         <Link to={'/myprofile'} className="nav-bar-link">My Profile</Link>
                                     </div>
                                 </nav>
-                                <div className="trip-info">
+                                <div className="trip-info min-h-[150px] md:min-h-[250px] md:gap-[20px] gap-[10px]">
                                     {/*Links visibles in mobile, here to show it above the trip info*/}
                                     {menuOpen && (<div id="mobile-menu"
                                         className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -276,61 +276,61 @@ function uploadTrip() {
                                         {!isLoggedIn && (<Link to={'/signup'}
                                             className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Sign Up</Link>)}
                                     </div>)}
-                                    <div className="editable">
-                                        <input required className="editable-input trip-name white-input" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
-                                    </div>
-                                    <div className="editable">
-                                        <textarea className="editable-textarea trip-description white-input" rows={3} maxLength={2000}
-                                            placeholder="Trip Description" value={tripDescription} onChange={(e) => setTripDescription(e.target.value)} />
-                                    </div>
-                                    <div className="selections">
-                                        <label htmlFor="country">Country</label>
-                                        <select required className="white-select" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e.target.value)}>
-                                            <option value='' disabled >Select a Country</option>
-                                            {countries.map(c => (
-                                                <option key={c.iso2} value={c.country}>{c.country}</option>
-                                            ))}
-                                        </select>
-                                        <label htmlFor="city">City</label>
-                                        <select required className="white-select" id="city" name="city" value={tripCity} onChange={(e) => setTripCity(e.target.value)}>
-                                            <option value='' disabled>Select a City</option>
-                                            {tripCountry && (<option value='Whole Country'>Whole Country</option>)}
-                                            {cities.map(c => (
-                                                <option key={c} value={c}>{c}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <input className="input-auth" ref={tripImageRef} id='trip-image' type='file' accept='image/png, image/jpg, image/jpeg'
-                                        style={{ display: 'none' }} onChange={e => handleTripFile(e.target.files[0])}></input>
+                                    <div className="flex flex-col flex flex-col w-[100%] gap-[20px]">
+                                        <div className="editable gap-[20px]">
+                                            <input required className="editable-input text-[30px] md:text-[50px] trip-name white-input" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
+                                            <textarea className="editable-textarea text-[12px] md:text-[16px] trip-description white-input" rows={3} maxLength={2000}
+                                                placeholder="Trip Description" value={tripDescription} onChange={(e) => setTripDescription(e.target.value)} />
+                                        </div>
+                                        <div className="selections">
+                                            <label htmlFor="country">Country</label>
+                                            <select required className="white-select w-[100px] md:w-[270px]" id="country" name="country" value={tripCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                                                <option value='' disabled >Select a Country</option>
+                                                {countries.map(c => (
+                                                    <option key={c.iso2} value={c.country}>{c.country}</option>
+                                                ))}
+                                            </select>
+                                            <label htmlFor="city">City</label>
+                                            <select required className="white-select w-[100px] md:w-[270px]" id="city" name="city" value={tripCity} onChange={(e) => setTripCity(e.target.value)}>
+                                                <option value='' disabled>Select a City</option>
+                                                {tripCountry && (<option value='Whole Country'>Whole Country</option>)}
+                                                {cities.map(c => (
+                                                    <option key={c} value={c}>{c}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <input className="input-auth" ref={tripImageRef} id='trip-image' type='file' accept='image/png, image/jpg, image/jpeg'
+                                            style={{ display: 'none' }} onChange={e => handleTripFile(e.target.files[0])}></input>
 
-                                    <div className="flex flex-row items-center gap-5 w-[min-content]">
-                                        <button className="white-border-button update-image-button" type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
-                                        {displayDeleteButton && (
-                                            <button className='red-button update-image-button' type='button' onClick={handleDeleteTripImage}>Delete Trip Image</button>
-                                        )}
+                                        <div className="flex flex-row items-center gap-5 w-[min-content]">
+                                            <button className="white-border-button w-[85px] md:w-[100px]" type='button' onClick={() => tripImageRef.current && tripImageRef.current.click()}>Update Trip Image</button>
+                                            {displayDeleteButton && (
+                                                <button className='red-button  w-[85px] md:w-[100px]' type='button' onClick={handleDeleteTripImage}>Delete Trip Image</button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div id="trip-places" className='flex flex-col gap-[20px]'>
-                                <h1 className="text-3xl font-bold text-[#004643]">Places to Visit</h1>
+                                <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Places to Visit</h1>
                                 <div className="places">
                                     {places.map((place, index) => (
                                         <div className="place" key={index}>
-                                            <div className="place-content">
+                                            <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&
-                                                    <div className="left-place">
+                                                    <div className="left-place md:w-[50%] w-[100%]">
                                                         <input className="input-auth" ref={placeImageRefs.current[index]} id='place-image' type='file' accept='image/png, image/jpg, image/jpeg'
                                                             style={{ display: 'none' }} onChange={(e) => handlePlaceImage(e.target.files[0], index)}></input>
-                                                        <img className="place-image clickable" src={place.image} onClick={() => placeImageRefs.current[index] && placeImageRefs.current[index].current.click()} />
+                                                        <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={place.image} onClick={() => placeImageRefs.current[index] && placeImageRefs.current[index].current.click()} />
                                                         {place.placeImageDeleteButton && (
-                                                            <button className='red-border-button update-image-button p-0' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
+                                                            <button className='red-border-button w-[85px] md:w-[100px] p-[5px]' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
                                                         )}
                                                     </div>
                                                 }
-                                                <div className="right-place">
+                                                <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
                                                     <div className="editable">
-                                                        <input required className="editable-input place-name green-input" placeholder="Place Name" maxLength={150}
+                                                        <input required className="editable-input place-name green-input md:text-[50px] text-[30px]" placeholder="Place Name" maxLength={150}
                                                             value={place.name} onChange={(e) => handlePlaceChange(index, 'name', e.target.value, places, setPlaces)} />
                                                     </div>
                                                     <div className="editable">
@@ -339,17 +339,17 @@ function uploadTrip() {
                                                     </div>
                                                 </div>
                                                 {index % 2 !== 0 &&
-                                                    <div className="left-place">
+                                                    <div className="left-place md:w-[50%] w-[100%]">
                                                         <input className="input-auth" ref={placeImageRefs.current[index]} id='place-image' type='file' accept='image/png, image/jpg, image/jpeg'
                                                             style={{ display: 'none' }} onChange={(e) => handlePlaceImage(e.target.files[0], index)}></input>
-                                                        <img className="place-image clickable" src={place.image} onClick={() => placeImageRefs.current[index] && placeImageRefs.current[index].current.click()} />
+                                                        <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={place.image} onClick={() => placeImageRefs.current[index] && placeImageRefs.current[index].current.click()} />
                                                         {place.placeImageDeleteButton && (
-                                                            <button className='red-border-button update-image-button p-0' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
+                                                            <button className='red-border-button w-[85px] md:w-[100px] p-5px' type='button' onClick={() => handleDeletePlaceImage(index)}>Delete Image</button>
                                                         )}
                                                     </div>
                                                 }
                                             </div>
-                                            <button className="red-border-button delete-place-button" type='button' onClick={() => deletePlace(index, places, placeImageRefs, setPlaces)}>Delete Place</button>
+                                            <button className="red-border-button w-[100%] md:w-[100px]" type='button' onClick={() => deletePlace(index, places, placeImageRefs, setPlaces)}>Delete Place</button>
                                         </div>
 
                                     ))}
@@ -357,9 +357,9 @@ function uploadTrip() {
                                     {errorMessage && (
                                         <p className="error-message">{errorMessage}</p>
                                     )}
-                                    <div className="cancel-save-buttons">
-                                        <Link to={'/mytrips'}><button className="red-border-button" type='button'>Cancel</button></Link>
-                                        <button className="green-button" type='submit'>Save Trip</button>
+                                    <div className="flex md:justify-between md:flex-row flex-col w-[100%] md:w-[80%] gap-[20px]">
+                                        <Link to={'/mytrips'}><button className="red-border-button w-[100%] md:w-[160px]" type='button'>Cancel</button></Link>
+                                        <button className="green-button w-[100%] md:w-[160px]" type='submit'>Save Trip</button>
                                     </div>
                                 </div>
                             </div>
