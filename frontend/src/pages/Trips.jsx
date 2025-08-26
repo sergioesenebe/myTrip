@@ -609,7 +609,7 @@ function trips() {
                                         </div>
                                         {index % 2 !== 0 &&
                                             <div className="left-place md:w-[50%] w-[100%]">
-                                                <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
+                                                <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={trip.image} />
                                             </div>
                                         }
                                     </div>
