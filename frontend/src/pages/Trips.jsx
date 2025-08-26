@@ -593,11 +593,11 @@ function trips() {
                                     <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}>
                                         {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                         {index % 2 === 0 &&
-                                            <div className="left-place">
+                                            <div className="left-place md:w-[50%] w-[100%]">
                                                 <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
                                             </div>
                                         }
-                                        <div className="right-place flex gap-[15px]">
+                                        <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
                                             <h1 required className="place-name text-[#004643]" placeholder="Place Name">{trip.name}</h1>
                                             <p className="place-description"
                                                 placeholder="Place Description">{trip.description}</p>
@@ -608,7 +608,7 @@ function trips() {
                                             </div>
                                         </div>
                                         {index % 2 !== 0 &&
-                                            <div className="left-place">
+                                            <div className="left-place md:w-[50%] w-[100%]">
                                                 <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
                                             </div>
                                         }
