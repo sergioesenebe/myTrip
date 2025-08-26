@@ -315,18 +315,18 @@ function uploadTrip() {
                                     {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                     {index % 2 === 0 &&
                                         <div className="left-place md:w-[50%] w-[100%]">
-                                            <img className="place-image" src={place.image} />
+                                            <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={place.image} />
                                         </div>
                                     }
                                     <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
                                         <div>
-                                            <h1 required className="text-[#004643] text-[50px] place-name">{place.name}</h1>
-                                            <p className="text-[16px] place-description" >{place.description}</p>
+                                            <h1 required className="ttext-[#004643] md:text-[50px] text-[30px]">{place.name}</h1>
+                                            <p >{place.description}</p>
                                         </div>
                                     </div>
                                     {index % 2 !== 0 &&
                                         <div className="left-place md:w-[50%] w-[100%]">
-                                            <img className="place-image" src={place.image} />
+                                            <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={place.image} />
                                         </div>
                                     }
                                 </div>

@@ -284,6 +284,7 @@ main {
 /*Display flex with the content (image and text)*/
 .place-content {
     display: flex;
+    gap: 20px;
 }
 
 /*Display all the trips with display flex*/
