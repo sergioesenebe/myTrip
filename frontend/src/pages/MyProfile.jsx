@@ -335,7 +335,7 @@ function uploadTrip() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>myTrip - My Profile</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -393,37 +393,37 @@ function uploadTrip() {
                                 {!isLoggedIn && (<Link to={'/signup'}
                                     className="w-full text-center py-4 hover:bg-[#ECE7E2] hover:text-[#004643] transition-colors duration-200">Sign Up</Link>)}
                             </div>)}
-                            <div className='top-content-centered'>
-                                <h1>Manage Your Profile</h1>
-                                <p>Update your personal information and change your password, to keep your account up to date.</p>
+                            <div className='top-content-centered min-h-[150px] md:min-h-[250px]'>
+                                <h1 className='md:text-[50px] text-[30px] text-center'>Manage Your Profile</h1>
+                                <p className='text-[12px] md:text-[16px] text-center'>Update your personal information and change your password, to keep your account up to date.</p>
                             </div>
                         </div>
                         <div className='p-[20px] flex flex-col gap-[50px]'>
                             <form onSubmit={(e) => handleUpdateData(e)}>
-                                <h1 className="text-3xl font-bold text-[#004643]">Update Data</h1>
-                                <table className='md:w-[60%] w-[100%] border-separate border-spacing-y-[10px] text-[16px]'>
+                                <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Update Data</h1>
+                                <table className='md:w-[60%] w-[100%] border-separate border-spacing-y-[10px] text-[12px] md:text-[16px]'>
                                     <tr>
-                                        <td className='w-[200px]'><label htmlFor='first-name'>First Name</label></td>
+                                        <td className='md:w-[200px] w-[100px]'><label htmlFor='first-name'>First Name</label></td>
                                         <td><input id='first-name' className='editable-input black-input' type='text' maxLength={50} placeholder={currentFirstName} value={firstName} onChange={(e) => setFirstName(e.target.value)} /></td>
                                     </tr>
                                     <tr>
-                                        <td className='w-[200px]'><label htmlFor='second-name'>Second Name</label></td>
+                                        <td className='md:w-[200px] w-[100px]'><label htmlFor='second-name'>Second Name</label></td>
                                         <td><input id='second-name' className='editable-input black-input' type='text' maxLength={50} placeholder={currentSecondName} value={secondName} onChange={(e) => setSecondName(e.target.value)} /></td>
                                     </tr>
                                     <tr>
-                                        <td className='w-[200px]'><label htmlFor='username'>Username</label></td>
+                                        <td className='md:w-[200px] w-[100px]'><label htmlFor='username'>Username</label></td>
                                         <td><input id='username' className='editable-input black-input' type='text' maxLength={30} placeholder={currentUsername} value={username} onChange={(e) => setUsername(e.target.value)} /></td>
                                     </tr>
                                     <tr>
-                                        <td className='w-[200px]'><label htmlFor='email'>Email</label></td>
+                                        <td className='md:w-[200px] w-[100px]'><label htmlFor='email'>Email</label></td>
                                         <td><input id='email' className='editable-input black-input' type='email' maxLength={254} placeholder={currentEmail} value={email} onChange={(e) => setEmail(e.target.value)} /></td>
                                     </tr>
                                     <tr>
-                                        <td className='w-[200px] flex items-start'><label htmlFor='description'>Description</label></td>
+                                        <td className='md:w-[200px] w-[100px] flex items-start'><label htmlFor='description'>Description</label></td>
                                         <td><textarea id='description' className='editable-textarea black-input' type='text' maxLength={160} placeholder={currentDescription} rows='3' value={description} onChange={(e) => setDescription(e.target.value)} /></td>
                                     </tr>
                                     <tr>
-                                        <td className='w-[200px] flex items-start'><p>Avatar</p></td>
+                                        <td className='md:w-[200px] w-[100px] flex items-start'><p>Avatar</p></td>
                                         <td>
                                             <div className='flex flex-col justify-center w-fit'>
                                                 <img className='avatar clickable' src={avatarUrl} onClick={() => avatarRef.current && avatarRef.current.click()} />
@@ -445,14 +445,14 @@ function uploadTrip() {
                                 <button className='green-button w-[160px]' type='submit'>Update Data</button>
                             </form>
                             <form onSubmit={e => handleUpdatePassword(e)}>
-                                <h1 className="text-3xl font-bold text-[#004643]">Update Password</h1>
-                                <table className='md:w-[60%] w-[100%] border-separate border-spacing-y-[10px] text-[16px]'>
+                                <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Update Password</h1>
+                                <table className='md:w-[60%] w-[100%] border-separate border-spacing-y-[10px] text-[12px] md:text-[16px]'>
                                     <tr>
-                                        <td className='w-[200px]'><label htmlFor='first-name'>Password</label></td>
+                                        <td className='md:w-[200px] w-[100px]'><label htmlFor='first-name'>Password</label></td>
                                         <td><input type='password' required id='first-name' className='editable-input black-input' placeholder='Min. 8 characters, 1 lowercase and 1 uppercase' value={password} onChange={(e) => setPassword(e.target.value)} /></td>
                                     </tr>
                                     <tr>
-                                        <td className='w-[200px]'><label htmlFor='second-name'>Confirm Password</label></td>
+                                        <td className='md:w-[200px] w-[100px]'><label htmlFor='second-name'>Confirm Password</label></td>
                                         <td><input type='password' required id='second-name' className='editable-input black-input' placeholder='Repeat your new password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} /></td>
                                     </tr>
                                 </table>
@@ -465,21 +465,20 @@ function uploadTrip() {
                                 <button type='submit' className='green-button w-[160px]'>Update Password</button>
                             </form>
                             <div>
-                                <h1 className="text-3xl font-bold text-[#004643]">Log Out</h1>
-                                <p className='text-[16px]'>End your current session</p>
+                                <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Log Out</h1>
+                                <p className='md:text-[16px] text-[12px]'>End your current session</p>
                                 <button type='submit' className='red-border-button w-[160px]' onClick={handleLogOut}>Log Out</button>
                             </div>
                         </div>
                     </main>
-                    <footer>
+                    <footer className='p-[25px] md:p-[50px]'>
                         <div className="footer-branding">
                             <img className="esenebe-footer-log" src={esenebeLogo} />
-                            <p>Learning by building real projects</p>
                         </div>
-                        <div className="footer-contact">
+                        <div className="footer-contact gap-[10px] md:gap-[25px] justify-end text-[10px] md:text-[16px]">
                             <a href="https://www.esenebe.com">About Me</a>
                             <a href="https://github.com/sergioesenebe">GitHub</a>
-                            <a href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                            <a href="https://www.linkedin.com/in/sergionbonet">LinkedIn</a>
                             <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                         </div>
                     </footer>
