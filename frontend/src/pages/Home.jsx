@@ -161,7 +161,7 @@ function home() {
                 </div>
                 <div id='trip-places' className="flex flex-col md:gap-[50px] gap-[25px]">
                     <div className='flex flex-col gap-[20px]'>
-                        <h1 className="text-3xl font-bold text-[#004643] md:text-[30px] text-[20px]">Interesting Trips</h1>
+                        <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Interesting Trips</h1>
                         {errorMessageTrips && (
                             <p className="error-message">{errorMessageTrips}</p>
                         )}
