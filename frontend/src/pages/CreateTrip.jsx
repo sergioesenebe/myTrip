@@ -329,7 +329,7 @@ function uploadTrip() {
                                                     </div>
                                                 }
                                                 <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
-                                                    <div className="editable">
+                                                    <div className="editable gap-[20px] flex flex-col">
                                                         <input required className="editable-input place-name green-input md:text-[50px] text-[30px]" placeholder="Place Name" maxLength={150}
                                                             value={place.name} onChange={(e) => handlePlaceChange(index, 'name', e.target.value, places, setPlaces)} />
                                                     </div>
@@ -365,15 +365,14 @@ function uploadTrip() {
                             </div>
                         </form>
                     </main>
-                    <footer>
+                    <footer className='p-[25px] md:p-[50px]'>
                         <div className="footer-branding">
                             <img className="esenebe-footer-log" src={esenebeLogo} />
-                            <p>Learning by building real projects</p>
                         </div>
-                        <div className="footer-contact">
+                        <div className="footer-contact gap-[10px] md:gap-[25px] justify-end text-[10px] md:text-[16px]">
                             <a href="https://www.esenebe.com">About Me</a>
                             <a href="https://github.com/sergioesenebe">GitHub</a>
-                            <a href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                            <a href="https://www.linkedin.com/in/sergionbonet">LinkedIn</a>
                             <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                         </div>
                     </footer>

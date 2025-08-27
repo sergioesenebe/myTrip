@@ -399,8 +399,8 @@ function editTrip() {
                                     </div>)}
                                     <div className='flex md:flex-row md:justify-between flex-col w-[100%] items-top gap-[20px]'>
                                         <div className="flex flex-col flex flex-col w-[100%] gap-[20px]">
-                                            <div className="editable gap-[20px]">
-                                            <input required className="editable-input text-[30px] md:text-[50px] trip-name white-input w-[100%] md:w-[60%]" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
+                                            <div className="editable gap-[20px] flex flex-col">
+                                                <input required className="editable-input text-[30px] md:text-[50px] trip-name white-input" value={tripName} maxLength={150} placeholder="Trip Name" onChange={(e) => setTripName(e.target.value)} />
                                                 <textarea className="editable-textarea text-[12px] md:text-[16px] trip-description white-input" rows={3} maxLength={2000}
                                                     placeholder="Trip Description" value={tripDescription} onChange={(e) => setTripDescription(e.target.value)} />
                                             </div>
