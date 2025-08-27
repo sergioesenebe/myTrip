@@ -536,15 +536,15 @@ function travelerTrip() {
                             <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Trips</h1>
                             {!menuOpen && <div className='justify-self-center flex flex-col gap-[5px] items-center justify-center pt-[10px]'>
                                 {!searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByName(e)}>
-                                    <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
-                                        <input className='transparent-input w-[215px] pl-[5px]' placeholder={`Look for a Trip`}
+                                    <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
+                                        <input className='transparent-input w-[115px] md:w-[215px] pl-[5px]' placeholder={`Look for a Trip`}
                                             value={searchName} onChange={(e) => setSearchName(e.target.value)} />
                                         <button type='submit'><img src={searchIcon} className='w-[25px] h-[25px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
                                     </div>
                                 </form>}
                                 {searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByCountryCity(e)}>
-                                    <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
-                                        <select required className="green-select text-black w-[118px] ml-[5px] mr-[5px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                                    <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
+                                        <select required className="green-select text-black w-[57.5px] md:w-[118px] ml-[5px] mr-[5px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
                                             <option value='' disabled >Select a Country</option>
                                             <option value='Any Country'>Any Country</option>
                                             {countries.map(c => (
@@ -622,22 +622,21 @@ function travelerTrip() {
                                 <div className='place clickable border rounded-[10px] border-white' onClick={() => {
                                     navigate(`/trips/${trip._id}`)
                                 }}>
-                                    <div className='place-content'>
+                                    <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}>
                                         {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                         {index % 2 === 0 &&
-                                            <div className="left-place">
-                                                <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
+                                            <div className="left-place md:w-[50%] w-[100%]">
+                                                <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={trip.image} />
                                             </div>
                                         }
-                                        <div className="right-place flex gap-[15px]">
-                                            <h1 required className="place-name text-[#004643]" placeholder="Place Name">{trip.name}</h1>
-                                            <p className="place-description"
-                                                placeholder="Place Description">{trip.description}</p>
+                                        <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
+                                            <h1 required className="text-[#004643] md:text-[50px] text-[30px]">{trip.name}</h1>
+                                            <p>{trip.description}</p>
                                             <p>{trip.country}, {trip.city}</p>
                                         </div>
                                         {index % 2 !== 0 &&
-                                            <div className="left-place">
-                                                <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
+                                            <div className="left-place md:w-[50%] w-[100%]">
+                                                <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={trip.image} />
                                             </div>
                                         }
                                     </div>
@@ -658,15 +657,14 @@ function travelerTrip() {
                     </div>
                 </div>
             </main>
-            <footer>
+            <footer className='p-[25px] md:p-[50px]'>
                 <div className="footer-branding">
                     <img className="esenebe-footer-log" src={esenebeLogo} />
-                    <p>Learning by building real projects</p>
                 </div>
-                <div className="footer-contact">
+                <div className="footer-contact gap-[10px] md:gap-[25px] justify-end text-[10px] md:text-[16px]">
                     <a href="https://www.esenebe.com">About Me</a>
                     <a href="https://github.com/sergioesenebe">GitHub</a>
-                    <a href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                    <a href="https://www.linkedin.com/in/sergionbonet">LinkedIn</a>
                     <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                 </div>
             </footer>

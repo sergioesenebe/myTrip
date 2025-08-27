@@ -459,8 +459,8 @@ function trips() {
                             </div>
                         </form>}
                         {searchByLocation && <form className="top-search" onSubmit={(e) => handleSearchByCountryCity(e)}>
-                            <div className='border rounded-[10px] bg-[#ECE7E2] w-[500px] h-[52px] p-[10px] flex flex-row justify-between items-center gap-[5px]'>
-                                <select required className="green-select text-black w-[215px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                            <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[300px] h-[52px] p-[10px] flex flex-row justify-between items-center gap-[5px]'>
+                                <select required className="green-select text-black md:w-[129px] w-[215px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
                                     <option value='' disabled >Select a Country</option>
                                     <option value='Any Country'>Any Country</option>
                                     {countries.map(c => (
