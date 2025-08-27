@@ -463,7 +463,7 @@ function myTrips() {
                                                         <option key={c.iso2} value={c.country}>{c.country}</option>
                                                     ))}
                                                 </select>
-                                                <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[118px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
+                                                <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[52px] md:w-[114px] ml-[2.5px] mr-[2.5px] md:ml-[5px] md:mr-[5px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
                                                     <option value='' disabled>City</option>
                                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Whole Country'>Whole Country</option>)}
                                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Any City'>Any City</option>)}

@@ -441,7 +441,7 @@ function savedTrips() {
                         <div id='trip-places' className="flex flex-col gap-[50px]">
                             <div className='flex flex-col gap-[20px]'>
                                 <div className='grid grid-cols-3 items-top gap-[20px]'>
-                                    <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px] pt-10px">Saved Trips</h1>
+                                    <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px] pt-[10px]">Saved Trips</h1>
                                     {!menuOpen && <div className='justify-self-center flex flex-col gap-[5px] items-center justify-center pt-[10px]'>
                                         {!searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByName(e)}>
                                             <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
@@ -453,14 +453,14 @@ function savedTrips() {
                                         {searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByCountryCity(e)}>
                                             <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
                                                 <select required className="green-select text-black w-[62px] md:w-[114px] ml-[2.5px] mr-[2.5px] md:ml-[5px] md:mr-[5px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
-                                                    <option value='' disabled >Select a Country</option>
+                                                    <option value='' disabled >Country</option>
                                                     <option value='Any Country'>Any Country</option>
                                                     {countries.map(c => (
                                                         <option key={c.iso2} value={c.country}>{c.country}</option>
                                                     ))}
                                                 </select>
                                                 <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[52px] md:w-[114px] ml-[2.5px] mr-[2.5px] md:ml-[5px] md:mr-[5px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
-                                                    <option value='' disabled>Select a City</option>
+                                                    <option value='' disabled>City</option>
                                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Whole Country'>Whole Country</option>)}
                                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Any City'>Any City</option>)}
                                                     {cities.map(c => (
