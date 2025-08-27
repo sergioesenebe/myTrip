@@ -368,7 +368,7 @@ function savedTrips() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>myTrip - Saved Trips</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -401,10 +401,9 @@ function savedTrips() {
                                     {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                                 </div>
                             </nav>
-                            <div className="top-content-centered">
-                                <h1>Your Saved Trips</h1>
-                                <p>View and manage the trips you have saved for later.</p>
-
+                            <div className="top-content-centered min-h-[150px] md:min-h-[250px]">
+                                <h1 className='md:text-[50px] text-[30px] text-center'>Your Saved Trips</h1>
+                                <p className='text-[12px] md:text-[16px] text-center'>View and manage the trips you have saved for later.</p>
                                 {/*Links visibles in mobile, here to show it above the trip info*/}
                                 {menuOpen && (<div id="mobile-menu"
                                     className="fixed inset-0 z-[999] bg-[#004643] flex flex-col items-center justify-center gap-6 text-lg md:hidden">
@@ -442,25 +441,25 @@ function savedTrips() {
                         <div id='trip-places' className="flex flex-col gap-[50px]">
                             <div className='flex flex-col gap-[20px]'>
                                 <div className='grid grid-cols-3 items-top'>
-                                    <h1 className="text-3xl font-bold text-[#004643]">Saved Trips</h1>
+                                    <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Saved Trips</h1>
                                     {!menuOpen && <div className='justify-self-center flex flex-col gap-[5px] items-center justify-center pt-[10px]'>
                                         {!searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByName(e)}>
-                                            <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
-                                                <input className='transparent-input w-[215px] pl-[5px]' placeholder={`Look for a Trip`}
+                                            <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
+                                                <input className='transparent-input w-[115px] md:w-[215px] pl-[5px]' placeholder={`Look for a Trip`}
                                                     value={searchName} onChange={(e) => setSearchName(e.target.value)} />
                                                 <button type='submit'><img src={searchIcon} className='w-[25px] h-[25px] rounded-full p-[5px] clickable bg-[#ECE7E2]' /> </button>
                                             </div>
                                         </form>}
                                         {searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByCountryCity(e)}>
-                                            <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
-                                                <select required className="green-select text-black w-[118px] ml-[5px] mr-[5px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                                            <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
+                                                <select required className="green-select text-black w-[62px] md:w-[114px] ml-[2.5px] mr-[2.5px] md:ml-[5px] md:mr-[5px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
                                                     <option value='' disabled >Select a Country</option>
                                                     <option value='Any Country'>Any Country</option>
                                                     {countries.map(c => (
                                                         <option key={c.iso2} value={c.country}>{c.country}</option>
                                                     ))}
                                                 </select>
-                                                <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[118px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
+                                                <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[52px] md:w-[114px] ml-[2.5px] mr-[2.5px] md:ml-[5px] md:mr-[5px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
                                                     <option value='' disabled>Select a City</option>
                                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Whole Country'>Whole Country</option>)}
                                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Any City'>Any City</option>)}
@@ -531,17 +530,16 @@ function savedTrips() {
                                 <div className='places'>
                                     {tripsSliced.map((trip, index) => (
                                         <div className='place clickable border rounded-[10px] border-white' onClick={() => { navigate(`/trips/${trip._id}`) }}>
-                                            <div className='place-content'>
+                                            <div className={`place-content md:flex-row ${index % 2 === 0 ? 'flex-col-reverse' : 'flex-col'}`}>
                                                 {/*If index is even image will be in the left, if it's odd, the opposite*/}
                                                 {index % 2 === 0 &&
-                                                    <div className="left-place">
-                                                        <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
+                                                    <div className="left-place md:w-[50%] w-[100%]">
+                                                        <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={trip.image} />
                                                     </div>
                                                 }
-                                                <div className="right-place flex gap-[15px]">
-                                                    <h1 required className="place-name text-[#004643]" placeholder="Place Name">{trip.name}</h1>
-                                                    <p className="place-description"
-                                                        placeholder="Place Description">{trip.description}</p>
+                                                <div className="right-place flex gap-[15px] md:w-[50%] w-[100%]">
+                                                    <h1 required className="text-[#004643] md:text-[50px] text-[30px]" placeholder="Place Name">{trip.name}</h1>
+                                                    <p>{trip.description}</p>
                                                     <p>{trip.country}, {trip.city}</p>
                                                     <div className='flex flex-row gap-[10px] items-center'>
                                                         <img src={trip.writer.avatar} className='w-[35px] h-[35px] border border-white rounded-full' />
@@ -549,8 +547,8 @@ function savedTrips() {
                                                     </div>
                                                 </div>
                                                 {index % 2 !== 0 &&
-                                                    <div className="left-place">
-                                                        <img className="place-image h-[300px] w-[500px] md:h-[400px]" src={trip.image} />
+                                                    <div className="left-place md:w-[50%] w-[100%]">
+                                                        <img className="place-image h-[150px] w-[185px] md:w-[500px] md:h-[400px]" src={trip.image} />
                                                     </div>
                                                 }
                                             </div>
@@ -571,15 +569,14 @@ function savedTrips() {
                             </div>
                         </div>
                     </main>
-                    <footer>
+                    <footer className='p-[25px] md:p-[50px]'>
                         <div className="footer-branding">
                             <img className="esenebe-footer-log" src={esenebeLogo} />
-                            <p>Learning by building real projects</p>
                         </div>
-                        <div className="footer-contact">
+                        <div className="footer-contact gap-[10px] md:gap-[25px] justify-end text-[10px] md:text-[16px]">
                             <a href="https://www.esenebe.com">About Me</a>
                             <a href="https://github.com/sergioesenebe">GitHub</a>
-                            <a href="https://www.linkedin.com/in/sergionbonet">Linkedin</a>
+                            <a href="https://www.linkedin.com/in/sergionbonet">LinkedIn</a>
                             <a href="mailto:sergio.nunez@esenebe.com">sergio.nunez@esenebe.com</a>
                         </div>
                     </footer>
