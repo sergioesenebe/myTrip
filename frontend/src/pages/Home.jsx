@@ -115,6 +115,7 @@ function home() {
                             className="md:hidden w-6 h-6 sm:w-8 sm:h-8 hover:opacity-80 transition-opacity cursor-pointer" onClick={() => { setMenuOpen(true) }}>
                             <img src={menuIcon} />
                         </button>
+                        
                         {/*Links visibles in desktop*/}
                         <div className="nav-bar-links hidden md:flex gap-12">
                             <Link to={'/'} className="nav-bar-link"><u>Home</u></Link>
