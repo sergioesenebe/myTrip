@@ -533,7 +533,7 @@ function travelerTrip() {
                 <div id='trip-places' className="flex flex-col gap-[50px]">
                     <div className='flex flex-col gap-[20px]'>
                         <div className='grid grid-cols-3 items-top'>
-                            <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Trips</h1>
+                            <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px] pt-10px">Trips</h1>
                             {!menuOpen && <div className='justify-self-center flex flex-col gap-[5px] items-center justify-center pt-[10px]'>
                                 {!searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByName(e)}>
                                     <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>

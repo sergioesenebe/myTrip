@@ -398,7 +398,7 @@ function uploadTrip() {
                                 <p className='text-[12px] md:text-[16px] text-center'>Update your personal information and change your password, to keep your account up to date.</p>
                             </div>
                         </div>
-                        <div className='p-[20px] flex flex-col gap-[50px]'>
+                        <div className='p-[20px] flex flex-col md:gap-[50px] gap-[25px]'>
                             <form onSubmit={(e) => handleUpdateData(e)}>
                                 <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Update Data</h1>
                                 <table className='md:w-[60%] w-[100%] border-separate border-spacing-y-[10px] text-[12px] md:text-[16px]'>

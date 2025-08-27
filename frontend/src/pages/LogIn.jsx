@@ -80,7 +80,7 @@ function logIn() {
             }</style>
             <div className="auth-left" >
                 <h1 className="auth-title">Log In</h1>
-                <form className="form-auth" onSubmit={handleLogIn} style={{ gap: '30px' }}>
+                <form className="form-auth w-[100%] md:w-[60%]" onSubmit={handleLogIn} style={{ gap: '30px' }}>
                     <div className="field">
                         <label htmlFor='username'>Username</label>
                         <input className="input-auth" id='username' type='text' placeholder='Your username' value={username} maxLength={30} required onChange={(e) => { setUsername(e.target.value) }} />
@@ -96,7 +96,7 @@ function logIn() {
                         <Link to={'/signup'} className='link-button'><button className="green-border-button" type='button'>Sign Up</button></Link>
                         <button className='green-button' type='submit'>Log In</button>
                     </div>
-                    <p>Continue without log in? <Link className='link' to={'/'}>Home</Link></p>
+                    <p className='text-center'>Continue without log in? <Link className='link' to={'/'}>Home</Link></p>
                 </form >
             </div >
             <div className="auth-right">
