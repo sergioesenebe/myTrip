@@ -474,7 +474,7 @@ function travelerTrip() {
                             <img className='place-image aspect-square md:w-[300px] w-[200px] rounded-full' src={traveler.avatar} />
                             <div className='flex flex-col gap-[10px]'>
                                 <h1 className="text-white text-[30px] md:text-[50px]">{traveler.username}</h1>
-                                <h2 className='text-[#004643] md:text-[30px] text-[16px]'>{traveler.first_name} {traveler.second_name}</h2>
+                                <h2 className='text-white md:text-[30px] text-[16px]'>{traveler.first_name} {traveler.second_name}</h2>
                                 <span>{traveler.description}</span>
                                 {isLoggedIn && (followedByUser == notFollowed || followedByUser == notFollowedGreen) && <button className='white-border-button w-[100px] h-[30px] flex flex-row gap-[5px] justify-center'
                                     onMouseEnter={() => {
@@ -544,15 +544,15 @@ function travelerTrip() {
                                 </form>}
                                 {searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByCountryCity(e)}>
                                     <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[150px] md:w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>
-                                        <select required className="green-select text-black w-[57.5px] md:w-[118px] ml-[5px] mr-[5px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
-                                            <option value='' disabled >Select a Country</option>
+                                        <select required className="green-select text-black w-[60px] md:w-[118px] ml-[5px] mr-[5px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                                            <option value='' disabled >Country</option>
                                             <option value='Any Country'>Any Country</option>
                                             {countries.map(c => (
                                                 <option key={c.iso2} value={c.country}>{c.country}</option>
                                             ))}
                                         </select>
-                                        <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[118px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
-                                            <option value='' disabled>Select a City</option>
+                                        <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[55px] md:w-[118px] ml-[5px] mr-[5px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
+                                            <option value='' disabled>City</option>
                                             {searchCountry && searchCountry !== 'Any Country' && (<option value='Whole Country'>Whole Country</option>)}
                                             {searchCountry && searchCountry !== 'Any Country' && (<option value='Any City'>Any City</option>)}
                                             {cities.map(c => (
