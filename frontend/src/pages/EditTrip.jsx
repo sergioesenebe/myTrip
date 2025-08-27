@@ -477,7 +477,7 @@ function editTrip() {
                                         </div>
 
                                     ))}
-                                    <button className="green-border-button add-place-button" type='button' onClick={() => addEmptyPlace(placeImageRefs, setPlaces)}>Add Place</button>
+                                    <button className="green-border-button add-place-button w-[85px] md:w-[100px]" type='button' onClick={() => addEmptyPlace(placeImageRefs, setPlaces)}>Add Place</button>
                                     {errorMessage && (
                                         <p className="error-message">{errorMessage}</p>
                                     )}
