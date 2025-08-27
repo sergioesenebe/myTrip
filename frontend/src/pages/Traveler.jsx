@@ -439,7 +439,7 @@ function travelerTrip() {
     return (
         <>
             <Helmet>
-                <meta charSet="utf-8" />
+                <meta charSet="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
                 <title>myTrip - Traveler</title>
                 <link rel="icon" href={logo} />
             </Helmet>
@@ -469,12 +469,12 @@ function travelerTrip() {
                             {!isLoggedIn && (<Link to={'/signup'} className="nav-bar-link">Sign Up</Link>)}
                         </div>
                     </nav>
-                    <div className="top-content-centered">
-                        <div className='flex flex-row content-center content-left items-center gap-[20px] w-[100%] md:w-[60%]'>
+                    <div className="top-content-centered min-h-[150px] md:min-h-[250px] md:gap-[20px] gap-[10px]">
+                        <div className='flex md:flex-row flex-col justify-center items-center gap-[20px] w-[100%] md:w-[60%]'>
                             <img className='place-image aspect-square md:w-[300px] w-[200px] rounded-full' src={traveler.avatar} />
                             <div className='flex flex-col gap-[10px]'>
-                                <h1>{traveler.username}</h1>
-                                <h2 className='text-[25px]'>{traveler.first_name} {traveler.second_name}</h2>
+                                <h1 className="text-white text-[30px] md:text-[50px]">{traveler.username}</h1>
+                                <h2 className='text-[#004643] md:text-[30px] text-[16px]'>{traveler.first_name} {traveler.second_name}</h2>
                                 <span>{traveler.description}</span>
                                 {isLoggedIn && (followedByUser == notFollowed || followedByUser == notFollowedGreen) && <button className='white-border-button w-[100px] h-[30px] flex flex-row gap-[5px] justify-center'
                                     onMouseEnter={() => {
@@ -494,7 +494,6 @@ function travelerTrip() {
                                     Followed
                                     <img className='w-[15px] h-[15px]' src={followedByUser}></img>
                                 </button>}
-
                             </div>
                         </div>
                         {/*Links visibles in mobile, here to show it above the trip info*/}
@@ -534,7 +533,7 @@ function travelerTrip() {
                 <div id='trip-places' className="flex flex-col gap-[50px]">
                     <div className='flex flex-col gap-[20px]'>
                         <div className='grid grid-cols-3 items-top'>
-                            <h1 className="justify-self-start text-3xl font-bold text-[#004643] pt-[5px]">Trips</h1>
+                            <h1 className="font-bold text-[#004643] md:text-[30px] text-[20px]">Trips</h1>
                             {!menuOpen && <div className='justify-self-center flex flex-col gap-[5px] items-center justify-center pt-[10px]'>
                                 {!searchByLocation && <form className="top-content-centered p-[0px]" onSubmit={(e) => handleSearchByName(e)}>
                                     <div className='border border-[#00464366] border-[1px] rounded-[10px] bg-[#ECE7E2] w-[275px] h-[30px] pt-[1px] pb-[1px] flex flex-row justify-between items-center'>

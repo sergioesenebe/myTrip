@@ -12,9 +12,6 @@
 
 /*Content editable, add it together and when hover underline*/
 .editable {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     width: 60%;
 }
 
