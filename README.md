@@ -1,5 +1,5 @@
-## esenebe trips
-**esenebe trips** is a travel web app to discover destinations, follow travelers, search and manage trips, save favorites, and like itineraries — secured with **JWT + bcryptjs**.
+## esenebe myTrip
+**esenebe myTrip** is a social network for travelers, where users can share their experiences, follow other users, “like” posts, and save them to view later.
 
 [🌐 Live Demo](https://mytrip.esenebe.com)
 
@@ -21,7 +21,8 @@
 - **Search** by name, country, or city.  
 - **Sort** by popularity (likes), most recent or most detailed.  
 - View **trips from people you follow**.  
-- Trip detail: Title, description, country, city and writer.  
+- Trip detail: Title, description, country, city and writer.
+- View trips with interesting destinations, **like** your favorites, and **save** them for later.
 
 ### 🧑‍🤝‍🧑 Travelers
 - Browse **users**.  
