@@ -87,7 +87,7 @@ function uploadTrip() {
     }, [])
     //Check if user has liked
     useEffect(() => {
-        if (userId !== '' && likes.length > 0) {
+        if (userId !== '' && likes.length > 0 && likes.includes(userId)) {
             setLiked(likes.includes(userId));
             setLikeImg(likedIcon);
         }
