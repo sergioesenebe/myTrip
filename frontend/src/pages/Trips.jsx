@@ -460,14 +460,14 @@ function trips() {
                         </form>}
                         {searchByLocation && <form className="top-search" onSubmit={(e) => handleSearchByCountryCity(e)}>
                             <div className='border rounded-[10px] bg-[#ECE7E2] md:w-[500px] w-[300px] md:h-[52px] h-[42px] p-[10px] md:p-[20px] flex flex-row justify-between gap-[5px] items-center'>
-                                <select required className="green-select text-black w-[129px] md:w-[215px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
+                                <select required className="green-select text-black w-[129px] md:w-[205px]" id="country" name="country" value={searchCountry} onChange={(e) => handleCountryChange(e.target.value)}>
                                     <option value='' disabled >Select a Country</option>
                                     <option value='Any Country'>Any Country</option>
                                     {countries.map(c => (
                                         <option key={c.iso2} value={c.country}>{c.country}</option>
                                     ))}
                                 </select>
-                                <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[129px] md:w-[215px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
+                                <select required={searchCountry !== 'Any Country'} className="green-select text-black w-[129px] md:w-[205px]" id="city" name="city" value={searchCity} onChange={(e) => setSearchCity(e.target.value)}>
                                     <option value='' disabled>Select a City</option>
                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Whole Country'>Whole Country</option>)}
                                     {searchCountry && searchCountry !== 'Any Country' && (<option value='Any City'>Any City</option>)}

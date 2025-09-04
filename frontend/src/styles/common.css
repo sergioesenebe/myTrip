@@ -485,3 +485,8 @@ footer {
 .green-select:hover {
     cursor: pointer;
 }
+
+/*Options will be black (if not they are not visible)*/
+option{
+    color: black;
+}
