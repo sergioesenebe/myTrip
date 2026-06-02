@@ -4,7 +4,7 @@ services:
 
   mongo:
     image: mongo:4.4
-    container_name: mongo
+    container_name: mongo-myTrip
     restart: always
     ports:
       - "${MONGO_PORT}:27017"
@@ -17,7 +17,7 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: mytrip-backend
+    container_name: backend-mytrip
     restart: always
     ports:
       - "${BACKEND_PORT}:3000"
@@ -33,7 +33,7 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: mytrip-frontend
+    container_name: frontend-mytrip
     restart: always
     ports:
       - "${FRONTEND_PORT}:80"
