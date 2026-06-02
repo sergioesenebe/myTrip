@@ -602,7 +602,7 @@ function trips() {
                                             <p>{trip.description}</p>
                                             <p>{trip.country}, {trip.city}</p>
                                             <div className='flex flex-row gap-[10px] items-center'>
-                                                <img src={trip.avatar} className='w-[35px] h-[35px] border border-white rounded-full aspect-square' />
+                                                <img src={trip.avatar} className='w-[35px] h-[35px] border border-white rounded-full aspect-square place-image' />
                                                 <p>{trip.username}</p>
                                             </div>
                                         </div>
