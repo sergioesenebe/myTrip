@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+
+  mongo:
+    image: mongo:4.4
+    container_name: mongo
+    restart: always
+    ports:
+      - "${MONGO_PORT}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_USERNAME}
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./backend
+    container_name: mytrip-backend
+    restart: always
+    ports:
+      - "${BACKEND_PORT}:3000"
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      JWT_SECRET: ${MONGO_JWT_SECRET}
+      CLOUDINARY_CLOUD: ${CLOUDINARY_CLOUD}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: mytrip-frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT}:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
