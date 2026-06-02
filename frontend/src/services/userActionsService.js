@@ -1,5 +1,6 @@
 //Get backend url
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = ${BACKEND_URL};
 
 //Function to follow a user
 export async function followUser(travelerId, followed, usersSliced, setUsersSliced, index) {
