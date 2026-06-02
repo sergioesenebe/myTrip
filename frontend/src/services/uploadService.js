@@ -1,5 +1,6 @@
 //Get the backend url
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = ${BACKEND_URL};
 
 //Function to Upload a image
 export async function uploadImage(imageFile, folder) {
