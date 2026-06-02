@@ -1,5 +1,6 @@
 //Get backend url
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = ${BACKEND_URL};
 
 //Order By Most places in a place
 export async function sortByMostDetailed(trips) {
