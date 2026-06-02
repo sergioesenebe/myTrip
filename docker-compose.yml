@@ -37,8 +37,6 @@ services:
     restart: always
     ports:
       - "${FRONTEND_PORT}:443"
-    environment:
-      BACKEND_URL: ${BACKEND_URL}
     depends_on:
       - backend
 
