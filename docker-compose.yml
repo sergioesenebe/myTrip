@@ -43,7 +43,8 @@ services:
       - backend
 
 volumes:
-  mongo_data:
+  mytrip_mongo_data:
+    external: true
 networks:
   proxy:
     external: true
